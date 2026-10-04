@@ -196,8 +196,12 @@ the offline HTML. Read the [canonical contract](skills/gitlab-ci-performance/ref
 for selectors, budgets, sample/interval policies and unavailable guidance.
 Generate its public synthetic example with the [demo generator](examples/generate_v2.py).
 The canonical HTML now follows the reviewed report layout: compact job cards with
-baseline/outcome context, three-column priorities, collapsed history and latest-attempt
-evidence. See the [synthetic preview](examples/v2/report.html). Calculation and
+baseline/outcome context, a framed vertical list of action priorities, collapsed history and a compact
+two-level attempt timeline. Select a saved build fragment, then an operation to see
+its source lines and nested substeps. Runner phases and technical metadata are
+collapsed. The canonical parser does not retain image names or original BuildKit
+step numbers; anonymous fragments are labeled honestly rather than merged into
+invented images. See the [synthetic preview](examples/v2/report.html). Calculation and
 queue-spike policies remain specific to each contract.
 Its `gitlab_job_performance_*` kinds distinguish it from the `ci_report.py` workflow;
 entrypoints reject incompatible artifacts rather than silently converting them.

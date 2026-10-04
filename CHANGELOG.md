@@ -11,14 +11,19 @@ schema/calculation/parser versions are independent of the skill release version.
 - Accept GitLab keyset links that repeat the project `id` in the query, requiring
   an exact match with the requested project and rejecting duplicate/empty IDs.
 - Align canonical `report-v2.html` with the reviewed report presentation (#16):
-  localized concise heading, white/dark palette, thin dividers, three-column
-  priorities, baseline/outcome cards, collapsed history and latest-attempt details.
-- Present nested trace evidence, intervals and readable status/coverage labels
-  without changing canonical JSON, calculations or legacy/reviewed renderers.
+  localized concise heading, white/dark palette, thin dividers, a gray framed
+  priority panel with vertical action rows, baseline/outcome cards, collapsed
+  history and latest-attempt details.
+- Replace expanded evidence cards with compact two-level timelines: collapsed
+  runner phases/technical metadata, selected-fragment operations, relative time
+  axes, source lines and nested substeps. Preserve unknown/cache/partial states
+  and label anonymous build fragments without inventing image names or BuildKit
+  step IDs. Canonical JSON, calculations and legacy/reviewed renderers are unchanged.
 - Keep chart text readable on mobile with responsive SVG geometry; Inspect run
   moves focus and viewport to the selected evidence.
 - Extend offline browser regression checks for layout, numeric baseline parity,
-  evidence hierarchy, keyboard selection and 320/375/1280px light/dark views.
+  evidence parents, keyboard selection, drilldown navigation and desktop/mobile
+  light/dark views. Run the new drilldown checks in hosted CI for both languages.
 
 
 ### Job performance reports
