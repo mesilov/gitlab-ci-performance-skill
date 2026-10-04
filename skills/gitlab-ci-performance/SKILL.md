@@ -1,7 +1,7 @@
 ---
 name: gitlab-ci-performance
 license: MIT
-description: "Use when analyzing GitLab CI execution or runner queue regressions with glab, understanding job purposes, or regenerating an HTML report from saved JSON snapshots."
+description: "Use when analyzing GitLab CI execution or runner queue regressions with glab, understanding job purposes, inspecting timing history across selected release refs, or regenerating an HTML report from saved JSON snapshots."
 ---
 
 # GitLab CI Performance Analysis
@@ -45,6 +45,25 @@ the format contains project and jobs, with description, source_url, and
 verified_at for each job name. The catalog applies only when the project path matches.
 For a baseline from another run, add `--baseline <old-run>/jobs.json`
 to `report`; overlapping cohorts do not support regression conclusions.
+
+## Release history across selected refs
+
+When each release has a unique tag and same-ref comparisons lack observations,
+explicitly select exact refs with `report --release-refs v1.0 v1.1 v1.2 v1.3`.
+Choose refs from the user's scope and verified CI configuration; tag names alone
+do not establish comparability. Patterns and absent refs are rejected.
+This optional mode leaves same-ref comparison as the default.
+
+Open “Release history across selected refs / tags” in the HTML, choose a job,
+then select an attempt. The stack separates execution and runner queue time;
+details preserve refs, IDs, status, pipeline source, SHA and runner metadata.
+Unsuccessful attempts stay visible but are excluded from successful baselines.
+The 32/64 controls bound the visible chart, not metadata collection or the
+comparison baseline; no logs are requested.
+
+Describe differences as observations across releases, not confirmed regressions.
+Show N, baseline IDs, context differences and unknown configuration parameters.
+Read [release-history rules and compatibility](references/release-history.md).
 
 ## Interpretation
 

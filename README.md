@@ -14,6 +14,7 @@ Download the HTML and open it locally; no server or external assets are required
 ## What it does
 
 - Separates job execution time from runner queue time.
+- Optionally shows per-job timing history across explicitly selected release refs/tags.
 - Compares the latest successful pipeline, or a window of pipelines, against a baseline.
 - Highlights P50 timing regressions and exposes P95, sample sizes, retries, and job history.
 - Preserves JSON snapshots with strict schemas and source hashes for later comparisons.
@@ -86,6 +87,31 @@ For a saved baseline, add `--baseline reports/run-000/jobs.json` to `report`.
 Overlapping pipeline cohorts are explicitly marked and do not produce a
 regression claim.
 
+For unique release tags, explicitly select the refs to inspect:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/run-001/jobs.json --release-refs v1.0 v1.1 v1.2 v1.3 \
+  --output reports/releases/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/releases/report.json --output reports/releases/report.html
+```
+
+Open **Release history across selected refs / tags** in the HTML. Select a job,
+then an attempt to inspect execution, runner queue, original ref and context.
+Cross-ref changes are exploratory observations with explicit N and sample IDs;
+same-ref comparison remains the default. The 32/64 attempt controls affect the
+visible chart, not collection or baseline selection. See the
+[release-history methodology](skills/gitlab-ci-performance/references/release-history.md).
+Reports now use schema/calculation 1.1.0; snapshots stay 1.0.0, and legacy 1.0.0
+reports remain renderable with the updated skill.
+
+Generate a fictional multi-tag report without GitLab access:
+
+```bash
+.venv/bin/python examples/generate_release_demo.py --output-dir reports/release-demo
+```
+
 Try the synthetic sample without a GitLab account:
 
 ```bash
@@ -130,6 +156,9 @@ development environment and pass a file URL and screenshot output directory.
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the change history.
+
+Offline release-history browser QA: run `tests/browser_release_check.cjs` with a file URL
+and an output directory, using Playwright and Chrome as for the existing browser check.
 
 ## License
 
