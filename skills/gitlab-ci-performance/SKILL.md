@@ -1,7 +1,7 @@
 ---
 name: gitlab-ci-performance
 license: MIT
-description: "Use when analyzing GitLab CI execution or runner queue regressions with glab, understanding job purposes, inspecting timing history across selected release refs, or regenerating an HTML report from saved JSON snapshots."
+description: "Use when preparing GitLab CI performance improvement recommendations, analyzing execution or runner queue regressions with glab, understanding job purposes, inspecting timing history across selected release refs, or regenerating an HTML report from saved JSON snapshots."
 ---
 
 # GitLab CI Performance Analysis
