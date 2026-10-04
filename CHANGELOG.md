@@ -8,6 +8,8 @@ schema/calculation/parser versions are independent of the skill release version.
 
 ### Fixed
 
+- Accept GitLab keyset links that repeat the project `id` in the query, requiring
+  an exact match with the requested project and rejecting duplicate/empty IDs.
 - Align canonical `report-v2.html` with the reviewed report presentation (#16):
   localized concise heading, white/dark palette, thin dividers, three-column
   priorities, baseline/outcome cards, collapsed history and latest-attempt details.
