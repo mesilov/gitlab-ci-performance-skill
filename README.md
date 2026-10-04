@@ -2,9 +2,8 @@
 
 # GitLab CI Performance Analyzer
 
-Reusable agent skill being prepared for milestone **0.1.0** (unreleased): safe
-GitLab metadata → bounded trace evidence → reproducible calculations → standalone
-offline report.
+Reusable agent skill: safe GitLab metadata → bounded trace evidence →
+reproducible calculations → standalone offline report.
 
 ![Synthetic reviewed report](docs/report.png)
 
@@ -35,8 +34,7 @@ parallel or child timings are not added as promised savings.
 ## Install or update
 
 Requirements: Python 3.10+, `glab` with existing authorized GitLab authentication,
-plus the declared Python requirements. While milestone 0.1.0 is in development,
-clone the current development snapshot:
+plus the declared Python requirements. Clone the repository:
 
 ```sh
 git clone --depth 1 \
@@ -51,9 +49,8 @@ For an update, first move the old `.agents/skills/gitlab-ci-performance` directo
 to an unused backup location, then copy the new directory into its place.
 Existing links still point at that path. Preserve reports/private caches and any
 customizations in the backup; do not copy old modules over the new skill. The
-installed `VERSION` records the source snapshot independently of artifact format
-versions. The repository contains tests, documentation and fixtures as well as
-the complete distributable skill directory.
+repository contains tests, documentation and fixtures as well as the complete
+distributable skill directory.
 
 Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Follow the project's instructions and use an authorized account.
@@ -95,9 +92,9 @@ complete terminal logs. Active/partial/stale/erased entries are not reused.
 Raw caches have owner-only permissions and must not be published. Safe report
 metadata still contains project/job names and URLs; choose its sharing location.
 
-## Contracts and compatibility
+## Data contracts
 
-- `jobs.json`: immutable schema 1.0 source projection.
+- `jobs.json`: immutable source projection.
 - `details/metadata.json`: bounded safe refreshed metadata and coverage.
 - `details/timings.json`: compact allowlisted timing evidence.
 - `report.json`: precomputed windows, baseline samples,
@@ -105,11 +102,9 @@ metadata still contains project/job names and URLs; choose its sharing location.
 - `report.html`: standalone embedded compact data, no raw trace text.
 
 Run `ci_report.py validate artifact.json` for schema/ID/calculation checks.
-Supported legacy reports retain their rendering. `report --legacy` generates 1.1;
-`--release-refs REF...` preserves the 1.1 exact-ref exploratory route from #1.
-`--baseline older/jobs.json` retains external same-ref comparison and overlap
-safeguards. Unsupported versions request compatible tooling or explicit re-analysis
-into new outputs. Rendering never silently upgrades old calculations.
+`--release-refs REF...` selects exact refs for exploratory history.
+`--baseline older/jobs.json` provides external same-ref comparison with overlap
+safeguards.
 
 See [methodology](skills/gitlab-ci-performance/references/methodology.md),
 [trace precision/cache rules](skills/gitlab-ci-performance/references/trace-analysis.md)
@@ -119,8 +114,7 @@ and [changelog](CHANGELOG.md).
 
 ![Synthetic workflow performance report](docs/workflow-report.png)
 
-Workflow mode is part of milestone 0.1.0 and adds separate contracts alongside
-reviewed job reports and preserved legacy artifacts.
+Workflow mode analyzes pipeline runs and their jobs using separate contracts.
 Read the [workflow methodology and CLI examples](skills/gitlab-ci-performance/references/workflows.md)
 and use the installed [generic model](skills/gitlab-ci-performance/assets/workflow-model.json).
 The agent verifies resolved CI configuration, records explicit historical coverage
@@ -150,7 +144,7 @@ configuration is explicit; cross-pipeline chains are unsupported. Baselines need
 at least three preceding comparable complete successes, up to ten. Failed/partial
 measurements are excluded. Canonical JSON and compact LLM exports share seconds.
 HTML switches to minutes strictly above 300 seconds in the selected series/metric
-and offers English/Russian selection. v1 snapshots require recollection for workflows.
+and offers English/Russian selection.
 
 Generate the offline synthetic workflow demo with unit-boundary fixtures:
 
@@ -198,11 +192,10 @@ canonical contract from [issue #4](https://github.com/mesilov/gitlab-ci-performa
 This workflow retains at most 64 attempts/type, refreshes all outcomes, exports
 allowlisted bounded evidence and precomputes all supported 32/64 findings. Full,
 overview, selected-window and selected-attempt JSON use the same measurements as
-the offline HTML. Read [contract-v2.md](skills/gitlab-ci-performance/references/contract-v2.md)
-for selectors, budgets, sample/interval policies, unavailable guidance and legacy
-handling. Generate its public synthetic example with `examples/generate_v2.py`.
+the offline HTML. Read the [canonical contract](skills/gitlab-ci-performance/references/contract-v2.md)
+for selectors, budgets, sample/interval policies and unavailable guidance.
+Generate its public synthetic example with the [demo generator](examples/generate_v2.py).
 Its `gitlab_job_performance_*` kinds distinguish it from the `ci_report.py` workflow;
 entrypoints reject incompatible artifacts rather than silently converting them.
-Both entrypoints are included in the scope of milestone 0.1.0.
 
 MIT — [license](LICENSE).
