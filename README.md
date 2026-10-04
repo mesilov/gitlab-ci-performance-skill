@@ -1,3 +1,5 @@
+[English](README.md) | [Русский](README.ru.md)
+
 # GitLab CI Performance Analyzer
 
 An agent skill for analyzing GitLab CI job durations, runner queues, and timing
@@ -37,7 +39,9 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The report UI supports English (default) and Russian. The agent skill instructions are currently in Russian.
+The report UI supports English (default) and Russian. Agent skill instructions
+and the methodology reference are in English.
+Russian documentation is available in [README.ru.md](README.ru.md).
 
 ## Run the CLI directly
 
@@ -126,6 +130,10 @@ check of local-file viewing with the network disabled. Install Playwright in a
 development environment and pass a file URL, screenshot output directory and
 optional expected language (`en` by default, or `ru`). Run it for both HTML
 variants; the checks use the synthetic demo's job and pipeline IDs.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the change history.
 
 ## License
 
