@@ -2,118 +2,129 @@
 
 # GitLab CI Performance Analyzer
 
-An agent skill for analyzing GitLab CI job durations, runner queues, and timing
-regressions using `glab`. Save versioned JSON snapshots, compare runs, and open
-a standalone HTML report directly in your browser.
+Version **2.0.0** of the reusable agent skill: safe GitLab metadata → bounded
+trace evidence → reproducible calculations → standalone offline report.
 
-![Synthetic GitLab CI performance report](docs/report.png)
+![Synthetic reviewed report](docs/report.png)
 
-The screenshot and [example report](examples/report.html) use **synthetic data**.
-Download the HTML and open it locally; no server or external assets are required.
+The [English example](examples/reviewed/report.html) and
+[Russian example](examples/reviewed/report-ru.html) contain synthetic data only.
+Download an HTML file and open it locally; it works without sidecars or a server.
 
-## What it does
+## Report experience
 
-- Separates job execution time from runner queue time.
-- Compares the latest successful pipeline, or a window of pipelines, against a baseline.
-- Highlights P50 timing regressions and exposes P95, sample sizes, retries, and job history.
-- Preserves JSON snapshots with strict schemas and source hashes for later comparisons.
-- Shows a stacked pipeline chart and job descriptions from an optional verified catalog.
+- Repository job cards with verified purpose, latest total, independent successful
+  baseline and explicit outcome coverage; auto-select the largest observed increase.
+- Only the selected job's statistics, priorities and stacked attempt history.
+- **32/64 attempts**, default 32, with Older/Newer/Latest within newest 64 per type.
+  Reruns are distinct job IDs; all outcomes remain visible.
+- Gray runner wait above execution, individual-job outcome colors, successful
+  complete-total median and consistent seconds/minutes (strictly above 300 s).
+- Every retained attempt has fresh/stale metadata and explicit trace availability;
+  phases, safe logged intervals, BuildKit builds/operations/substeps and source lines.
+- What to improve first: successful measured interval-union costs, known N,
+  independent evidence navigation and authoritative investigation links.
+- English/Russian interface, responsive 320 px light/dark layout, keyboard controls,
+  no raw logs, external assets, browser tokens or API requests in the report.
 
-Collection uses read-only GitLab API requests through your existing `glab`
-authentication. It does not fetch job logs or variables. Reports can still
-contain project names, job names, runner descriptions, and URLs: choose where
-you store and share your own reports.
+Mixed-ref history is exploratory, not proof of a regression or cause. The
+established same-ref workflow is separately accessible. Unknown is not zero;
+parallel or child timings are not added as promised savings.
 
-## Install the skill in a project
+## Install or update
 
-Clone this repository. From the project where you want to use the skill:
+Requirements: Python 3.10+, `glab` with existing authorized GitLab authentication,
+plus the declared Python requirements. Clone the published pinned version:
 
-```bash
+```sh
+git clone --branch v2.0.0 --depth 1 \
+  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
 mkdir -p .agents/skills .codex/skills .claude/skills
-cp -R /path/to/gitlab-ci-performance-skill/skills/gitlab-ci-performance .agents/skills/
+cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
 ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-performance
 ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
 ```
 
+For an update, first move the old `.agents/skills/gitlab-ci-performance` directory
+to an unused backup location, then copy the new directory into its place.
+Existing links still point at that path. Preserve reports/private caches and any
+customizations in the backup; do not copy old modules over the new skill. The
+installed `VERSION` must read 2.0.0. The release source archive contains tests,
+documentation and fixtures as well as the complete distributable skill directory.
+
 Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
-Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
-your agent's project instructions and use an authorized GitLab account.
+Code. Follow the project's instructions and use an authorized account.
 
-The report UI, agent skill instructions, and methodology reference are in English.
-Russian documentation is available in [README.ru.md](README.ru.md).
+## Complete CLI workflow
 
-## Run the CLI directly
+From the repository (or substitute the installed helper path):
 
-Requirements: Python 3.10+, `glab`, and its existing authentication for your GitLab host.
-From this repository:
-
-```bash
+```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
-glab auth login --hostname gitlab.example.com
-
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
-  --host gitlab.example.com --project group/project \
-  --timezone UTC --output reports/run-001/jobs.json
+  --host gitlab.example.com --project group/service --timezone UTC \
+  --output reports/run-001/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect-details \
+  --snapshot reports/run-001/jobs.json --output-dir reports/run-001/details --workers 4
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot reports/run-001/jobs.json --output reports/run-001/report.json
+  --snapshot reports/run-001/jobs.json --details reports/run-001/details \
+  --output reports/run-001/report.json
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
-  --report reports/run-001/report.json --output reports/run-001/report.html
+  --report reports/run-001/report.json --language ru --output reports/run-001/report.html
 ```
 
-Open `reports/run-001/report.html` directly in a browser. Each run needs a new
-output path; existing artifacts are not overwritten. UTC is the default;
-`--timezone` accepts an IANA timezone.
+Every output is new/immutable. Defaults: UTC and `--language en`. Re-render saved
+JSON entirely offline. An optional `--catalog catalog.json` verifies job purpose;
+see [example](examples/reviewed/catalog.json). Catalog source URL/date/ref/hash
+record current configuration provenance, not every historical configuration.
 
-For a saved baseline, add `--baseline reports/run-000/jobs.json` to `report`.
-Overlapping pipeline cohorts are explicitly marked and do not produce a
-regression claim.
+`collect` reads paginated available job metadata (not logs/variables).
+`collect-details` refreshes newest 64 attempts per (stage,name), then analyzes
+only their logs. Restrict scope before requests with repeated `--job NAME` and
+`--stage STAGE`. At most R metadata plus R trace GETs for R retained attempts;
+workers 1–8, default 4, 60 s timeout, 32 MiB default trace cap (`--max-trace-bytes`).
+Failures/stale metadata, not-run, empty, erased, partial and unavailable logs are
+explicit. `--no-traces` records disabled analysis, not an unavailable-log claim.
 
-Try the synthetic sample without a GitLab account:
+Optional private `--trace-cache DIR --reuse-cache` explicitly reuses matching
+complete terminal logs. Active/partial/stale/erased entries are not reused.
+Raw caches have owner-only permissions and must not be published. Safe report
+metadata still contains project/job names and URLs; choose its sharing location.
 
-```bash
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot examples/jobs.json --catalog examples/catalog.json \
-  --output reports/demo/report.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
-  --report reports/demo/report.json --output reports/demo/report.html
-```
+## Contracts and compatibility
 
-## Artifacts and interpretation
+- `jobs.json`: immutable schema 1.0 source projection.
+- `details/metadata.json`: schema 2.0 bounded safe refreshed metadata and coverage.
+- `details/timings.json`: schema/parser 2.0 compact allowlisted evidence.
+- `report.json`: schema/calculation 2.0 precomputed windows, baseline samples,
+  priorities and hashes; validated before rendering.
+- `report.html`: standalone embedded compact data, no raw trace text.
 
-- [`jobs.schema.json`](skills/gitlab-ci-performance/schemas/jobs.schema.json): source projection of job attempts and pipeline metadata.
-- [`report.schema.json`](skills/gitlab-ci-performance/schemas/report.schema.json): derived metrics, comparison policy, cohorts, and input hashes.
-- `report.html`: self-contained report with embedded data. It also works if moved without the sidecar JSON files.
+Run `ci_report.py validate artifact.json` for schema/ID/calculation checks.
+Older 1.0/1.1 reports retain legacy rendering. `report --legacy` generates 1.1;
+`--release-refs REF...` preserves the 1.1 exact-ref exploratory route from #1.
+`--baseline older/jobs.json` retains external same-ref comparison and overlap
+safeguards. Unsupported versions request compatible tooling or explicit re-analysis
+into new outputs. Rendering never silently upgrades old calculations.
 
-By default, a regression requires P50 growth of **at least 20% and 30 seconds**,
-with at least three baseline observations. These thresholds are configurable;
-one current run is an observation, not an established trend. Timing comparisons
-use successful job attempts in successful pipelines of the same ref.
+See [methodology](skills/gitlab-ci-performance/references/methodology.md),
+[trace precision/cache rules](skills/gitlab-ci-performance/references/trace-analysis.md)
+and [changelog](CHANGELOG.md).
 
-Pipeline queue time is the wait before its first start; individual job queue
-times are shown separately. The stack is not a complete lifecycle measurement.
-Missing times remain missing instead of becoming zero. API collection is not an
-atomic transaction and cannot recover deleted jobs or bridge/trigger jobs.
-There is no automatic schedule or resource-level profiler.
+## Development and evidence
 
-See the [methodology](skills/gitlab-ci-performance/references/methodology.md)
-and [optional catalog example](examples/catalog.json) for details.
-
-## Development
-
-```bash
+```sh
 .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python examples/generate_reviewed.py --output-dir reports/new-demo
+node tests/browser_reviewed.cjs file:///absolute/path/reports/new-demo/report.html reports/browser
 ```
 
-Generate another synthetic demo with `examples/generate_demo.py --output-dir
-reports/new-demo` using the same Python environment and a new output path. `tests/browser_check.cjs` is an optional Playwright/Chrome
-check of local-file viewing with the network disabled. Install Playwright in a
-development environment and pass a file URL and screenshot output directory.
+Browser QA requires Playwright (resolve with `CI_REPORT_PLAYWRIGHT` if needed).
+Local Chrome is default; `CI_REPORT_BROWSER_CHANNEL=chromium` uses Playwright's
+bundled browser in CI. Checks cover en/ru, 32/64, all retained attempts, evidence,
+320/375/1280 px light/dark, keyboard/focus, safe links, moved HTML and denied network.
+`tests/test_installed_skill.py` tests a clean skill-only installation/update with
+a synthetic standalone glab transport, request/payload limits and privacy sentinels.
 
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for the change history.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+MIT — [license](LICENSE).

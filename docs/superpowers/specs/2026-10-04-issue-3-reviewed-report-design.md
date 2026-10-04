@@ -1,6 +1,6 @@
 # Issue #3: reviewed report and versioned skill delivery
 
-Status: proposed implementation design; implementation and release are pending.
+Status: user-approved design; implementation complete, release verification pending.
 Date: 2026-10-04. Target: skill release `v2.0.0`.
 Source of requirements: [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
 

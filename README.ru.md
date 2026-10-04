@@ -1,122 +1,131 @@
 [English](README.md) | [Русский](README.ru.md)
 
-# Анализатор производительности GitLab CI
+# GitLab CI Performance Analyzer
 
-Скилл для агента, который анализирует длительность джоб GitLab CI, очереди
-раннеров и ухудшение времени выполнения через `glab`. Сохраняйте JSON-снимки
-с версиями, сравнивайте запуски и открывайте автономный HTML-отчёт прямо в браузере.
+Версия **2.0.0** переиспользуемого скилла: безопасные метаданные GitLab →
+ограниченный анализ логов → воспроизводимые расчёты → автономный HTML-отчёт.
 
-![Синтетический отчёт о производительности GitLab CI](docs/report.png)
+![Синтетический отчёт](docs/report.png)
 
-Скриншот и [пример отчёта](examples/report.html) используют **синтетические данные**.
-Скачайте HTML и откройте его локально; сервер и внешние ресурсы не нужны.
+[Пример на русском](examples/reviewed/report-ru.html) и
+[на английском](examples/reviewed/report.html) содержат только синтетические данные.
+Скачайте HTML и откройте локально: сервер и соседние JSON для просмотра не нужны.
 
 ## Возможности
 
-- Отделяет время выполнения джоб от ожидания в очереди раннера.
-- Сравнивает последний успешный pipeline или окно pipelines с базовой выборкой.
-- Выделяет ухудшение P50 и показывает P95, размеры выборок, повторные попытки и историю джоб.
-- Сохраняет JSON-снимки со строгими схемами и хешами источников для последующих сравнений.
-- Показывает стековый график pipelines и описания джоб из необязательного проверенного каталога.
+- Карточки jobs с проверенным назначением, последним полным временем, независимой
+  успешной базой сравнения и явным охватом исходов. Автовыбор наибольшего роста.
+- Ниже — только выбранная job: приоритеты, статистика, график и детали.
+- **32/64 попытки**, по умолчанию 32; Older/Newer/Latest внутри последних 64 на тип
+  job. Перезапуски имеют отдельные job ID; ошибки и отмены видны в истории.
+- Серое ожидание сверху, выполнение ниже, цвет исхода отдельной job, медиана
+  полных успешных значений. При максимуме строго больше 300 с — минуты.
+- Метаданные и явное состояние лога каждой удержанной попытки; секции runner,
+  оценочные интервалы команд, BuildKit → образы → операции → подшаги/строки лога.
+- «Что улучшить сначала»: наблюдаемая стоимость объединённых интервалов успешных
+  запусков, измеренный N, переход к доказательствам и ссылки на документацию.
+- ru/en, светлая/тёмная тема, ширина 320 px, клавиатура, работа без сети и токенов
+  браузера. Сырые команды и логи в отчёт не попадают.
 
-Сбор выполняет только запросы чтения к GitLab API через существующую авторизацию
-`glab`. Логи и переменные джоб не запрашиваются. При этом отчёты могут содержать
-названия проектов и джоб, описания раннеров и URL: выбирайте, где хранить свои
-отчёты и кому их передавать.
+История разных refs — исследовательское наблюдение, не доказательство регрессии
+или причины. Сравнение одной ref сохранено отдельно. Неизвестное не становится
+нулём; пересечения и подшаги не суммируются как обещанная экономия.
 
-## Установка скилла в проект
+## Установка и обновление
 
-Клонируйте этот репозиторий. Из проекта, в котором хотите использовать скилл:
+Нужны Python 3.10+, `glab` с существующей авторизованной учётной записью GitLab
+и зависимости из requirements.txt. Устанавливайте опубликованный тег:
 
-```bash
+```sh
+git clone --branch v2.0.0 --depth 1 \
+  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
 mkdir -p .agents/skills .codex/skills .claude/skills
-cp -R /path/to/gitlab-ci-performance-skill/skills/gitlab-ci-performance .agents/skills/
+cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
 ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-performance
 ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
 ```
 
-Вызовите `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude
-Code. Попросите проанализировать URL проекта или сравнить два сохранённых снимка.
-Следуйте инструкциям проекта для агента и используйте учётную запись с разрешённым
-доступом к GitLab.
+При обновлении сначала переместите старый каталог `.agents/skills/gitlab-ci-performance`
+в свободное место резервной копии, затем скопируйте новый на его место. Ссылки
+продолжат работать. Сохраните отчёты, приватные кэши и локальные изменения;
+не накладывайте старые модули поверх новой версии. В установленном VERSION должно
+быть 2.0.0. Архив исходников релиза включает тесты, документацию и fixtures вместе
+с полным каталогом распространяемого скилла.
 
-Интерфейс отчёта, инструкции скилла для агента и методика написаны на английском.
-Английская документация доступна в [README.md](README.md).
+Вызов: `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude
+Code. Следуйте правилам проекта и используйте разрешённый доступ GitLab.
 
-## Запуск CLI напрямую
+## Полный цикл CLI
 
-Требования: Python 3.10+, `glab` и существующая авторизация для вашего GitLab-хоста.
-Из этого репозитория:
+Из репозитория либо с реальным путём установленного helper:
 
-```bash
+```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
-glab auth login --hostname gitlab.example.com
-
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
-  --host gitlab.example.com --project group/project \
-  --timezone UTC --output reports/run-001/jobs.json
+  --host gitlab.example.com --project group/service --timezone UTC \
+  --output reports/run-001/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect-details \
+  --snapshot reports/run-001/jobs.json --output-dir reports/run-001/details --workers 4
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot reports/run-001/jobs.json --output reports/run-001/report.json
+  --snapshot reports/run-001/jobs.json --details reports/run-001/details \
+  --output reports/run-001/report.json
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
-  --report reports/run-001/report.json --output reports/run-001/report.html
+  --report reports/run-001/report.json --language ru --output reports/run-001/report.html
 ```
 
-Откройте `reports/run-001/report.html` прямо в браузере. Для каждого запуска нужен
-новый путь вывода; существующие артефакты не перезаписываются. По умолчанию
-используется UTC; `--timezone` принимает часовой пояс IANA.
+Каждый output новый; существующие артефакты не перезаписываются. По умолчанию UTC
+и английский (`--language en`). Рендер сохранённых JSON работает полностью офлайн.
+`report --catalog catalog.json` добавляет назначения jobs: [пример](examples/reviewed/catalog.json).
+URL, дата, ref и hash конфигурации описывают проверенный текущий CI, а не все
+исторические конфигурации.
 
-Для сохранённой базовой выборки добавьте `--baseline reports/run-000/jobs.json`
-к `report`. Перекрывающиеся выборки pipelines явно отмечаются и не дают оснований
-утверждать ухудшение.
+`collect` собирает доступные метаданные с пагинацией, без логов/переменных.
+`collect-details` обновляет метаданные последних 64 попыток на `(stage,name)` и
+анализирует только их логи. Повторяемые `--job NAME`/`--stage STAGE` ограничивают
+типы до запросов. Не более R запросов метаданных + R логов для R попыток;
+workers 1–8, по умолчанию 4, timeout 60 с, лимит 32 MiB (`--max-trace-bytes`). Ошибки,
+устаревшие метаданные, not-run, пустые, стёртые, частичные и недоступные логи
+различаются. `--no-traces` явно отключает анализ логов.
 
-Попробуйте синтетический пример без учётной записи GitLab:
+`--trace-cache DIR --reuse-cache` явно разрешает повторное использование полного
+лога завершённой совпадающей попытки. Активные, частичные, устаревшие и стёртые
+логи не переиспользуются. Кэш с правами только владельца нельзя публиковать.
+Безопасные метаданные отчёта всё равно содержат имена проекта/jobs и URL:
+выбирайте место хранения и публикации самостоятельно.
 
-```bash
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot examples/jobs.json --catalog examples/catalog.json \
-  --output reports/demo/report.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
-  --report reports/demo/report.json --output reports/demo/report.html
-```
+## Данные и совместимость
 
-## Артефакты и интерпретация
+- jobs.json: неизменяемый источник schema 1.0.
+- details/metadata.json: ограниченные обновлённые метаданные и охват schema 2.0.
+- details/timings.json: компактные доказательства schema/parser 2.0.
+- report.json: окна, samples baseline, приоритеты и hashes schema/calculation 2.0.
+- report.html: автономный HTML с встроенными данными без сырого лога.
 
-- [`jobs.schema.json`](skills/gitlab-ci-performance/schemas/jobs.schema.json): исходная проекция попыток выполнения джоб и метаданных pipelines.
-- [`report.schema.json`](skills/gitlab-ci-performance/schemas/report.schema.json): производные метрики, политика сравнения, выборки и хеши входных данных.
-- `report.html`: автономный отчёт со встроенными данными. Работает и после переноса без отдельных JSON-файлов.
+`ci_report.py validate artifact.json` проверяет схемы, ID и расчёты.
+Отчёты 1.0/1.1 рендерятся по сохранённой методике. `report --legacy` создаёт 1.1;
+`--release-refs REF...` сохраняет маршрут точного выбора refs из#1.
+`--baseline older/jobs.json` задаёт внешний baseline одной ref с проверкой
+пересечения выборок. Неизвестные версии требуют совместимого helper либо явного
+повторного анализа в новые outputs; скрытой смены методики нет.
 
-По умолчанию для ухудшения требуется рост P50 **не менее чем на 20% и 30 секунд**
-при как минимум трёх наблюдениях в базовой выборке. Пороги настраиваются;
-один текущий запуск — это наблюдение, а не установленный тренд. Для сравнения
-времени используются успешные попытки выполнения джоб в успешных pipelines одной ref.
-
-Время в очереди pipeline — это ожидание до первого старта; очереди отдельных
-джоб показаны отдельно. Стековый график не измеряет полный жизненный цикл.
-Отсутствующие значения времени остаются отсутствующими и не превращаются в нули.
-Сбор через API не является атомарной транзакцией и не может восстановить удалённые
-джобы или bridge/trigger jobs. Автоматического расписания и профилирования
-на уровне ресурсов нет.
-
-Подробности — в [методике](skills/gitlab-ci-performance/references/methodology.md)
-и [примере необязательного каталога](examples/catalog.json).
+Подробности: [методика](skills/gitlab-ci-performance/references/methodology.md),
+[точность/кэш логов](skills/gitlab-ci-performance/references/trace-analysis.md),
+[история изменений](CHANGELOG.md).
 
 ## Разработка
 
-```bash
+```sh
 .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python examples/generate_reviewed.py --output-dir reports/new-demo
+node tests/browser_reviewed.cjs file:///absolute/path/reports/new-demo/report.html reports/browser
 ```
 
-Создайте другой синтетический пример командой `examples/generate_demo.py --output-dir
-reports/new-demo` в том же Python-окружении, указав новый путь вывода.
-`tests/browser_check.cjs` — необязательная проверка Playwright/Chrome для просмотра
-локального файла при отключённой сети. Установите Playwright в среде разработки
-и передайте URL файла и каталог для скриншотов.
+Для браузерной проверки нужен Playwright; при необходимости задайте
+CI_REPORT_PLAYWRIGHT. Локально используется Chrome, для bundled Chromium в CI —
+CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исходы/перезапуски,
+доказательства,320/375/1280 px, обе темы, клавиатура, перенос HTML и запрет сети.
+`tests/test_installed_skill.py` проверяет чистую установку/обновление через
+синтетический glab, ограничения запросов/размера и отсутствие сырого содержимого.
 
-## История изменений
-
-История изменений — в [CHANGELOG.md](CHANGELOG.md).
-
-## Лицензия
-
-MIT — см. [LICENSE](LICENSE).
+MIT — [лицензия](LICENSE).

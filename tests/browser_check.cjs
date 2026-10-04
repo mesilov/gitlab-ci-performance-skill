@@ -3,8 +3,9 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {fileURLToPath,pathToFileURL}=require('node:url');
-const url=process.argv[2],output=process.argv[3];
-if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY');
+const url=process.argv[2],output=process.argv[3],language=process.argv[4]||'en';
+if(!url||!output||!['en','ru'].includes(language))throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY [en|ru]');
+const russian=language==='ru';
 (async()=>{
   fs.mkdirSync(output,{recursive:true});
   const browser=await chromium.launch({channel:'chrome',headless:true});
@@ -14,12 +15,26 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
     await page.goto(url);await page.locator('#job-rows tr').first().waitFor();
     assert.equal(new URL(url).protocol,'file:');
-    assert.equal(await page.locator('html').getAttribute('lang'),'en');
-    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('body').innerText()),false);
+    assert.equal(await page.locator('html').getAttribute('lang'),language);
+    assert.equal(await page.locator('h1').innerText(),russian?'Как работает CI':'How CI is performing');
+    assert.equal(await page.locator('#ref-select').getAttribute('aria-label'),russian?'Ветка':'Branch');
+    assert.equal(await page.locator('#window-select').getAttribute('aria-label'),russian?'Окно сравнения':'Comparison window');
+    assert.equal(await page.locator('#ci-title').innerText(),russian?'Время CI по пайплайнам':'CI time by pipeline');
+    assert.equal(await page.locator('table.overview').getAttribute('aria-label'),russian?'Время выполнения заданий и ожидания раннера':'Job execution and runner wait times');
+    assert.equal(await page.locator('table.overview th').nth(1).innerText(),russian?'Выполнение · P50':'Execution · P50');
+    assert.equal(await page.locator('table.overview th').nth(2).innerText(),russian?'Ожидание раннера · P50':'Runner wait · P50');
+    assert.match(await page.locator('#ci-history title').first().textContent(),russian?/выполнение .* очередь/:/execution .* queue/);
+    assert.match(await page.locator('#latest').innerText(),russian?/Последний пайплайн.*успешно/:/Latest pipeline.*passed/);
+    assert.match(await page.locator('#freshness').innerText(),russian?/сент\./:/Sep/);
+    assert.deepEqual(await page.evaluate(()=>[time(null),time(1.5),time(65),time(3660)]),russian?['—','1,5 с','1 мин 5 с','1 ч 1 мин']:['—','1.5 s','1 min 5 s','1 h 1 min']);
+    assert.deepEqual(await page.evaluate(()=>['insufficient_data','overlap','new_job','missing_job'].map(status=>changeText({status}))),russian?['Недостаточно данных','Выборки пересекаются','Нет наблюдений в базовой выборке','Нет наблюдений в текущей выборке']:['Insufficient data','Samples overlap','No baseline observations','No current observations']);
     assert.equal(await page.locator('#job-rows tr').count(),5);
     assert.equal(await page.locator('.driver').count(),2);
     assert.equal(await page.locator('#ci-history .pipeline-bar').count(),8);
     const data=JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(url)),'report.json'),'utf8'));
+    assert.deepEqual(await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent)),data);
+    const group=data.views.find(v=>v.ref===data.project.default_branch&&v.window===1).groups.find(g=>g.name==='unit_tests');
+    assert.equal(await page.locator('tr[data-name="unit_tests"] .job-purpose').innerText(),group.purpose.description);
     const pipeline=data.pipelines.find(p=>p.id===108),stack=page.locator('.pipeline-bar[data-id="108"]');
     const run=stack.locator('[data-component="execution"]'),queue=stack.locator('[data-component="queue"]');
     assert.equal(Number(await run.getAttribute('data-seconds')),pipeline.duration_seconds);
@@ -31,12 +46,17 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     await page.getByRole('button',{name:'unit_tests',exact:true}).click();
     assert.equal(await page.locator('#attempt-rows tr').count(),8);
     assert.equal(await page.locator('#history svg').count(),1);
-    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('body').innerText()),false);
+    assert.equal(await page.locator('#job-description').innerText(),group.purpose.description);
+    assert.match(await page.locator('#job-context').innerText(),russian?/Этап:/:/Stage:/);
+    assert.doesNotMatch(await page.locator('#job-context').innerText(),/\{[a-z0-9_]+\}/);
+    assert.match(await page.locator('#history title').first().textContent(),russian?/выполнение .* очередь/:/execution .* queue/);
+    assert.match(await page.locator('#history-summary').innerText(),russian?/Попыток:/:/attempts:/);
+    assert.match(await page.locator('#attempt-rows').innerText(),russian?/успешно/:/passed/);
     await page.locator('details.method summary').click();
-    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('#method').innerText()),false);
-    await page.getByRole('button',{name:'Close'}).click();
+    assert.match(await page.locator('#method').innerText(),russian?/Порог: P50 вырос минимум/:/Threshold: P50 increased/);
+    await page.getByRole('button',{name:russian?'Закрыть':'Close'}).click();
     await page.locator('#window-select').selectOption('10');
-    assert.match(await page.locator('#situation').innerText(),/Not enough/);
+    assert.match(await page.locator('#situation').innerText(),russian?/недостаточно независимых/:/Not enough/);
     await page.locator('#window-select').selectOption('1');
     await page.setViewportSize({width:360,height:800});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -46,8 +66,31 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     for(const href of await page.locator('footer a').evaluateAll(a=>a.map(x=>x.href)))assert.ok(['jobs','report'].includes(JSON.parse(fs.readFileSync(fileURLToPath(href),'utf8')).kind));
     const detached=path.join(output,'standalone.html');fs.copyFileSync(fileURLToPath(url),detached);
     await page.goto(pathToFileURL(detached).href);assert.equal(await page.locator('#job-rows tr').count(),5);fs.unlinkSync(detached);
+    // Exercise UI-owned fallbacks while preserving supplied catalog text and names.
+    await page.evaluate(()=>{
+      const current=R.views.find(v=>v.ref===view.ref&&v.window===view.window);
+      current.groups[0].purpose={description:'Purpose is not documented in the verified catalog.',source_url:null,verified_at:null};
+      current.groups[0].purpose_from_catalog=false;
+      current.groups[0].current.execution.missing=1;
+      R.pipelines.find(p=>p.status==='success').queued_seconds=null;
+      refresh();
+    });
+    assert.match(await page.locator('#job-rows').innerText(),russian?/Назначение не описано в проверенном каталоге/:/Purpose is not documented/);
+    assert.match(await page.locator('#job-rows').innerText(),russian?/Измерения отсутствуют:/:/Missing measurements:/);
+    assert.match(await page.locator('#ci-caption').innerText(),russian?/отсутствующими компонентами/:/missing timing components/);
+    for(const provenance of [true,null]){
+      await page.evaluate(provenance=>{const g=view.groups[0];if(provenance===null)delete g.purpose_from_catalog;else g.purpose_from_catalog=provenance;refresh();},provenance);
+      assert.equal(await page.locator('#job-rows tr').filter({hasText:'Purpose is not documented in the verified catalog.'}).count(),1);
+    }
+    await page.evaluate(()=>{R.method.policy.relative_growth_percent=20.001;R.method.policy.absolute_growth_seconds=0.001;refresh();});
+    assert.match(await page.locator('#method').textContent(),russian?/20,001% и 0,001 с/:/20\.001% and 0\.001 s/);
+    await page.evaluate(()=>{R.views.forEach(v=>{v.groups=[];v.current_period.from=null;v.baseline_period.from=null;});R.pipelines=[];refresh();});
+    assert.match(await page.locator('#situation').innerText(),russian?/Нет успешных пайплайнов/:/No successful pipelines/);
+    assert.equal(await page.locator('#empty').isVisible(),true);
+    assert.match(await page.locator('#baseline-period').innerText(),russian?/нет данных/:/no data/);
+    assert.match(await page.locator('#ci-history').innerText(),russian?/Нет успешных пайплайнов для этого графика/:/No successful pipelines are available for this chart/);
     assert.deepEqual(errors,[]);assert.equal(requests.some(u=>!u.startsWith('file:')),false);
-    const result={offline:true,checks:['English overview, details and methodology','synthetic pipeline stack','execution and queue regressions','keyboard selection','job history','sparse baseline','mobile overflow','dark mode','sidecar JSON','standalone HTML','no network or JS errors']};
+    const result={offline:true,language,checks:['localized overview, details, tooltips, accessibility and methodology','locale time, numbers and dates','source data and catalog preservation','unknown purpose, missing measurements and empty states','synthetic pipeline stack','execution and queue regressions','keyboard selection','job history','sparse baseline','mobile overflow','dark mode','sidecar JSON','standalone HTML','no network or JS errors']};
     fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
