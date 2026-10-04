@@ -180,4 +180,27 @@ CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исхо
 
 `tests/workflow_browser_check.cjs` проверяет автономный workflow-отчёт: окна 32/64 pipeline, попытки, en/ru, мобильную вёрстку и границу 300 секунд.
 
+## Канонический отчёт и compact JSON для LLM (#4)
+
+Опубликованный workflow `ci_report.py` выше сохраняет совместимость с отчётами
+2.0.0/2.0.1 и принятый UI. Дополнительный установленный `report_cli.py` реализует
+отдельный канонический контракт [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4):
+
+```sh
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py collect --host gitlab.example.com --project group/service --output reports/contract/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py report --snapshot reports/contract/jobs.json --output reports/contract/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py export --report reports/contract/report.json --scope overview --output reports/contract/overview.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/contract/report.json --language ru --output reports/contract/report.html
+```
+
+Он сохраняет не более 64 попыток/тип, обновляет метаданные всех исходов, экспортирует
+безопасные summaries ограниченных traces и заранее рассчитывает findings всех окон
+32/64. Полный JSON, overview, выбранное окно и попытки используют те же измерения,
+что offline HTML. [Контракт](skills/gitlab-ci-performance/references/contract-v2.md)
+описывает selectors, бюджеты, baseline/интервалы, provenance рекомендаций и legacy.
+`examples/generate_v2.py` генерирует публичный синтетический пример. Отдельные kinds
+`gitlab_job_performance_*` отличают этот формат от опубликованного; CLI отклоняет
+чужой формат, не преобразуя его незаметно. Дополнение находится в main до следующего
+релиза и не заменяет опубликованный v2.0.1.
+
 MIT — [лицензия](LICENSE).

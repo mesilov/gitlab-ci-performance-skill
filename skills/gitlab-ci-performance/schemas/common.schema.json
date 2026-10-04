@@ -1,0 +1,2624 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.gitlab-ci-performance.invalid/v2/common.schema.json",
+  "$defs": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ]
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "description"
+      ]
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pipeline_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "allow_failure": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "queued_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failure_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runner": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runner"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "erased_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata_checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata_fresh": {
+          "type": "boolean"
+        },
+        "metadata_error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "pipeline_id",
+        "name",
+        "stage",
+        "ref",
+        "status",
+        "allow_failure",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "failure_reason",
+        "runner",
+        "web_url",
+        "sha",
+        "erased_at",
+        "metadata_checked_at",
+        "metadata_fresh",
+        "metadata_error"
+      ]
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ref": {
+          "type": "string"
+        },
+        "sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "queued_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "metadata_checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata_fresh": {
+          "type": "boolean"
+        },
+        "metadata_error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "ref",
+        "sha",
+        "status",
+        "source",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "web_url",
+        "metadata_checked_at",
+        "metadata_fresh",
+        "metadata_error"
+      ]
+    },
+    "interval_timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "section",
+            "buildkit_reported",
+            "log_interval",
+            "inferred",
+            "unknown"
+          ]
+        },
+        "quality": {
+          "enum": [
+            "exact",
+            "inferred",
+            "partial",
+            "unknown"
+          ]
+        },
+        "precision_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "duration_seconds",
+        "start_seconds",
+        "end_seconds",
+        "origin",
+        "quality",
+        "precision_seconds"
+      ]
+    },
+    "lines": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ]
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "phase",
+            "image",
+            "operation",
+            "part",
+            "command"
+          ]
+        },
+        "code": {
+          "enum": [
+            "prepare_executor",
+            "prepare_script",
+            "get_sources",
+            "restore_cache",
+            "download_artifacts",
+            "step_script",
+            "after_script",
+            "archive_cache",
+            "upload_artifacts",
+            "cleanup_file_variables",
+            "unknown_phase",
+            "export_local_unpack",
+            "context_application_copy",
+            "base_image",
+            "dependencies_builder_setup",
+            "other_operation",
+            "script_command",
+            "image_build"
+          ]
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timing": {
+          "$ref": "#/$defs/interval_timing"
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "lines": {
+          "$ref": "#/$defs/lines"
+        },
+        "push_coverage": {
+          "enum": [
+            "included",
+            "excluded",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "code",
+        "parent_id",
+        "timing",
+        "cached",
+        "complete",
+        "lines",
+        "push_coverage"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "enum": [
+            "available",
+            "not_run",
+            "empty",
+            "unavailable",
+            "erased",
+            "permission_denied",
+            "unsupported",
+            "partial"
+          ]
+        },
+        "reason_code": {
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prefix_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bytes_read": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parser_version": {
+          "const": "1.0.0"
+        },
+        "fetched_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "analyzed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "recognized_lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total_lines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "complete": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "recognized_lines",
+            "total_lines",
+            "truncated",
+            "complete"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          },
+          "maxItems": 512
+        }
+      },
+      "required": [
+        "job_id",
+        "state",
+        "reason_code",
+        "sha256",
+        "prefix_sha256",
+        "bytes_read",
+        "line_count",
+        "parser_version",
+        "fetched_at",
+        "analyzed_at",
+        "cached",
+        "coverage",
+        "evidence"
+      ]
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_pages": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_job_types": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "retained_per_type": {
+          "const": 64
+        },
+        "baseline_per_type": {
+          "const": 10
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "trace_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4194304
+        },
+        "trace_lines": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        },
+        "timeout_seconds": {
+          "const": 60
+        }
+      },
+      "required": [
+        "max_pages",
+        "max_job_types",
+        "retained_per_type",
+        "baseline_per_type",
+        "concurrency",
+        "trace_bytes",
+        "trace_lines",
+        "timeout_seconds"
+      ]
+    },
+    "source_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "transport": {
+          "const": "glab"
+        },
+        "glab_version": {
+          "type": "string"
+        },
+        "gitlab_version": {
+          "type": "string"
+        },
+        "anchor_max_job_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pages": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "complete_available_history": {
+          "type": "boolean"
+        },
+        "stop_reason": {
+          "type": "string"
+        },
+        "resumed_from_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requests": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "project": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pages": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "metadata": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pipelines": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "traces": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "project",
+            "version",
+            "pages",
+            "metadata",
+            "pipelines",
+            "traces"
+          ]
+        },
+        "budgets": {
+          "$ref": "#/$defs/budgets"
+        },
+        "observed_counts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type_id": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "available_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "count_kind": {
+                "enum": [
+                  "exact",
+                  "lower_bound"
+                ]
+              }
+            },
+            "required": [
+              "type_id",
+              "stage",
+              "name",
+              "available_count",
+              "count_kind"
+            ]
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selection_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "comparison_mode": {
+              "enum": [
+                "same_ref",
+                "cross_ref"
+              ]
+            },
+            "refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "job_selectors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "stage": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "stage",
+                  "name"
+                ]
+              }
+            },
+            "cache_max_age_seconds": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "comparison_mode",
+            "refs",
+            "job_selectors",
+            "cache_max_age_seconds"
+          ]
+        }
+      },
+      "required": [
+        "transport",
+        "glab_version",
+        "gitlab_version",
+        "anchor_max_job_id",
+        "pages",
+        "cursor",
+        "complete_available_history",
+        "stop_reason",
+        "resumed_from_sha256",
+        "requests",
+        "budgets",
+        "observed_counts",
+        "limitations",
+        "selection_policy"
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "skill_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "kind": {
+          "const": "gitlab_job_performance_source"
+        },
+        "collection_started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "source": {
+          "$ref": "#/$defs/source_info"
+        },
+        "jobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/job"
+          }
+        },
+        "pipelines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pipeline"
+          }
+        },
+        "retained_job_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "baseline_job_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "traces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trace"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "skill_version",
+        "kind",
+        "collection_started_at",
+        "collected_at",
+        "timezone",
+        "project",
+        "source",
+        "jobs",
+        "pipelines",
+        "retained_job_ids",
+        "baseline_job_ids",
+        "traces"
+      ]
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "api_queue",
+            "api_execution",
+            "derived_total",
+            "lifecycle",
+            "prestart"
+          ]
+        },
+        "quality": {
+          "enum": [
+            "known",
+            "missing",
+            "partial",
+            "inconsistent"
+          ]
+        },
+        "eligible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value_seconds",
+        "origin",
+        "quality",
+        "eligible"
+      ]
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "type_id": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/job"
+        },
+        "pipeline": {
+          "$ref": "#/$defs/pipeline"
+        },
+        "trace": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/trace"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "queue": {
+              "$ref": "#/$defs/timing"
+            },
+            "execution": {
+              "$ref": "#/$defs/timing"
+            },
+            "total": {
+              "$ref": "#/$defs/timing"
+            },
+            "lifecycle": {
+              "$ref": "#/$defs/timing"
+            },
+            "prestart": {
+              "$ref": "#/$defs/timing"
+            }
+          },
+          "required": [
+            "queue",
+            "execution",
+            "total",
+            "lifecycle",
+            "prestart"
+          ]
+        },
+        "baseline_eligible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "type_id",
+        "metadata",
+        "pipeline",
+        "trace",
+        "timing",
+        "baseline_eligible"
+      ]
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "median_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "p95_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "known",
+        "missing",
+        "median_seconds",
+        "p95_seconds",
+        "max_seconds"
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "queue": {
+          "$ref": "#/$defs/metric"
+        },
+        "execution": {
+          "$ref": "#/$defs/metric"
+        },
+        "total": {
+          "$ref": "#/$defs/metric"
+        }
+      },
+      "required": [
+        "queue",
+        "execution",
+        "total"
+      ]
+    },
+    "delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "current_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "baseline_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "delta_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "delta_percent": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "classification": {
+          "enum": [
+            "insufficient_data",
+            "increase",
+            "decrease",
+            "unchanged",
+            "exploratory_increase",
+            "exploratory_decrease",
+            "exploratory_unchanged"
+          ]
+        }
+      },
+      "required": [
+        "current_seconds",
+        "baseline_seconds",
+        "delta_seconds",
+        "delta_percent",
+        "classification"
+      ]
+    },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verified_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "unknown",
+            "unverified"
+          ]
+        }
+      },
+      "required": [
+        "description",
+        "source_url",
+        "verified_at",
+        "status"
+      ]
+    },
+    "job_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "latest_attempt_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retained_attempt_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxItems": 64
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "attempt_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "maxItems": 10
+            },
+            "maximum": {
+              "const": 10
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "metrics": {
+              "$ref": "#/$defs/metrics"
+            },
+            "deltas": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "queue": {
+                  "$ref": "#/$defs/delta"
+                },
+                "execution": {
+                  "$ref": "#/$defs/delta"
+                },
+                "total": {
+                  "$ref": "#/$defs/delta"
+                }
+              },
+              "required": [
+                "queue",
+                "execution",
+                "total"
+              ]
+            }
+          },
+          "required": [
+            "attempt_ids",
+            "maximum",
+            "complete",
+            "metrics",
+            "deltas"
+          ]
+        },
+        "overview": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status_counts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "available_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "count_kind": {
+              "enum": [
+                "exact",
+                "lower_bound"
+              ]
+            },
+            "retained_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "fresh_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trace_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "status_counts",
+            "available_count",
+            "count_kind",
+            "retained_count",
+            "fresh_count",
+            "trace_count"
+          ]
+        },
+        "window_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "id",
+        "stage",
+        "name",
+        "refs",
+        "purpose",
+        "latest_attempt_id",
+        "retained_attempt_ids",
+        "baseline",
+        "overview",
+        "window_ids"
+      ]
+    },
+    "guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "page_title": {
+          "type": "string"
+        },
+        "section_title": {
+          "type": "string"
+        },
+        "verified_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "unverified",
+            "unavailable"
+          ]
+        },
+        "applicable_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "configuration_constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "url",
+        "page_title",
+        "section_title",
+        "verified_at",
+        "status",
+        "applicable_versions",
+        "configuration_constraints"
+      ]
+    },
+    "representative": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "evidence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lines": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lines"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "job_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "evidence_id",
+        "duration_seconds",
+        "lines",
+        "job_url"
+      ]
+    },
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "code": {
+          "enum": [
+            "export_local_unpack",
+            "context_application_copy",
+            "base_image",
+            "dependencies_builder_setup",
+            "runner_phase",
+            "queue"
+          ]
+        },
+        "known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "median_seconds": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "attempt_id": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "value_seconds": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "interval_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "intervals": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "complete": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "attempt_id",
+              "value_seconds",
+              "interval_ids",
+              "intervals",
+              "complete"
+            ]
+          }
+        },
+        "representative": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/representative"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rank": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "observed_fact": {
+              "type": "string"
+            },
+            "causal_hypothesis": {
+              "type": "string"
+            },
+            "proposed_action": {
+              "type": "string"
+            },
+            "applicability": {
+              "type": "string"
+            },
+            "next_measurement": {
+              "type": "string"
+            },
+            "uncertainty": {
+              "type": "string"
+            },
+            "estimated_savings_seconds": {
+              "type": "null"
+            },
+            "guidance": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/guidance"
+              }
+            }
+          },
+          "required": [
+            "observed_fact",
+            "causal_hypothesis",
+            "proposed_action",
+            "applicability",
+            "next_measurement",
+            "uncertainty",
+            "estimated_savings_seconds",
+            "guidance"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "code",
+        "known",
+        "missing",
+        "median_seconds",
+        "samples",
+        "representative",
+        "rank",
+        "finding"
+      ]
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type_id": {
+              "type": "string"
+            },
+            "window_id": {
+              "type": "string"
+            },
+            "attempt_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "maxItems": 64
+            },
+            "from": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type_id",
+            "window_id",
+            "attempt_ids",
+            "from",
+            "to"
+          ]
+        },
+        "eligible_successful_n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_known_n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_missing_n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metrics": {
+          "$ref": "#/$defs/metrics"
+        },
+        "queue_spike": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "spike",
+                "normal",
+                "insufficient_data",
+                "missing"
+              ]
+            },
+            "latest_seconds": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "median_seconds": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "known_n": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "absolute_threshold_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "relative_multiplier": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "state",
+            "latest_seconds",
+            "median_seconds",
+            "known_n",
+            "absolute_threshold_seconds",
+            "relative_multiplier"
+          ]
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/category"
+          },
+          "maxItems": 6
+        },
+        "priority_codes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "export_local_unpack",
+              "context_application_copy",
+              "base_image",
+              "dependencies_builder_setup",
+              "runner_phase",
+              "queue"
+            ]
+          },
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "id",
+        "scope",
+        "eligible_successful_n",
+        "trace_known_n",
+        "trace_missing_n",
+        "metrics",
+        "queue_spike",
+        "categories",
+        "priority_codes"
+      ]
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type_id": {
+          "type": "string"
+        },
+        "comparison_mode": {
+          "enum": [
+            "same_ref",
+            "cross_ref"
+          ]
+        },
+        "refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "size": {
+          "enum": [
+            32,
+            64
+          ]
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "anchor_attempt_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxItems": 64
+        },
+        "from": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "to": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "older_window_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "newer_window_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "has_older": {
+          "type": "boolean"
+        },
+        "has_newer": {
+          "type": "boolean"
+        },
+        "display_unit": {
+          "enum": [
+            "seconds",
+            "minutes"
+          ]
+        },
+        "descriptive": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "attempt_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "maxItems": 64
+            },
+            "metrics": {
+              "$ref": "#/$defs/metrics"
+            }
+          },
+          "required": [
+            "attempt_ids",
+            "metrics"
+          ]
+        },
+        "inferential": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "attempt_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "maxItems": 64
+            },
+            "metrics": {
+              "$ref": "#/$defs/metrics"
+            }
+          },
+          "required": [
+            "attempt_ids",
+            "metrics"
+          ]
+        },
+        "findings": {
+          "$ref": "#/$defs/findings"
+        }
+      },
+      "required": [
+        "id",
+        "type_id",
+        "comparison_mode",
+        "refs",
+        "size",
+        "page",
+        "anchor_attempt_id",
+        "attempt_ids",
+        "from",
+        "to",
+        "older_window_id",
+        "newer_window_id",
+        "has_older",
+        "has_newer",
+        "display_unit",
+        "descriptive",
+        "inferential",
+        "findings"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "baseline_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "catalog_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "guidance_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_configuration": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "url",
+              "ref",
+              "sha256"
+            ]
+          }
+        }
+      },
+      "required": [
+        "snapshot_sha256",
+        "baseline_sha256",
+        "catalog_sha256",
+        "guidance_sha256",
+        "source_configuration"
+      ]
+    },
+    "policies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "group_key": {
+          "const": "host+project+stage+name"
+        },
+        "comparison_mode": {
+          "enum": [
+            "same_ref",
+            "cross_ref"
+          ]
+        },
+        "refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "baseline_maximum": {
+          "const": 10
+        },
+        "highlight_minimum": {
+          "const": 3
+        },
+        "queue_spike": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "absolute_seconds": {
+              "const": 30
+            },
+            "relative_multiplier": {
+              "const": 2
+            },
+            "minimum_known": {
+              "const": 3
+            }
+          },
+          "required": [
+            "absolute_seconds",
+            "relative_multiplier",
+            "minimum_known"
+          ]
+        },
+        "display_threshold_seconds": {
+          "const": 300
+        },
+        "aggregation": {
+          "const": "per-run-interval-union-then-median"
+        },
+        "trace_parser": {
+          "const": "1.0.0"
+        },
+        "timing_evidence_policy": {
+          "const": "reported-duration-with-inferred-positions-allowed"
+        }
+      },
+      "required": [
+        "group_key",
+        "comparison_mode",
+        "refs",
+        "baseline_maximum",
+        "highlight_minimum",
+        "queue_spike",
+        "display_threshold_seconds",
+        "aggregation",
+        "trace_parser",
+        "timing_evidence_policy"
+      ]
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "calculation_version": {
+          "const": "2.0.0"
+        },
+        "trace_parser_version": {
+          "const": "1.0.0"
+        },
+        "skill_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "kind": {
+          "const": "gitlab_job_performance_report"
+        },
+        "report_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadata_analyzed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_analyzed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "language": {
+          "enum": [
+            "en",
+            "ru"
+          ]
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "policies": {
+          "$ref": "#/$defs/policies"
+        },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_type_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason_code": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "job_type_id",
+            "reason_code"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/source_info"
+            },
+            "baseline_source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/source_info"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "baseline_source"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "calculation_version",
+        "trace_parser_version",
+        "skill_version",
+        "kind",
+        "report_id",
+        "generated_at",
+        "collected_at",
+        "metadata_analyzed_at",
+        "trace_analyzed_at",
+        "timezone",
+        "language",
+        "project",
+        "provenance",
+        "policies",
+        "selection",
+        "coverage"
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "calculation_version": {
+          "const": "2.0.0"
+        },
+        "trace_parser_version": {
+          "const": "1.0.0"
+        },
+        "skill_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "kind": {
+          "const": "gitlab_job_performance_report"
+        },
+        "report_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadata_analyzed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_analyzed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "language": {
+          "enum": [
+            "en",
+            "ru"
+          ]
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "policies": {
+          "$ref": "#/$defs/policies"
+        },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "job_type_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason_code": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "job_type_id",
+            "reason_code"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/source_info"
+            },
+            "baseline_source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/source_info"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "baseline_source"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/snapshot"
+        },
+        "baseline_source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/snapshot"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attempt"
+          }
+        },
+        "job_types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/job_type"
+          },
+          "maxItems": 16
+        },
+        "windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/window"
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "calculation_version",
+        "trace_parser_version",
+        "skill_version",
+        "kind",
+        "report_id",
+        "generated_at",
+        "collected_at",
+        "metadata_analyzed_at",
+        "trace_analyzed_at",
+        "timezone",
+        "language",
+        "project",
+        "provenance",
+        "policies",
+        "selection",
+        "coverage",
+        "source",
+        "baseline_source",
+        "attempts",
+        "job_types",
+        "windows"
+      ]
+    },
+    "compact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2.0.0"
+        },
+        "kind": {
+          "const": "gitlab_job_performance_compact"
+        },
+        "canonical_report_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "canonical_report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "envelope": {
+          "$ref": "#/$defs/envelope"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "overview",
+                "window",
+                "attempts"
+              ]
+            },
+            "job_type_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "window_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "attempt_ids": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "job_type_id",
+            "window_id",
+            "attempt_ids"
+          ]
+        },
+        "job_types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/job_type"
+          },
+          "maxItems": 16
+        },
+        "windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/window"
+          }
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/attempt"
+          }
+        },
+        "external_references": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "collection": {
+                "enum": [
+                  "attempts",
+                  "windows",
+                  "job_types",
+                  "traces"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "report_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "collection",
+              "id",
+              "report_id"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "kind",
+        "canonical_report_id",
+        "canonical_report_sha256",
+        "envelope",
+        "scope",
+        "job_types",
+        "windows",
+        "attempts",
+        "external_references"
+      ]
+    }
+  }
+}

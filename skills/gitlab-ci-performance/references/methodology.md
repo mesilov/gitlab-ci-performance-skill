@@ -108,3 +108,11 @@ Sources checked 2026-10-04: [Jobs API](https://docs.gitlab.com/api/jobs/),
 [job logs](https://docs.gitlab.com/ci/jobs/job_logs/),
 [BuildKit](https://docs.docker.com/build/buildkit/),
 [cache guidance](https://docs.docker.com/build/cache/optimize/).
+
+## Canonical findings extension (#4)
+
+The separate [contract-v2.md](contract-v2.md) documents `report_cli.py` sources,
+materialized 32/64 windows, independently versioned schemas/calculation/parser,
+interval unions, provenance and compact LLM exports. Its namespaced artifact kinds
+are distinct from this published reviewed-report method; use its own entrypoint.
+Existing 1.x/2.0.0/2.0.1 artifacts keep their original schemas and renderer.

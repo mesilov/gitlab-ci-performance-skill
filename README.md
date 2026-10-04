@@ -179,4 +179,27 @@ a synthetic standalone glab transport, request/payload limits and privacy sentin
 
 `tests/workflow_browser_check.cjs` checks offline workflow parity, 32/64 pipeline windows, attempts, en/ru, mobile layout and the 300-second boundary.
 
+## Canonical report and compact LLM exports (#4)
+
+The published `ci_report.py` workflow above remains compatible with reviewed
+2.0.0/2.0.1 reports. The additional installed `report_cli.py` produces the namespaced
+canonical contract from [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4):
+
+```sh
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py collect --host gitlab.example.com --project group/service --output reports/contract/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py report --snapshot reports/contract/jobs.json --output reports/contract/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py export --report reports/contract/report.json --scope overview --output reports/contract/overview.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/contract/report.json --language ru --output reports/contract/report.html
+```
+
+This workflow retains at most 64 attempts/type, refreshes all outcomes, exports
+allowlisted bounded evidence and precomputes all supported 32/64 findings. Full,
+overview, selected-window and selected-attempt JSON use the same measurements as
+the offline HTML. Read [contract-v2.md](skills/gitlab-ci-performance/references/contract-v2.md)
+for selectors, budgets, sample/interval policies, unavailable guidance and legacy
+handling. Generate its public synthetic example with `examples/generate_v2.py`.
+Its `gitlab_job_performance_*` kinds distinguish it from the published workflow;
+entrypoints reject incompatible artifacts rather than silently converting them.
+The extension is in main pending a future release; it does not replace published v2.0.1.
+
 MIT — [license](LICENSE).

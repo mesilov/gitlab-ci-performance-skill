@@ -1,8 +1,21 @@
 # Changelog
 
-Released changes are grouped by skill version.
-
 ## Unreleased
+
+### Added
+
+- Canonical namespaced source/trace/findings/compact contracts for #4 through the
+  installed `report_cli.py` entrypoint, with strict semantic validation, bounded
+  safe collection, independent baselines and interval-union costs, reproducible
+  LLM projections and JSON/HTML parity.
+- Preserve the published `ci_report.py` 2.0.1 workflow, its schemas, reviewed UI,
+  localization and installed upgrade behavior. Numeric versions are scoped by
+  artifact kind; incompatible inputs are rejected rather than silently migrated.
+- Add combined installed-entrypoint and offline browser CI coverage. Canonical
+  provenance records the actual installed skill `VERSION` independently of its
+  schema/calculation/parser versions. This extension awaits a future release;
+  published 2.0.0/2.0.1 releases are unchanged.
+
 
 ### Workflow contracts 2.0.0
 

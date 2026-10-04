@@ -40,6 +40,12 @@ jobs:
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" render --report reports/installed/report.json --output reports/installed/report.html
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" export-llm --report reports/installed/report.json --output reports/installed/llm.json
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" validate reports/installed/llm.json
+      - run: |
+          python examples/generate_v2.py --output-dir reports/v2-contract-smoke
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/jobs.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/report.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/overview.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/v2-contract-smoke/report.json --language ru --output reports/v2-contract-smoke/report-ru.html
   browser:
     runs-on: ubuntu-latest
     steps:
@@ -51,6 +57,9 @@ jobs:
           python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
       - run: npm install --prefix "$RUNNER_TEMP/workflow-browser" --ignore-scripts --no-audit --no-fund playwright@1.62.1
       - run: node "$RUNNER_TEMP/workflow-browser/node_modules/playwright/cli.js" install --with-deps chromium
+      - run: |
+          python examples/generate_v2.py --output-dir reports/browser-contract-demo
+          python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-contract-demo/report.json --language ru --output reports/browser-contract-demo/report-ru.html
       - run: |
           python examples/generate_demo.py --output-dir reports/jobs
           python examples/generate_workflow_demo.py --output-dir reports/workflows
@@ -67,3 +76,7 @@ jobs:
           python examples/generate_reviewed.py --output-dir reports/browser-demo
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report.html" reports/browser-en
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
+          node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/browser-contract-en
+          node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/browser-contract-ru
+        env:
+          CI_REPORT_BROWSER_CHANNEL: chromium

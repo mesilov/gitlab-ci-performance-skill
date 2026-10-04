@@ -1,0 +1,1063 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "calculation_version",
+    "kind",
+    "generated_at",
+    "timezone",
+    "project",
+    "inputs",
+    "method",
+    "snapshot_summary",
+    "views",
+    "jobs",
+    "pipelines"
+  ],
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "calculation_version": {
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "kind": {
+      "const": "report"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshot_sha256",
+        "baseline_sha256",
+        "snapshot_collected_at",
+        "baseline_collected_at",
+        "comparison_mode"
+      ],
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "baseline_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "snapshot_collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "baseline_collected_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "comparison_mode": {
+          "enum": [
+            "historical_windows",
+            "snapshot"
+          ]
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timing_job_status",
+        "timing_pipeline_status",
+        "percentile",
+        "group_key",
+        "policy"
+      ],
+      "properties": {
+        "timing_job_status": {
+          "const": "success"
+        },
+        "timing_pipeline_status": {
+          "const": "success"
+        },
+        "percentile": {
+          "const": "linear-interpolation-(n-1)*p"
+        },
+        "group_key": {
+          "const": "project+ref+stage+job_name"
+        },
+        "policy": {
+          "$ref": "#/$defs/policy"
+        }
+      }
+    },
+    "snapshot_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempts",
+        "pipelines",
+        "status_counts",
+        "active_attempts"
+      ],
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pipelines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "active_attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "views": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/view"
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/job"
+      }
+    },
+    "pipelines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pipeline"
+      }
+    },
+    "release_history": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/release_history"
+        }
+      ]
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "runner": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "description"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "pipeline_id",
+        "name",
+        "stage",
+        "ref",
+        "status",
+        "allow_failure",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "failure_reason",
+        "runner",
+        "web_url"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "ID отдельной попытки запуска; повторный запуск сохраняется отдельной записью."
+        },
+        "pipeline_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "allow_failure": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Время выполнения из GitLab API duration, в секундах; null означает отсутствие измерения."
+        },
+        "queued_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Время ожидания из GitLab API queued_duration, в секундах; null означает отсутствие измерения."
+        },
+        "failure_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "runner": {
+          "$ref": "#/$defs/runner"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ref",
+        "sha",
+        "status",
+        "source",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "web_url"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ref": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Собственное время pipeline из GitLab API duration, в секундах; не сумма времён джоб."
+        },
+        "queued_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Время ожидания из GitLab API queued_duration, в секундах; null означает отсутствие измерения."
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "known",
+        "missing",
+        "sum_seconds",
+        "p50_seconds",
+        "p95_seconds",
+        "max_seconds"
+      ],
+      "properties": {
+        "known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sum_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "p50_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "p95_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "max_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "description": "Агрегат известных измерений в секундах. null не заменяется нулём; при known=0 все времена равны null."
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline_ids",
+        "from",
+        "to",
+        "attempts"
+      ],
+      "properties": {
+        "pipeline_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "current_seconds",
+        "baseline_seconds",
+        "delta_seconds",
+        "delta_percent"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "regressed",
+            "improved",
+            "stable",
+            "insufficient_data",
+            "new_job",
+            "missing_job",
+            "overlap"
+          ]
+        },
+        "current_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseline_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "delta_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "delta_percent": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "source_url",
+        "verified_at"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "verified_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_growth_percent",
+        "absolute_growth_seconds",
+        "minimum_baseline_observations",
+        "minimum_current_observations"
+      ],
+      "properties": {
+        "relative_growth_percent": {
+          "type": "number",
+          "minimum": 0
+        },
+        "absolute_growth_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minimum_baseline_observations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minimum_current_observations": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempts",
+        "rerun_attempts",
+        "successful_attempts",
+        "status_counts",
+        "execution",
+        "queue",
+        "lifecycle"
+      ],
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rerun_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "successful_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "execution": {
+          "$ref": "#/$defs/metric"
+        },
+        "queue": {
+          "$ref": "#/$defs/metric"
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/metric"
+        }
+      }
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "stage",
+        "ref",
+        "purpose",
+        "current",
+        "baseline",
+        "execution_change",
+        "queue_change",
+        "drivers",
+        "latest_attempt_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "purpose_from_catalog": {
+          "type": "boolean",
+          "description": "False identifies a generated UI fallback. If absent in legacy reports, preserve purpose text verbatim."
+        },
+        "current": {
+          "$ref": "#/$defs/cohort"
+        },
+        "baseline": {
+          "$ref": "#/$defs/cohort"
+        },
+        "execution_change": {
+          "$ref": "#/$defs/comparison"
+        },
+        "queue_change": {
+          "$ref": "#/$defs/comparison"
+        },
+        "drivers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "execution",
+              "queue"
+            ]
+          }
+        },
+        "latest_attempt_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "window",
+        "baseline_window",
+        "current_period",
+        "baseline_period",
+        "overlap_pipeline_ids",
+        "situation",
+        "regression_count",
+        "insufficient_count",
+        "latest_pipeline",
+        "groups"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "baseline_window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "current_period": {
+          "$ref": "#/$defs/period"
+        },
+        "baseline_period": {
+          "$ref": "#/$defs/period"
+        },
+        "overlap_pipeline_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "situation": {
+          "enum": [
+            "attention",
+            "insufficient_data",
+            "no_regression"
+          ]
+        },
+        "regression_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "insufficient_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_pipeline": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/pipeline"
+            }
+          ]
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/group"
+          }
+        }
+      }
+    },
+    "release_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "current_seconds",
+        "baseline_seconds",
+        "delta_seconds",
+        "delta_percent"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "observed_increase",
+            "observed_decrease",
+            "no_observed_change",
+            "insufficient_data"
+          ]
+        },
+        "current_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseline_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "delta_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "delta_percent": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "release_sample_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refs",
+        "pipeline_sources",
+        "shas",
+        "runner_ids",
+        "missing_runner_attempts"
+      ],
+      "properties": {
+        "refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "pipeline_sources": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "shas": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "runner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "missing_runner_attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "release_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "baseline",
+        "differences",
+        "limitations"
+      ],
+      "properties": {
+        "current": {
+          "$ref": "#/$defs/release_sample_context"
+        },
+        "baseline": {
+          "$ref": "#/$defs/release_sample_context"
+        },
+        "differences": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "different_refs",
+              "different_pipeline_sources",
+              "different_runners"
+            ]
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "configuration_not_verified",
+              "duration_change_does_not_establish_cause",
+              "runner_context_incomplete"
+            ]
+          }
+        }
+      }
+    },
+    "release_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "stage",
+        "purpose",
+        "attempt_ids",
+        "current_attempt_ids",
+        "baseline_attempt_ids",
+        "current_period",
+        "baseline_period",
+        "current",
+        "baseline",
+        "execution_change",
+        "queue_change",
+        "context"
+      ],
+      "properties": {
+        "purpose_from_catalog": {
+          "type": "boolean",
+          "description": "False identifies a generated UI fallback. If absent in legacy reports, preserve purpose text verbatim."
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "current_attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "baseline_attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "current_period": {
+          "$ref": "#/$defs/period"
+        },
+        "baseline_period": {
+          "$ref": "#/$defs/period"
+        },
+        "current": {
+          "$ref": "#/$defs/cohort"
+        },
+        "baseline": {
+          "$ref": "#/$defs/cohort"
+        },
+        "execution_change": {
+          "$ref": "#/$defs/release_comparison"
+        },
+        "queue_change": {
+          "$ref": "#/$defs/release_comparison"
+        },
+        "context": {
+          "$ref": "#/$defs/release_context"
+        }
+      }
+    },
+    "release_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refs",
+        "source",
+        "comparison",
+        "order",
+        "baseline_window",
+        "groups"
+      ],
+      "properties": {
+        "refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "source": {
+          "const": "current_snapshot"
+        },
+        "comparison": {
+          "const": "exploratory_cross_ref"
+        },
+        "order": {
+          "const": "pipeline_created_at_then_pipeline_id_then_attempt_id"
+        },
+        "baseline_window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/release_group"
+          }
+        }
+      }
+    }
+  },
+  "$id": "urn:gitlab-ci-performance:report:1.1",
+  "title": "GitLab CI report",
+  "description": "Derived CI timing comparisons. Sources are immutable snapshots, cohorts are scoped by ref/stage/name and success status.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "1.1.0"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "release_history"
+        ],
+        "properties": {
+          "calculation_version": {
+            "const": "1.1.0"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "release_history"
+          ]
+        },
+        "properties": {
+          "calculation_version": {
+            "const": "1.0.0"
+          }
+        }
+      }
+    }
+  ]
+}
