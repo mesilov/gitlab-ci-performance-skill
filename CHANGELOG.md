@@ -2,6 +2,16 @@
 
 Released changes are grouped by skill version.
 
+## 2.0.1 — 2026-10-04
+
+- Validates every baseline observation against a compact source projection,
+  including samples older than the retained 64-attempt history. Rejects changed
+  pipeline/ref/type/timing values and incomplete source coverage before rendering.
+- Bumps report/calculation contracts to 2.0.1; metadata/timings/parser stay 2.0.0.
+  Existing 1.0/1.1/2.0.0 reports keep their rendering; stricter source checks require
+  explicit re-analysis into new outputs. No extra trace GETs are introduced.
+- Adds outside-history corruption and old-2.0 compatibility regressions.
+
 ## 2.0.0 — 2026-10-04
 
 - Ships the reviewed selected-job report with 32/64 attempt windows, gray queue

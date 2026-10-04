@@ -5,7 +5,8 @@ import hashlib
 import json
 from history import retain_jobs, comparison, default_selection, windows, executed, total
 
-VERSION='2.0.0'
+VERSION='2.0.1'
+PARSER_VERSION='2.0.0'
 
 
 def digest(value):
@@ -14,7 +15,7 @@ def digest(value):
 
 def absent_detail(job_id,analyzed_at,status='unavailable'):
     return {'job_id':job_id,'trace_status':status,'trace_sha256':None,'trace_bytes':0,'processed_bytes':0,
-            'trace_lines':0,'timestamp_lines':0,'analyzed_at':analyzed_at,'parser_version':VERSION,
+            'trace_lines':0,'timestamp_lines':0,'analyzed_at':analyzed_at,'parser_version':PARSER_VERSION,
             'phases':[],'builds':[],'commands':[],'limitations':['details_not_collected']}
 
 
@@ -28,7 +29,7 @@ def build(snapshot, metadata=None, timings=None, legacy=None, catalog=None, job_
             raise ValueError('Details do not belong to this source snapshot')
         if timings['source']['metadata_sha256']!=digest(metadata) or timings['source']['snapshot_sha256']!=digest(snapshot):
             raise ValueError('Timing inputs do not match metadata/source hashes')
-        if any(d.get('parser_version')!=VERSION for d in timings['details']):
+        if any(d.get('parser_version')!=PARSER_VERSION for d in timings['details']):
             raise ValueError('Unsupported parser version; re-analyze into a new output directory')
         all_ids={r['job_id'] for r in metadata['jobs']}
         if {d['job_id'] for d in timings['details']}!=all_ids or len(timings['details'])!=len(all_ids):
@@ -85,6 +86,16 @@ def build(snapshot, metadata=None, timings=None, legacy=None, catalog=None, job_
             'baseline_seconds':None,'delta_seconds':None,'delta_percent':None,'eligible_increase':False}
         t['same_ref_comparison']=comparison(analysis_jobs,snapshot['pipelines'],latest,'same_ref_history') if latest else t['comparison'].copy()
         t['windows']=windows(current,details)
+    # Preserve compact source projections for every exported baseline observation,
+    # independently of the 64-attempt history/trace scope.
+    baseline_ids={i for t in types for key in ['comparison','same_ref_comparison'] for i in t[key]['sample_ids']}
+    analysis_map={j['id']:j for j in analysis_jobs}
+    baseline_jobs=[]
+    for i in sorted(baseline_ids,reverse=True):
+        j=analysis_map[i]
+        baseline_jobs.append({**{k:j[k] for k in ['id','pipeline_id','name','stage','ref','status','started_at','duration_seconds','queued_seconds']},
+                              'pipeline_status':pmap[j['pipeline_id']]['status'],
+                              'metadata_status':records.get(i,{}).get('metadata_status','source_snapshot')})
     selected,attention=default_selection(types)
     coverage=copy.deepcopy(metadata['coverage']) if metadata else {
         'retained_attempts':len(ids),'metadata_requests':0,'metadata_fresh':0,'trace_requests':0,
@@ -94,7 +105,7 @@ def build(snapshot, metadata=None, timings=None, legacy=None, catalog=None, job_
                     displayed_types=len(types),detail_attempts=len(details),
                     metadata_collected_at=metadata['collected_at'] if metadata else None,
                     details_analyzed_at=timings['analyzed_at'] if timings else None)
-    return {'schema_version':VERSION,'calculation_version':VERSION,'parser_version':VERSION,'kind':'report',
+    return {'schema_version':VERSION,'calculation_version':VERSION,'parser_version':PARSER_VERSION,'kind':'report',
             'generated_at':generated_at,'timezone':snapshot['timezone'],'project':copy.deepcopy(snapshot['project']),
             'inputs':{'snapshot_sha256':digest(snapshot),'metadata_sha256':digest(metadata) if metadata else None,
                       'timings_sha256':digest(timings) if timings else None,
@@ -108,4 +119,4 @@ def build(snapshot, metadata=None, timings=None, legacy=None, catalog=None, job_
                                 'status_counts':dict(Counter(j['status'] for j in snapshot['jobs']))},
             'types':types,'default_type_id':selected,'attention_type_id':attention,'jobs':jobs,
             'pipelines':[copy.deepcopy(pmap[i]) for i in sorted({j['pipeline_id'] for j in jobs},reverse=True)],
-            'details':details,'same_ref_views':copy.deepcopy(legacy['views']) if legacy else [],'coverage':coverage}
+            'baseline_jobs':baseline_jobs,'details':details,'same_ref_views':copy.deepcopy(legacy['views']) if legacy else [],'coverage':coverage}

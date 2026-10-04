@@ -1,6 +1,6 @@
 {
-  "collected_at": "2026-10-04T15:28:53.464340+00:00",
-  "collection_started_at": "2026-10-04T15:28:53.454783+00:00",
+  "collected_at": "2026-10-04T15:57:27.959031+00:00",
+  "collection_started_at": "2026-10-04T15:57:27.950132+00:00",
   "coverage": {
     "max_trace_bytes": 33554432,
     "metadata_fresh": 110,
@@ -44,10 +44,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1006"
       },
       "job_id": 1006,
-      "metadata_collected_at": "2026-10-04T15:28:53.455781+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951054+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.455810+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.951077+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -76,10 +76,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1005"
       },
       "job_id": 1005,
-      "metadata_collected_at": "2026-10-04T15:28:53.456182+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951477+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456203+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.951488+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -108,10 +108,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1004"
       },
       "job_id": 1004,
-      "metadata_collected_at": "2026-10-04T15:28:53.456266+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951391+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456277+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.951408+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -140,7 +140,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1003"
       },
       "job_id": 1003,
-      "metadata_collected_at": "2026-10-04T15:28:53.456602+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951857+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -172,10 +172,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1002"
       },
       "job_id": 1002,
-      "metadata_collected_at": "2026-10-04T15:28:53.456497+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951794+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456512+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.951806+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -204,7 +204,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/1001"
       },
       "job_id": 1001,
-      "metadata_collected_at": "2026-10-04T15:28:53.456459+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951751+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -236,10 +236,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/140"
       },
       "job_id": 140,
-      "metadata_collected_at": "2026-10-04T15:28:53.456927+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.951973+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456935+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.951990+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -268,10 +268,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/139"
       },
       "job_id": 139,
-      "metadata_collected_at": "2026-10-04T15:28:53.456818+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952103+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456831+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952110+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -300,10 +300,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/138"
       },
       "job_id": 138,
-      "metadata_collected_at": "2026-10-04T15:28:53.456876+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952156+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456885+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952165+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -332,10 +332,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/137"
       },
       "job_id": 137,
-      "metadata_collected_at": "2026-10-04T15:28:53.456718+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952048+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.456742+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952058+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -364,7 +364,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/136"
       },
       "job_id": 136,
-      "metadata_collected_at": "2026-10-04T15:28:53.457251+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952445+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -396,10 +396,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/135"
       },
       "job_id": 135,
-      "metadata_collected_at": "2026-10-04T15:28:53.463997+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958518+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.464004+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958532+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -428,10 +428,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/134"
       },
       "job_id": 134,
-      "metadata_collected_at": "2026-10-04T15:28:53.463946+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958815+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463956+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958825+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -460,10 +460,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/133"
       },
       "job_id": 133,
-      "metadata_collected_at": "2026-10-04T15:28:53.463593+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958745+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463610+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958756+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -492,10 +492,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/132"
       },
       "job_id": 132,
-      "metadata_collected_at": "2026-10-04T15:28:53.457284+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952482+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457289+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952489+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -524,10 +524,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/131"
       },
       "job_id": 131,
-      "metadata_collected_at": "2026-10-04T15:28:53.457319+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952517+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457331+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952527+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -556,7 +556,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/130"
       },
       "job_id": 130,
-      "metadata_collected_at": "2026-10-04T15:28:53.457393+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952571+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -588,10 +588,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/129"
       },
       "job_id": 129,
-      "metadata_collected_at": "2026-10-04T15:28:53.457410+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952587+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457419+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952594+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -620,10 +620,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/128"
       },
       "job_id": 128,
-      "metadata_collected_at": "2026-10-04T15:28:53.457451+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952624+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457459+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952632+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -652,10 +652,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/127"
       },
       "job_id": 127,
-      "metadata_collected_at": "2026-10-04T15:28:53.457489+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952660+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457497+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952667+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -684,10 +684,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/126"
       },
       "job_id": 126,
-      "metadata_collected_at": "2026-10-04T15:28:53.457527+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952692+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457535+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952699+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -716,10 +716,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/125"
       },
       "job_id": 125,
-      "metadata_collected_at": "2026-10-04T15:28:53.457564+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952724+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457570+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952730+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -748,10 +748,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/124"
       },
       "job_id": 124,
-      "metadata_collected_at": "2026-10-04T15:28:53.457600+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952759+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457607+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952764+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -780,10 +780,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/123"
       },
       "job_id": 123,
-      "metadata_collected_at": "2026-10-04T15:28:53.457633+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952790+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457640+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952795+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -812,10 +812,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/122"
       },
       "job_id": 122,
-      "metadata_collected_at": "2026-10-04T15:28:53.457666+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952819+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457672+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952825+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -844,10 +844,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/121"
       },
       "job_id": 121,
-      "metadata_collected_at": "2026-10-04T15:28:53.457697+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952848+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457701+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952851+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -876,10 +876,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/120"
       },
       "job_id": 120,
-      "metadata_collected_at": "2026-10-04T15:28:53.457717+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952866+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457724+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952871+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -908,7 +908,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/119"
       },
       "job_id": 119,
-      "metadata_collected_at": "2026-10-04T15:28:53.457752+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952896+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -940,10 +940,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/118"
       },
       "job_id": 118,
-      "metadata_collected_at": "2026-10-04T15:28:53.457771+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952911+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457778+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952917+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -972,7 +972,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/117"
       },
       "job_id": 117,
-      "metadata_collected_at": "2026-10-04T15:28:53.457806+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952942+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -1004,10 +1004,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/116"
       },
       "job_id": 116,
-      "metadata_collected_at": "2026-10-04T15:28:53.457821+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952959+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457827+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952965+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1036,10 +1036,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/115"
       },
       "job_id": 115,
-      "metadata_collected_at": "2026-10-04T15:28:53.457854+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.952990+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457860+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.952995+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1068,10 +1068,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/114"
       },
       "job_id": 114,
-      "metadata_collected_at": "2026-10-04T15:28:53.457979+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953020+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.457985+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953026+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1100,10 +1100,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/113"
       },
       "job_id": 113,
-      "metadata_collected_at": "2026-10-04T15:28:53.458013+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953049+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458020+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953054+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1132,10 +1132,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/112"
       },
       "job_id": 112,
-      "metadata_collected_at": "2026-10-04T15:28:53.458050+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953077+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458056+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953083+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1164,10 +1164,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/111"
       },
       "job_id": 111,
-      "metadata_collected_at": "2026-10-04T15:28:53.458081+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953106+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458088+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953111+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1196,10 +1196,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/110"
       },
       "job_id": 110,
-      "metadata_collected_at": "2026-10-04T15:28:53.458114+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953134+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458117+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953137+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -1228,10 +1228,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/109"
       },
       "job_id": 109,
-      "metadata_collected_at": "2026-10-04T15:28:53.458133+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953151+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458140+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953156+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1260,10 +1260,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/108"
       },
       "job_id": 108,
-      "metadata_collected_at": "2026-10-04T15:28:53.458172+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953184+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458178+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953189+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1292,10 +1292,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/107"
       },
       "job_id": 107,
-      "metadata_collected_at": "2026-10-04T15:28:53.458204+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953213+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458210+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953219+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1324,10 +1324,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/106"
       },
       "job_id": 106,
-      "metadata_collected_at": "2026-10-04T15:28:53.458236+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953242+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458242+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953247+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1356,10 +1356,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/105"
       },
       "job_id": 105,
-      "metadata_collected_at": "2026-10-04T15:28:53.458269+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953271+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458275+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953276+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1388,7 +1388,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/104"
       },
       "job_id": 104,
-      "metadata_collected_at": "2026-10-04T15:28:53.458300+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953299+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -1420,10 +1420,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/103"
       },
       "job_id": 103,
-      "metadata_collected_at": "2026-10-04T15:28:53.458315+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953313+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458321+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953318+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1452,7 +1452,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/102"
       },
       "job_id": 102,
-      "metadata_collected_at": "2026-10-04T15:28:53.458346+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953342+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -1484,10 +1484,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/101"
       },
       "job_id": 101,
-      "metadata_collected_at": "2026-10-04T15:28:53.458362+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953355+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458368+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953360+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1516,10 +1516,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/80"
       },
       "job_id": 80,
-      "metadata_collected_at": "2026-10-04T15:28:53.458396+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953384+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458419+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953411+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1548,10 +1548,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/79"
       },
       "job_id": 79,
-      "metadata_collected_at": "2026-10-04T15:28:53.458689+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953577+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458722+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953597+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1580,7 +1580,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/78"
       },
       "job_id": 78,
-      "metadata_collected_at": "2026-10-04T15:28:53.458838+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953744+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -1612,10 +1612,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/77"
       },
       "job_id": 77,
-      "metadata_collected_at": "2026-10-04T15:28:53.458860+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953759+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458864+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953762+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -1644,10 +1644,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/76"
       },
       "job_id": 76,
-      "metadata_collected_at": "2026-10-04T15:28:53.458885+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953778+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.458910+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953795+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1676,10 +1676,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/75"
       },
       "job_id": 75,
-      "metadata_collected_at": "2026-10-04T15:28:53.459008+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953888+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459030+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.953907+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1708,10 +1708,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/74"
       },
       "job_id": 74,
-      "metadata_collected_at": "2026-10-04T15:28:53.459122+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.953991+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459145+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954010+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1740,10 +1740,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/73"
       },
       "job_id": 73,
-      "metadata_collected_at": "2026-10-04T15:28:53.459235+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954099+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459256+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954117+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1772,10 +1772,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/72"
       },
       "job_id": 72,
-      "metadata_collected_at": "2026-10-04T15:28:53.459342+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954198+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459363+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954216+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1804,10 +1804,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/71"
       },
       "job_id": 71,
-      "metadata_collected_at": "2026-10-04T15:28:53.459451+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954309+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459472+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954327+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1836,10 +1836,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/70"
       },
       "job_id": 70,
-      "metadata_collected_at": "2026-10-04T15:28:53.459563+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954414+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459586+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954432+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1868,10 +1868,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/69"
       },
       "job_id": 69,
-      "metadata_collected_at": "2026-10-04T15:28:53.459675+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954535+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459694+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954559+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1900,7 +1900,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/68"
       },
       "job_id": 68,
-      "metadata_collected_at": "2026-10-04T15:28:53.459782+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954646+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -1932,10 +1932,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/67"
       },
       "job_id": 67,
-      "metadata_collected_at": "2026-10-04T15:28:53.459801+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954663+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459821+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954687+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -1964,10 +1964,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/66"
       },
       "job_id": 66,
-      "metadata_collected_at": "2026-10-04T15:28:53.459913+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954776+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459917+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954779+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -1996,7 +1996,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/65"
       },
       "job_id": 65,
-      "metadata_collected_at": "2026-10-04T15:28:53.459936+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954796+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -2028,10 +2028,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/64"
       },
       "job_id": 64,
-      "metadata_collected_at": "2026-10-04T15:28:53.459952+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954810+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.459972+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954828+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2060,10 +2060,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/63"
       },
       "job_id": 63,
-      "metadata_collected_at": "2026-10-04T15:28:53.460060+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.954913+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460081+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.954931+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2092,10 +2092,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/62"
       },
       "job_id": 62,
-      "metadata_collected_at": "2026-10-04T15:28:53.460170+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955023+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460190+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955041+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2124,10 +2124,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/61"
       },
       "job_id": 61,
-      "metadata_collected_at": "2026-10-04T15:28:53.460277+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955122+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460298+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955140+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2156,10 +2156,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/60"
       },
       "job_id": 60,
-      "metadata_collected_at": "2026-10-04T15:28:53.460382+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955223+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460402+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955241+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2188,10 +2188,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/59"
       },
       "job_id": 59,
-      "metadata_collected_at": "2026-10-04T15:28:53.460488+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955334+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460509+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955353+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2220,10 +2220,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/58"
       },
       "job_id": 58,
-      "metadata_collected_at": "2026-10-04T15:28:53.460593+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955444+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460614+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955464+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2252,10 +2252,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/57"
       },
       "job_id": 57,
-      "metadata_collected_at": "2026-10-04T15:28:53.460711+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955560+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460732+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955580+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2284,10 +2284,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/56"
       },
       "job_id": 56,
-      "metadata_collected_at": "2026-10-04T15:28:53.460821+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955672+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460841+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955697+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2316,10 +2316,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/55"
       },
       "job_id": 55,
-      "metadata_collected_at": "2026-10-04T15:28:53.460928+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955793+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460932+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955797+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -2348,10 +2348,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/54"
       },
       "job_id": 54,
-      "metadata_collected_at": "2026-10-04T15:28:53.460950+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955816+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.460970+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955838+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2380,10 +2380,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/53"
       },
       "job_id": 53,
-      "metadata_collected_at": "2026-10-04T15:28:53.461062+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.955931+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461082+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.955951+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2412,7 +2412,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/52"
       },
       "job_id": 52,
-      "metadata_collected_at": "2026-10-04T15:28:53.461168+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956044+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -2444,7 +2444,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/51"
       },
       "job_id": 51,
-      "metadata_collected_at": "2026-10-04T15:28:53.461185+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956060+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -2476,10 +2476,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/50"
       },
       "job_id": 50,
-      "metadata_collected_at": "2026-10-04T15:28:53.461201+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956077+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461221+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956096+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2508,10 +2508,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/49"
       },
       "job_id": 49,
-      "metadata_collected_at": "2026-10-04T15:28:53.461310+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956190+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461331+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956209+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2540,10 +2540,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/48"
       },
       "job_id": 48,
-      "metadata_collected_at": "2026-10-04T15:28:53.461418+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956312+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461439+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956332+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2572,10 +2572,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/47"
       },
       "job_id": 47,
-      "metadata_collected_at": "2026-10-04T15:28:53.461524+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956419+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461544+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956443+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2604,10 +2604,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/46"
       },
       "job_id": 46,
-      "metadata_collected_at": "2026-10-04T15:28:53.461630+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956534+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461652+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956557+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2636,10 +2636,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/45"
       },
       "job_id": 45,
-      "metadata_collected_at": "2026-10-04T15:28:53.461743+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956645+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461763+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956662+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2668,10 +2668,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/44"
       },
       "job_id": 44,
-      "metadata_collected_at": "2026-10-04T15:28:53.461853+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956743+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461857+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956746+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -2700,10 +2700,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/43"
       },
       "job_id": 43,
-      "metadata_collected_at": "2026-10-04T15:28:53.461875+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956762+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.461895+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956779+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2732,10 +2732,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/42"
       },
       "job_id": 42,
-      "metadata_collected_at": "2026-10-04T15:28:53.461983+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956881+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462003+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.956899+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2764,10 +2764,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/41"
       },
       "job_id": 41,
-      "metadata_collected_at": "2026-10-04T15:28:53.462095+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.956982+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462115+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957000+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2796,10 +2796,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/40"
       },
       "job_id": 40,
-      "metadata_collected_at": "2026-10-04T15:28:53.462203+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957079+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462223+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957097+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2828,7 +2828,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/39"
       },
       "job_id": 39,
-      "metadata_collected_at": "2026-10-04T15:28:53.462311+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957177+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -2860,10 +2860,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/38"
       },
       "job_id": 38,
-      "metadata_collected_at": "2026-10-04T15:28:53.462327+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957191+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462346+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957211+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2892,10 +2892,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/37"
       },
       "job_id": 37,
-      "metadata_collected_at": "2026-10-04T15:28:53.462437+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957303+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462456+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957321+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2924,10 +2924,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/36"
       },
       "job_id": 36,
-      "metadata_collected_at": "2026-10-04T15:28:53.462545+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957405+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462564+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957422+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2956,10 +2956,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/35"
       },
       "job_id": 35,
-      "metadata_collected_at": "2026-10-04T15:28:53.462651+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957501+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462671+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957519+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -2988,7 +2988,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/34"
       },
       "job_id": 34,
-      "metadata_collected_at": "2026-10-04T15:28:53.462757+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957600+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3020,10 +3020,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/33"
       },
       "job_id": 33,
-      "metadata_collected_at": "2026-10-04T15:28:53.462775+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957615+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462778+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957618+00:00",
       "trace_source": "live",
       "trace_status": "empty"
     },
@@ -3052,10 +3052,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/32"
       },
       "job_id": 32,
-      "metadata_collected_at": "2026-10-04T15:28:53.462796+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957634+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462815+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957652+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3084,10 +3084,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/31"
       },
       "job_id": 31,
-      "metadata_collected_at": "2026-10-04T15:28:53.462907+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957744+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.462926+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957769+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3116,10 +3116,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/30"
       },
       "job_id": 30,
-      "metadata_collected_at": "2026-10-04T15:28:53.463012+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957854+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463031+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957872+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3148,10 +3148,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/29"
       },
       "job_id": 29,
-      "metadata_collected_at": "2026-10-04T15:28:53.463121+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.957951+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463141+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.957969+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3180,10 +3180,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/28"
       },
       "job_id": 28,
-      "metadata_collected_at": "2026-10-04T15:28:53.463235+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958064+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463257+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958081+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3212,10 +3212,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/27"
       },
       "job_id": 27,
-      "metadata_collected_at": "2026-10-04T15:28:53.463340+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958182+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463361+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958203+00:00",
       "trace_source": "live",
       "trace_status": "partial"
     },
@@ -3244,7 +3244,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/26"
       },
       "job_id": 26,
-      "metadata_collected_at": "2026-10-04T15:28:53.463457+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958288+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3276,10 +3276,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/25"
       },
       "job_id": 25,
-      "metadata_collected_at": "2026-10-04T15:28:53.463475+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958303+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463497+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958320+00:00",
       "trace_source": "live",
       "trace_status": "partial"
     },
@@ -3308,7 +3308,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/24"
       },
       "job_id": 24,
-      "metadata_collected_at": "2026-10-04T15:28:53.463670+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958405+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3340,7 +3340,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/23"
       },
       "job_id": 23,
-      "metadata_collected_at": "2026-10-04T15:28:53.463691+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958422+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3372,7 +3372,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/22"
       },
       "job_id": 22,
-      "metadata_collected_at": "2026-10-04T15:28:53.463709+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958440+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3404,7 +3404,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/21"
       },
       "job_id": 21,
-      "metadata_collected_at": "2026-10-04T15:28:53.463725+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958454+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3436,7 +3436,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/20"
       },
       "job_id": 20,
-      "metadata_collected_at": "2026-10-04T15:28:53.463739+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958468+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3468,7 +3468,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/19"
       },
       "job_id": 19,
-      "metadata_collected_at": "2026-10-04T15:28:53.463754+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958863+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,
@@ -3500,10 +3500,10 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/18"
       },
       "job_id": 18,
-      "metadata_collected_at": "2026-10-04T15:28:53.463770+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958584+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
-      "trace_collected_at": "2026-10-04T15:28:53.463793+00:00",
+      "trace_collected_at": "2026-10-04T15:57:27.958606+00:00",
       "trace_source": "live",
       "trace_status": "available"
     },
@@ -3532,7 +3532,7 @@
         "web_url": "https://gitlab.example.com/example/service/-/jobs/17"
       },
       "job_id": 17,
-      "metadata_collected_at": "2026-10-04T15:28:53.463915+00:00",
+      "metadata_collected_at": "2026-10-04T15:57:27.958712+00:00",
       "metadata_error": null,
       "metadata_status": "fresh",
       "trace_collected_at": null,

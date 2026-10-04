@@ -2,7 +2,7 @@
 
 # GitLab CI Performance Analyzer
 
-Version **2.0.0** of the reusable agent skill: safe GitLab metadata → bounded
+Version **2.0.1** of the reusable agent skill: safe GitLab metadata → bounded
 trace evidence → reproducible calculations → standalone offline report.
 
 ![Synthetic reviewed report](docs/report.png)
@@ -37,7 +37,7 @@ Requirements: Python 3.10+, `glab` with existing authorized GitLab authenticatio
 plus the declared Python requirements. Clone the published pinned version:
 
 ```sh
-git clone --branch v2.0.0 --depth 1 \
+git clone --branch v2.0.1 --depth 1 \
   https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
 mkdir -p .agents/skills .codex/skills .claude/skills
 cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
@@ -49,7 +49,7 @@ For an update, first move the old `.agents/skills/gitlab-ci-performance` directo
 to an unused backup location, then copy the new directory into its place.
 Existing links still point at that path. Preserve reports/private caches and any
 customizations in the backup; do not copy old modules over the new skill. The
-installed `VERSION` must read 2.0.0. The release source archive contains tests,
+installed `VERSION` must read 2.0.1. The release source archive contains tests,
 documentation and fixtures as well as the complete distributable skill directory.
 
 Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
@@ -97,12 +97,12 @@ metadata still contains project/job names and URLs; choose its sharing location.
 - `jobs.json`: immutable schema 1.0 source projection.
 - `details/metadata.json`: schema 2.0 bounded safe refreshed metadata and coverage.
 - `details/timings.json`: schema/parser 2.0 compact allowlisted evidence.
-- `report.json`: schema/calculation 2.0 precomputed windows, baseline samples,
+- `report.json`: schema/calculation 2.0.1 precomputed windows, baseline samples,
   priorities and hashes; validated before rendering.
 - `report.html`: standalone embedded compact data, no raw trace text.
 
 Run `ci_report.py validate artifact.json` for schema/ID/calculation checks.
-Older 1.0/1.1 reports retain legacy rendering. `report --legacy` generates 1.1;
+Older 1.0/1.1/2.0.0 reports retain their rendering. `report --legacy` generates 1.1;
 `--release-refs REF...` preserves the 1.1 exact-ref exploratory route from #1.
 `--baseline older/jobs.json` retains external same-ref comparison and overlap
 safeguards. Unsupported versions request compatible tooling or explicit re-analysis

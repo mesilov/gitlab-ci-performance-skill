@@ -28,9 +28,11 @@ def evidence_items(detail):
 
 def validate_v2(value,kind):
     from jsonschema import Draft202012Validator,FormatChecker
-    if kind not in {'metadata','timings','report'} or value.get('schema_version')!='2.0.0':
+    version=value.get('schema_version')
+    if kind not in {'metadata','timings','report'} or version not in ({'2.0.0','2.0.1'} if kind=='report' else {'2.0.0'}):
         raise ValueError('Unsupported artifact version; use a compatible skill or re-analyze into new outputs')
-    schema=json.loads((ROOT/'schemas'/f'{kind}-v2.schema.json').read_text())
+    schema_name='report-v2.0.1.schema.json' if kind=='report' and version=='2.0.1' else f'{kind}-v2.schema.json'
+    schema=json.loads((ROOT/'schemas'/schema_name).read_text())
     Draft202012Validator.check_schema(schema)
     errors=list(Draft202012Validator(schema,format_checker=FormatChecker()).iter_errors(value))
     if errors:
@@ -75,6 +77,17 @@ def validate_v2(value,kind):
     from history import default_selection,windows,executed,total,metric
     job_ids=unique(value['jobs'],'id','job ID');unique(value['pipelines'],'id','pipeline ID')
     pmap={p['id']:p for p in value['pipelines']};jmap={j['id']:j for j in value['jobs']}
+    baseline_map={}
+    if version=='2.0.1':
+        unique(value['baseline_jobs'],'id','baseline source job ID')
+        baseline_map={j['id']:j for j in value['baseline_jobs']}
+        expected_ids={i for t in value['types'] for key in ['comparison','same_ref_comparison'] for i in t[key]['sample_ids']}
+        if set(baseline_map)!=expected_ids:raise ValueError('Baseline source coverage mismatch')
+        for i,b in baseline_map.items():
+            if i in jmap:
+                j=jmap[i]
+                if any(b[k]!=j[k] for k in b if k!='pipeline_status') or b['pipeline_status']!=pmap[j['pipeline_id']]['status']:
+                    raise ValueError('Baseline source/retained identity mismatch')
     for j in value['jobs']:
         if j['pipeline_id'] not in pmap or pmap[j['pipeline_id']]['ref']!=j['ref']:raise ValueError('Job/pipeline relation mismatch')
         if j['executed']!=executed(j) or j['total_seconds']!=total(j) or j['execution_seconds']!=(j['duration_seconds'] if executed(j) else None):raise ValueError('Job timing semantics mismatch')
@@ -101,6 +114,12 @@ def validate_v2(value,kind):
                     raise ValueError('Baseline observation semantics mismatch')
                 if c['scope']=='same_ref_history' and s['ref']!=latest['ref']:
                     raise ValueError('Same-ref baseline membership mismatch')
+                if version=='2.0.1':
+                    j=baseline_map[s['id']]
+                    expected={'id':j['id'],'pipeline_id':j['pipeline_id'],'ref':j['ref'],'status':j['status'],'pipeline_status':j['pipeline_status'],
+                              'execution_seconds':j['duration_seconds'],'queue_seconds':j['queued_seconds'],'total_seconds':total(j)}
+                    if (j['stage'],j['name'])!=(t['stage'],t['name']) or not executed(j) or s!=expected:
+                        raise ValueError('Baseline sample/source identity or eligibility mismatch')
                 if s['id'] in jmap:
                     j=jmap[s['id']]
                     if (j['stage'],j['name'])!=(t['stage'],t['name']) or s!={'id':j['id'],'pipeline_id':j['pipeline_id'],'ref':j['ref'],'status':j['status'],'pipeline_status':pmap[j['pipeline_id']]['status'],'execution_seconds':j['duration_seconds'],'queue_seconds':j['queued_seconds'],'total_seconds':total(j)} or j['status']!='success' or pmap[j['pipeline_id']]['status']!='success':

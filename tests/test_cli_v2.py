@@ -79,6 +79,35 @@ class ReviewedContracts(unittest.TestCase):
             r=copy.deepcopy(report);r['types'][0][key]['scope']=scope
             with self.subTest(key=key),self.assertRaises(ValueError):ci.validate(r,'report')
 
+    def test_baseline_older_than_retained_history_requires_source_projection(self):
+        s=sample();j,p=s['jobs'][0],s['pipelines'][0]
+        s['jobs']=[dict(j,id=i,pipeline_id=i,status='success' if i<=15 else 'failed') for i in range(1,81)]
+        s['pipelines']=[dict(p,id=i,status='success' if i<=15 else 'failed') for i in range(1,81)]
+        r=build(s,legacy=ci.build_report(s))
+        c=r['types'][0]['comparison']
+        self.assertEqual(c['sample_ids'],list(range(15,5,-1)))
+        self.assertTrue(set(c['sample_ids']).isdisjoint(j['id'] for j in r['jobs']))
+        ci.validate(r,'report')
+        for key,value in [('pipeline_id',99999),('ref','forged')]:
+            corrupted=copy.deepcopy(r);corrupted['types'][0]['comparison']['samples'][0][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):ci.validate(corrupted,'report')
+        corrupted=copy.deepcopy(r);observation=corrupted['types'][0]['comparison']['samples'][0]
+        observation['execution_seconds']+=100;observation['total_seconds']+=100
+        with self.assertRaises(ValueError):ci.validate(corrupted,'report')
+        for key,value in [('stage','forged'),('name','forged'),('started_at',None)]:
+            corrupted=copy.deepcopy(r);corrupted['baseline_jobs'][0][key]=value
+            with self.subTest(source_key=key),self.assertRaises(ValueError):ci.validate(corrupted,'report')
+        corrupted=copy.deepcopy(r);corrupted['baseline_jobs'].pop()
+        with self.assertRaises(ValueError):ci.validate(corrupted,'report')
+
+    def test_legacy_2_0_report_keeps_its_contract_and_offline_renderer(self):
+        r=build(sample(),legacy=ci.build_report(sample()))
+        r.pop('baseline_jobs');r['schema_version']=r['calculation_version']='2.0.0'
+        ci.validate(r,'report')
+        with tempfile.TemporaryDirectory() as directory:
+            ci.render(r,Path(directory)/'old-2.html','ru')
+            self.assertIn('Что улучшить', (Path(directory)/'old-2.html').read_text())
+
     def test_cli_default_generates_v2_and_legacy_is_explicit(self):
         import sys
         with tempfile.TemporaryDirectory() as directory:
@@ -86,7 +115,7 @@ class ReviewedContracts(unittest.TestCase):
             report=Path(directory)/'report.json'
             result=subprocess.run([sys.executable,str(CLI),'report','--snapshot',str(source),'--output',str(report)],capture_output=True,text=True)
             self.assertEqual(result.returncode,0,result.stderr)
-            self.assertEqual(json.loads(report.read_text())['schema_version'],'2.0.0')
+            self.assertEqual(json.loads(report.read_text())['schema_version'],'2.0.1')
             help_result=subprocess.run([sys.executable,str(CLI),'collect-details','--help'],capture_output=True,text=True)
             self.assertEqual(help_result.returncode,0,help_result.stderr)
             self.assertIn('--reuse-cache',help_result.stdout)

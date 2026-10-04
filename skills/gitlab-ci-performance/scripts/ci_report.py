@@ -51,7 +51,7 @@ def load(path):
 
 def validate(value, kind):
     version = value.get('schema_version')
-    if version == '2.0.0' or kind in {'metadata', 'timings'}:
+    if version in {'2.0.0','2.0.1'} or kind in {'metadata', 'timings'}:
         from contracts import validate_v2
         return validate_v2(value, kind)
     if version not in {'1.0.0', '1.1.0'}:
@@ -415,7 +415,7 @@ def render(report, output, language="en"):
     if language not in {"en", "ru"}:
         raise ValueError("Unsupported report language: choose en or ru")
     validate(report, "report")
-    if report['schema_version'] == '2.0.0':
+    if report['schema_version'] in {'2.0.0','2.0.1'}:
         payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
         template = (ROOT/'assets'/'report.html').read_text(encoding='utf-8')
         rendered = template.replace('__REPORT_LANGUAGE__', language).replace('__REPORT_DATA__', payload)

@@ -1,0 +1,1959 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0.1"
+    },
+    "calculation_version": {
+      "const": "2.0.1"
+    },
+    "parser_version": {
+      "enum": [
+        "2.0.0"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "report"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "metadata_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timings_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapshot_collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_schema_version": {
+          "enum": [
+            "1.0.0"
+          ]
+        },
+        "baseline_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "snapshot_sha256",
+        "metadata_sha256",
+        "timings_sha256",
+        "snapshot_collected_at",
+        "source_schema_version",
+        "baseline_sha256"
+      ]
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "history_limit": {
+          "enum": [
+            64
+          ]
+        },
+        "windows": {
+          "const": [
+            32,
+            64
+          ]
+        },
+        "default_window": {
+          "enum": [
+            32
+          ]
+        },
+        "baseline_limit": {
+          "enum": [
+            10
+          ]
+        },
+        "minimum_baseline": {
+          "enum": [
+            3
+          ]
+        },
+        "baseline_eligibility": {
+          "enum": [
+            "successful_complete_job_in_successful_pipeline_latest_success_per_pipeline"
+          ]
+        },
+        "history_scope": {
+          "enum": [
+            "exploratory_cross_ref"
+          ]
+        },
+        "category_cost": {
+          "enum": [
+            "union_of_recorded_intervals_per_successful_run"
+          ]
+        },
+        "queue_spike_rule": {
+          "enum": [
+            "wait>max(30,3*median);previous-success-N>=3"
+          ]
+        }
+      },
+      "required": [
+        "history_limit",
+        "windows",
+        "default_window",
+        "baseline_limit",
+        "minimum_baseline",
+        "baseline_eligibility",
+        "history_scope",
+        "category_cost",
+        "queue_spike_rule"
+      ]
+    },
+    "snapshot_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pipelines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "attempts",
+        "pipelines",
+        "status_counts"
+      ]
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "source_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "retained_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxItems": 64,
+            "uniqueItems": true
+          },
+          "purpose": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "description",
+              "source_url",
+              "verified_at"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "source_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri"
+              },
+              "verified_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "source_ref": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "configuration_sha256": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "latest_attempt_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "status_counts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "comparison": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scope": {
+                "enum": [
+                  "exploratory_cross_ref",
+                  "same_ref_history"
+                ]
+              },
+              "sample_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "maxItems": 10,
+                "uniqueItems": true
+              },
+              "known": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "missing": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "latest_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "baseline_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "delta_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "delta_percent": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "eligible_increase": {
+                "type": "boolean"
+              },
+              "samples": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "pipeline_id": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "ref": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "const": "success"
+                    },
+                    "pipeline_status": {
+                      "const": "success"
+                    },
+                    "execution_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "queue_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "total_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "pipeline_id",
+                    "ref",
+                    "status",
+                    "pipeline_status",
+                    "execution_seconds",
+                    "queue_seconds",
+                    "total_seconds"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "scope",
+              "sample_ids",
+              "known",
+              "missing",
+              "latest_seconds",
+              "baseline_seconds",
+              "delta_seconds",
+              "delta_percent",
+              "eligible_increase",
+              "samples"
+            ]
+          },
+          "same_ref_comparison": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scope": {
+                "enum": [
+                  "exploratory_cross_ref",
+                  "same_ref_history"
+                ]
+              },
+              "sample_ids": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "maxItems": 10,
+                "uniqueItems": true
+              },
+              "known": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "missing": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "latest_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "baseline_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "delta_seconds": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "delta_percent": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "eligible_increase": {
+                "type": "boolean"
+              },
+              "samples": {
+                "type": "array",
+                "maxItems": 10,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "pipeline_id": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "ref": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "const": "success"
+                    },
+                    "pipeline_status": {
+                      "const": "success"
+                    },
+                    "execution_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "queue_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "total_seconds": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "pipeline_id",
+                    "ref",
+                    "status",
+                    "pipeline_status",
+                    "execution_seconds",
+                    "queue_seconds",
+                    "total_seconds"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "scope",
+              "sample_ids",
+              "known",
+              "missing",
+              "latest_seconds",
+              "baseline_seconds",
+              "delta_seconds",
+              "delta_percent",
+              "eligible_increase",
+              "samples"
+            ]
+          },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "size": {
+                  "enum": [
+                    32,
+                    64
+                  ]
+                },
+                "offset": {
+                  "enum": [
+                    0,
+                    32
+                  ]
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "attempt_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "uniqueItems": true
+                },
+                "from": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                },
+                "to": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                },
+                "unit": {
+                  "enum": [
+                    "seconds",
+                    "minutes"
+                  ]
+                },
+                "successful_n": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "execution": {
+                  "$ref": "#/$defs/metric"
+                },
+                "queue": {
+                  "$ref": "#/$defs/metric"
+                },
+                "total": {
+                  "$ref": "#/$defs/metric"
+                },
+                "queue_spike": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "detected": {
+                      "type": "boolean"
+                    },
+                    "known": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "baseline_seconds": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "latest_seconds": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "threshold_seconds": {
+                      "type": [
+                        "number",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "rule": {
+                      "enum": [
+                        "wait>max(30,3*median);previous-success-N>=3"
+                      ]
+                    },
+                    "sample_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "detected",
+                    "known",
+                    "baseline_seconds",
+                    "latest_seconds",
+                    "threshold_seconds",
+                    "rule",
+                    "sample_ids"
+                  ]
+                },
+                "priorities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "export_unpack",
+                          "context_copy",
+                          "base_image",
+                          "dependencies",
+                          "builder_startup",
+                          "runner_prepare",
+                          "runner_checkout",
+                          "runner_artifacts",
+                          "runner_cleanup",
+                          "queue"
+                        ]
+                      },
+                      "median_cost_seconds": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "known": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "missing": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "partial": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "guidance_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https://docs\\.(docker|gitlab)\\.com/"
+                      },
+                      "direction": {
+                        "enum": [
+                          "export_unpack",
+                          "context_copy",
+                          "base_image",
+                          "dependencies",
+                          "builder_startup",
+                          "runner_prepare",
+                          "runner_checkout",
+                          "runner_artifacts",
+                          "runner_cleanup",
+                          "queue"
+                        ]
+                      },
+                      "evidence": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "job_id": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "build_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "operation_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "phase_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "command_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "duration_seconds": {
+                            "type": [
+                              "number",
+                              "null"
+                            ],
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "job_id",
+                          "build_id",
+                          "operation_id",
+                          "phase_id",
+                          "command_id",
+                          "duration_seconds"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "median_cost_seconds",
+                      "known",
+                      "missing",
+                      "partial",
+                      "guidance_url",
+                      "direction",
+                      "evidence"
+                    ]
+                  },
+                  "maxItems": 3
+                },
+                "successful_total_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "size",
+                "offset",
+                "count",
+                "attempt_ids",
+                "from",
+                "to",
+                "unit",
+                "successful_n",
+                "execution",
+                "queue",
+                "total",
+                "queue_spike",
+                "priorities",
+                "successful_total_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "stage",
+          "source_count",
+          "retained_ids",
+          "purpose",
+          "latest_attempt_id",
+          "status_counts",
+          "comparison",
+          "same_ref_comparison",
+          "windows"
+        ]
+      }
+    },
+    "default_type_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attention_type_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pipeline_id",
+          "name",
+          "stage",
+          "ref",
+          "status",
+          "allow_failure",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "queued_seconds",
+          "failure_reason",
+          "runner",
+          "web_url",
+          "commit_sha",
+          "erased_at",
+          "runner_version",
+          "executed",
+          "execution_seconds",
+          "total_seconds",
+          "metadata_status",
+          "metadata_collected_at",
+          "trace_source",
+          "trace_collected_at",
+          "metadata_error"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID отдельной попытки запуска; повторный запуск сохраняется отдельной записью."
+          },
+          "pipeline_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "allow_failure": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "duration_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Время выполнения из GitLab API duration, в секундах; null означает отсутствие измерения."
+          },
+          "queued_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Время ожидания из GitLab API queued_duration, в секундах; null означает отсутствие измерения."
+          },
+          "failure_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "runner": {
+            "$ref": "#/$defs/runner"
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "commit_sha": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "erased_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "runner_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "executed": {
+            "type": "boolean"
+          },
+          "execution_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "total_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "metadata_status": {
+            "enum": [
+              "fresh",
+              "stale",
+              "source_snapshot"
+            ]
+          },
+          "metadata_collected_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trace_source": {
+            "enum": [
+              "live",
+              "cache",
+              "none"
+            ]
+          },
+          "trace_collected_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "metadata_error": {
+            "enum": [
+              null,
+              "metadata_request_failed",
+              "metadata_identity_mismatch"
+            ]
+          }
+        }
+      }
+    },
+    "pipelines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pipeline"
+      }
+    },
+    "details": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/detail"
+      }
+    },
+    "same_ref_views": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/view"
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "retained_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_fresh": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "workers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "max_trace_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_bytes_received": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_complete_available_history": {
+          "type": "boolean"
+        },
+        "displayed_types": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "detail_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_collected_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "details_analyzed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "retained_attempts",
+        "metadata_requests",
+        "metadata_fresh",
+        "trace_requests",
+        "trace_status_counts",
+        "workers",
+        "max_trace_bytes",
+        "trace_bytes_received",
+        "source_attempts",
+        "source_complete_available_history",
+        "displayed_types",
+        "detail_attempts",
+        "metadata_collected_at",
+        "details_analyzed_at"
+      ]
+    },
+    "baseline_jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pipeline_id",
+          "name",
+          "stage",
+          "ref",
+          "status",
+          "started_at",
+          "duration_seconds",
+          "queued_seconds",
+          "metadata_status",
+          "pipeline_status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID отдельной попытки запуска; повторный запуск сохраняется отдельной записью."
+          },
+          "pipeline_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "status": {
+            "const": "success"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "queued_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "metadata_status": {
+            "enum": [
+              "fresh",
+              "stale",
+              "source_snapshot"
+            ]
+          },
+          "pipeline_status": {
+            "const": "success"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "calculation_version",
+    "parser_version",
+    "kind",
+    "generated_at",
+    "timezone",
+    "project",
+    "inputs",
+    "method",
+    "snapshot_summary",
+    "types",
+    "default_type_id",
+    "attention_type_id",
+    "jobs",
+    "pipelines",
+    "details",
+    "same_ref_views",
+    "coverage",
+    "baseline_jobs"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ci-report/report-v2.0.1.schema.json",
+  "$defs": {
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "image_build"
+          ]
+        },
+        "start_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "span_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "push_coverage": {
+          "enum": [
+            "unknown",
+            "outside",
+            "recorded"
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "start_seconds",
+        "end_seconds",
+        "span_seconds",
+        "push_coverage",
+        "operations"
+      ]
+    },
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempts",
+        "rerun_attempts",
+        "successful_attempts",
+        "status_counts",
+        "execution",
+        "queue",
+        "lifecycle"
+      ],
+      "properties": {
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rerun_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "successful_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "execution": {
+          "$ref": "#/$defs/metric"
+        },
+        "queue": {
+          "$ref": "#/$defs/metric"
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/metric"
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "current_seconds",
+        "baseline_seconds",
+        "delta_seconds",
+        "delta_percent"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "regressed",
+            "improved",
+            "stable",
+            "insufficient_data",
+            "new_job",
+            "missing_job",
+            "overlap"
+          ]
+        },
+        "current_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseline_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "delta_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "delta_percent": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "trace_status": {
+          "enum": [
+            "available",
+            "partial",
+            "not_run",
+            "empty",
+            "erased",
+            "unavailable",
+            "disabled"
+          ]
+        },
+        "trace_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processed_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timestamp_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "analyzed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "parser_version": {
+          "enum": [
+            "2.0.0"
+          ]
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "builds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/build"
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "missing_job_start",
+              "truncated_trace",
+              "incomplete_sections",
+              "invalid_section_timing",
+              "unmatched_section_end",
+              "incomplete_commands",
+              "estimated_command_intervals",
+              "ambiguous_build_boundary",
+              "duplicate_frames",
+              "incomplete_operations",
+              "incomplete_substeps",
+              "missing_operation_durations",
+              "partial_build_span",
+              "inferred_operation_positions",
+              "missing_operation_positions",
+              "unknown_push_coverage",
+              "missing_timestamps",
+              "trace_disabled",
+              "job_not_run",
+              "trace_erased",
+              "trace_forbidden",
+              "trace_unavailable",
+              "trace_timeout",
+              "trace_request_failed",
+              "trace_byte_limit",
+              "active_trace",
+              "trace_cache_write_failed",
+              "details_not_collected",
+              "collection_not_atomic",
+              "details_retained_64_per_type",
+              "traces_may_be_unavailable",
+              "runner_log_truncated"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "job_id",
+        "trace_status",
+        "trace_sha256",
+        "trace_bytes",
+        "processed_bytes",
+        "trace_lines",
+        "timestamp_lines",
+        "analyzed_at",
+        "parser_version",
+        "phases",
+        "builds",
+        "commands",
+        "limitations"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "export_unpack",
+            "context_copy",
+            "base_image",
+            "dependencies",
+            "builder_startup",
+            "runner_prepare",
+            "runner_checkout",
+            "runner_artifacts",
+            "runner_cleanup",
+            "queue",
+            "other",
+            "prepare_executor",
+            "prepare_environment",
+            "checkout_sources",
+            "execute_script",
+            "download_artifacts",
+            "upload_artifacts",
+            "cleanup",
+            "runner_phase",
+            "unknown_operation",
+            "command",
+            "export_layers",
+            "export_manifest",
+            "export_manifest_list",
+            "export_config",
+            "unpack_local",
+            "export_tarball",
+            "push_layers",
+            "push_manifest"
+          ]
+        },
+        "category": {
+          "enum": [
+            "export_unpack",
+            "context_copy",
+            "base_image",
+            "dependencies",
+            "builder_startup",
+            "runner_prepare",
+            "runner_checkout",
+            "runner_artifacts",
+            "runner_cleanup",
+            "queue",
+            "other"
+          ]
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "start_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "first_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "last_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timing_source": {
+          "enum": [
+            "runner_section",
+            "buildkit_reported",
+            "logged_interval"
+          ]
+        },
+        "position_source": {
+          "enum": [
+            "section_markers",
+            "log_timestamps",
+            "unknown"
+          ]
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "substeps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "category",
+        "duration_seconds",
+        "start_seconds",
+        "end_seconds",
+        "first_line",
+        "last_line",
+        "timing_source",
+        "position_source",
+        "cached",
+        "complete",
+        "substeps"
+      ]
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "stage",
+        "ref",
+        "purpose",
+        "current",
+        "baseline",
+        "execution_change",
+        "queue_change",
+        "drivers",
+        "latest_attempt_id"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "purpose_from_catalog": {
+          "type": "boolean",
+          "description": "False identifies a generated UI fallback. If absent in legacy reports, preserve purpose text verbatim."
+        },
+        "current": {
+          "$ref": "#/$defs/cohort"
+        },
+        "baseline": {
+          "$ref": "#/$defs/cohort"
+        },
+        "execution_change": {
+          "$ref": "#/$defs/comparison"
+        },
+        "queue_change": {
+          "$ref": "#/$defs/comparison"
+        },
+        "drivers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "execution",
+              "queue"
+            ]
+          }
+        },
+        "latest_attempt_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "known",
+        "missing",
+        "sum_seconds",
+        "p50_seconds",
+        "p95_seconds",
+        "max_seconds"
+      ],
+      "properties": {
+        "known": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sum_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "p50_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "p95_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "max_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "description": "Агрегат известных измерений в секундах. null не заменяется нулём; при known=0 все времена равны null."
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline_ids",
+        "from",
+        "to",
+        "attempts"
+      ],
+      "properties": {
+        "pipeline_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ref",
+        "sha",
+        "status",
+        "source",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "web_url"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ref": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Собственное время pipeline из GitLab API duration, в секундах; не сумма времён джоб."
+        },
+        "queued_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Время ожидания из GitLab API queued_duration, в секундах; null означает отсутствие измерения."
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "description",
+        "source_url",
+        "verified_at"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "verified_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "runner": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "description"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "window",
+        "baseline_window",
+        "current_period",
+        "baseline_period",
+        "overlap_pipeline_ids",
+        "situation",
+        "regression_count",
+        "insufficient_count",
+        "latest_pipeline",
+        "groups"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "baseline_window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "current_period": {
+          "$ref": "#/$defs/period"
+        },
+        "baseline_period": {
+          "$ref": "#/$defs/period"
+        },
+        "overlap_pipeline_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "situation": {
+          "enum": [
+            "attention",
+            "insufficient_data",
+            "no_regression"
+          ]
+        },
+        "regression_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "insufficient_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_pipeline": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/pipeline"
+            }
+          ]
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/group"
+          }
+        }
+      }
+    }
+  }
+}

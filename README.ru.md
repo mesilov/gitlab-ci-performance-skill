@@ -2,7 +2,7 @@
 
 # GitLab CI Performance Analyzer
 
-Версия **2.0.0** переиспользуемого скилла: безопасные метаданные GitLab →
+Версия **2.0.1** переиспользуемого скилла: безопасные метаданные GitLab →
 ограниченный анализ логов → воспроизводимые расчёты → автономный HTML-отчёт.
 
 ![Синтетический отчёт](docs/report.png)
@@ -37,7 +37,7 @@
 и зависимости из requirements.txt. Устанавливайте опубликованный тег:
 
 ```sh
-git clone --branch v2.0.0 --depth 1 \
+git clone --branch v2.0.1 --depth 1 \
   https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
 mkdir -p .agents/skills .codex/skills .claude/skills
 cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
@@ -49,7 +49,7 @@ ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-perfor
 в свободное место резервной копии, затем скопируйте новый на его место. Ссылки
 продолжат работать. Сохраните отчёты, приватные кэши и локальные изменения;
 не накладывайте старые модули поверх новой версии. В установленном VERSION должно
-быть 2.0.0. Архив исходников релиза включает тесты, документацию и fixtures вместе
+быть 2.0.1. Архив исходников релиза включает тесты, документацию и fixtures вместе
 с полным каталогом распространяемого скилла.
 
 Вызов: `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude
@@ -99,7 +99,7 @@ workers 1–8, по умолчанию 4, timeout 60 с, лимит 32 MiB (`--m
 - jobs.json: неизменяемый источник schema 1.0.
 - details/metadata.json: ограниченные обновлённые метаданные и охват schema 2.0.
 - details/timings.json: компактные доказательства schema/parser 2.0.
-- report.json: окна, samples baseline, приоритеты и hashes schema/calculation 2.0.
+- report.json: окна, samples baseline, приоритеты и hashes schema/calculation 2.0.1.
 - report.html: автономный HTML с встроенными данными без сырого лога.
 
 `ci_report.py validate artifact.json` проверяет схемы, ID и расчёты.
@@ -124,7 +124,7 @@ node tests/browser_reviewed.cjs file:///absolute/path/reports/new-demo/report.ht
 Для браузерной проверки нужен Playwright; при необходимости задайте
 CI_REPORT_PLAYWRIGHT. Локально используется Chrome, для bundled Chromium в CI —
 CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исходы/перезапуски,
-доказательства,320/375/1280 px, обе темы, клавиатура, перенос HTML и запрет сети.
+доказательства, 320/375/1280 px, обе темы, клавиатура, перенос HTML и запрет сети.
 `tests/test_installed_skill.py` проверяет чистую установку/обновление через
 синтетический glab, ограничения запросов/размера и отсутствие сырого содержимого.
 

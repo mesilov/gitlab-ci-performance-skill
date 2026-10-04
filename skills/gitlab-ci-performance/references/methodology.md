@@ -1,8 +1,8 @@
-# Methodology 2.0.0
+# Methodology 2.0.1
 
-Source metadata remains schema 1.0.0. Bounded metadata/timings and the reviewed
-report are schema 2.0.0; calculation/parser versions are 2.0.0. Historical
-1.0/1.1 report rendering and same-ref calculations remain available. See
+Source metadata remains schema 1.0.0. The reviewed report is schema/calculation
+2.0.1; bounded metadata/timings/parser remain 2.0.0. Historical
+1.0/1.1/2.0.0 report rendering and same-ref calculations remain available. See
 [methodology-v1.md](methodology-v1.md) for the original same-ref method.
 
 ## Retention, cohorts and coverage
@@ -27,7 +27,12 @@ successful jobs in successful pipelines, selecting the latest successful attempt
 per pipeline/type and excluding the current attempt's pipeline. Missing totals
 are excluded, counted, and not substituted from an older rerun in that pipeline.
 Baseline can extend beyond visible/retained history without fetching those logs.
-Export exact IDs, observation values and known/missing N. Latest attempt may have
+Export exact IDs, observation values and known/missing N. Report 2.0.1 also
+preserves `baseline_jobs`: compact source projections for every exported
+comparison sample, bounded to at most 20 per type and deduplicated by job ID.
+Validation ties all sample identities, types and values to those records, including
+observations older than retained history; retained projections must also match
+the refreshed job records. This adds no trace requests. Latest attempt may have
 any outcome; it requires an executed complete total for a numerical comparison.
 
 Auto-select the largest positive absolute total delta with baseline N≥3. Break
@@ -95,7 +100,7 @@ server, analytics or token. JSON sidecars are needed for recalculation only.
 
 1.0/1.1 reports use their preserved renderer; `report --legacy` retains 1.1
 calculation. `--release-refs` selects the legacy exact-ref history route. Default
-report generation makes explicit 2.0 results from schema 1 sources without changing
+report generation makes explicit 2.0.1 results from schema 1 sources without changing
 those sources. Unsupported calculation/parser versions require a compatible skill
 or explicit re-analysis into new outputs, never silent semantic replacement.
 
