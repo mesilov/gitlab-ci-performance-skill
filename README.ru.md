@@ -89,6 +89,30 @@ glab auth login --hostname gitlab.example.com
 к `report`. Перекрывающиеся выборки pipelines явно отмечаются и не дают оснований
 утверждать ухудшение.
 
+Для уникальных релизных тегов явно выберите refs:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/run-001/jobs.json --release-refs v1.0 v1.1 v1.2 v1.3 \
+  --output reports/releases/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/releases/report.json --output reports/releases/report.html
+```
+
+Откройте **Release history across selected refs / tags** в HTML и выберите джобу
+и попытку. В деталях показаны выполнение, очередь, исходный ref и контекст.
+Изменения между refs — наблюдения с явными N и IDs базы; сравнение одного ref
+остаётся по умолчанию. Окна 32/64 ограничивают только видимый график.
+Подробнее — в [методике истории релизов](skills/gitlab-ci-performance/references/release-history.md).
+Новые report schema/calculation используют 1.1.0; jobs остаются 1.0.0.
+Старые отчёты 1.0.0 доступны для просмотра обновлённым скиллом.
+
+Синтетический пример с несколькими тегами без доступа к GitLab:
+
+```bash
+.venv/bin/python examples/generate_release_demo.py --output-dir reports/release-demo
+```
+
 Попробуйте синтетический пример без учётной записи GitLab:
 
 ```bash
@@ -133,6 +157,8 @@ reports/new-demo` в том же Python-окружении, указав нов�
 и передайте URL файла, каталог для скриншотов и необязательный ожидаемый язык
 (`en` по умолчанию или `ru`). Выполните проверку обоих HTML-вариантов;
 тест использует имена заданий и ID пайплайнов синтетического примера.
+`tests/browser_release_check.cjs` принимает те же аргументы для примера релизов
+и проверяет оба языка панели истории релизов.
 
 ## История изменений
 

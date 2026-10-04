@@ -22,3 +22,7 @@ jobs:
           python skills/gitlab-ci-performance/scripts/ci_report.py report --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/smoke/report.json
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --output reports/smoke/report.html
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --language ru --output reports/smoke/report-ru.html
+      - run: |
+          python examples/generate_release_demo.py --output-dir reports/release-smoke
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/release-smoke/report.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/release-smoke/report.json --language ru --output reports/release-smoke/report-ru.html

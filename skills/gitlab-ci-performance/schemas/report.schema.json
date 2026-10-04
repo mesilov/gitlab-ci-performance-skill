@@ -17,10 +17,16 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.0.0"
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
     },
     "calculation_version": {
-      "const": "1.0.0"
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
     },
     "kind": {
       "const": "report"
@@ -152,6 +158,16 @@
       "items": {
         "$ref": "#/$defs/pipeline"
       }
+    },
+    "release_history": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/release_history"
+        }
+      ]
     }
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -753,9 +769,295 @@
           }
         }
       }
+    },
+    "release_comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "current_seconds",
+        "baseline_seconds",
+        "delta_seconds",
+        "delta_percent"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "observed_increase",
+            "observed_decrease",
+            "no_observed_change",
+            "insufficient_data"
+          ]
+        },
+        "current_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseline_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "delta_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "delta_percent": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "release_sample_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refs",
+        "pipeline_sources",
+        "shas",
+        "runner_ids",
+        "missing_runner_attempts"
+      ],
+      "properties": {
+        "refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "pipeline_sources": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "shas": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "runner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "missing_runner_attempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "release_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "baseline",
+        "differences",
+        "limitations"
+      ],
+      "properties": {
+        "current": {
+          "$ref": "#/$defs/release_sample_context"
+        },
+        "baseline": {
+          "$ref": "#/$defs/release_sample_context"
+        },
+        "differences": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "different_refs",
+              "different_pipeline_sources",
+              "different_runners"
+            ]
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "configuration_not_verified",
+              "duration_change_does_not_establish_cause",
+              "runner_context_incomplete"
+            ]
+          }
+        }
+      }
+    },
+    "release_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "stage",
+        "purpose",
+        "attempt_ids",
+        "current_attempt_ids",
+        "baseline_attempt_ids",
+        "current_period",
+        "baseline_period",
+        "current",
+        "baseline",
+        "execution_change",
+        "queue_change",
+        "context"
+      ],
+      "properties": {
+        "purpose_from_catalog": {
+          "type": "boolean",
+          "description": "False identifies a generated UI fallback. If absent in legacy reports, preserve purpose text verbatim."
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "current_attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "baseline_attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "current_period": {
+          "$ref": "#/$defs/period"
+        },
+        "baseline_period": {
+          "$ref": "#/$defs/period"
+        },
+        "current": {
+          "$ref": "#/$defs/cohort"
+        },
+        "baseline": {
+          "$ref": "#/$defs/cohort"
+        },
+        "execution_change": {
+          "$ref": "#/$defs/release_comparison"
+        },
+        "queue_change": {
+          "$ref": "#/$defs/release_comparison"
+        },
+        "context": {
+          "$ref": "#/$defs/release_context"
+        }
+      }
+    },
+    "release_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refs",
+        "source",
+        "comparison",
+        "order",
+        "baseline_window",
+        "groups"
+      ],
+      "properties": {
+        "refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "source": {
+          "const": "current_snapshot"
+        },
+        "comparison": {
+          "const": "exploratory_cross_ref"
+        },
+        "order": {
+          "const": "pipeline_created_at_then_pipeline_id_then_attempt_id"
+        },
+        "baseline_window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/release_group"
+          }
+        }
+      }
     }
   },
-  "$id": "urn:gitlab-ci-performance:report:1",
+  "$id": "urn:gitlab-ci-performance:report:1.1",
   "title": "GitLab CI report",
-  "description": "Derived CI timing comparisons. Sources are immutable snapshots, cohorts are scoped by ref/stage/name and success status."
+  "description": "Derived CI timing comparisons. Sources are immutable snapshots, cohorts are scoped by ref/stage/name and success status.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "1.1.0"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "release_history"
+        ],
+        "properties": {
+          "calculation_version": {
+            "const": "1.1.0"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "release_history"
+          ]
+        },
+        "properties": {
+          "calculation_version": {
+            "const": "1.0.0"
+          }
+        }
+      }
+    }
+  ]
 }
