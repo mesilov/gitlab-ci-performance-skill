@@ -646,6 +646,10 @@
         "purpose": {
           "$ref": "#/$defs/purpose"
         },
+        "purpose_from_catalog": {
+          "type": "boolean",
+          "description": "False identifies a generated UI fallback. If absent in legacy reports, preserve purpose text verbatim."
+        },
         "current": {
           "$ref": "#/$defs/cohort"
         },

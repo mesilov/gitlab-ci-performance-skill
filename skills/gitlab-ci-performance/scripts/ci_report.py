@@ -5,6 +5,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
+import html
 import json
 import math
 import os
@@ -43,7 +44,7 @@ def digest(value):
 def load(path):
     def reject(value):
         raise ValueError("Non-finite JSON value")
-    return json.loads(Path(path).read_text(), parse_constant=reject)
+    return json.loads(Path(path).read_text(encoding="utf-8"), parse_constant=reject)
 
 
 def validate(value, kind):
@@ -293,6 +294,7 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
                 purpose = descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
                                                    "source_url": None, "verified_at": None})
                 groups.append({"name": name, "stage": stage, "ref": ref_name, "purpose": purpose,
+                               "purpose_from_catalog": name in descriptions,
                                "current": c, "baseline": b, "execution_change": execution, "queue_change": queue,
                                "drivers": [key for key, result in [("execution", execution), ("queue", queue)] if result["status"] == "regressed"],
                                "latest_attempt_id": max((j["id"] for j in cj), default=None)})
@@ -319,17 +321,26 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
     return result
 
 
-def render(report, output):
+def render(report, output, language="en"):
+    if language not in {"en", "ru"}:
+        raise ValueError("Unsupported report language: choose en or ru")
     validate(report, "report")
-    payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    template = (ROOT / "assets" / "report.html").read_text()
-    html = template.replace("__REPORT_DATA__", payload)
+
+    def script_json(value):
+        return json.dumps(value, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+    messages = load(ROOT / "locales" / f"{language}.json")
+    template = (ROOT / "assets" / "report.html").read_text(encoding="utf-8")
+    # Resolve template tokens before inserting source data, which may itself contain tokens.
+    template = re.sub(r"__TEXT:([a-z0-9_]+)__", lambda m: html.escape(messages[m[1]], quote=True), template)
+    template = template.replace("__LANGUAGE__", language)
+    rendered = template.replace("__REPORT_I18N__", script_json(messages)).replace("__REPORT_DATA__", script_json(report))
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.exists():
         raise ValueError("HTML output уже существует")
-    with output.open("x") as f:
-        f.write(html)
+    with output.open("x", encoding="utf-8") as f:
+        f.write(rendered)
 
 
 def main():
@@ -355,6 +366,8 @@ def main():
     render_p = commands.add_parser("render")
     render_p.add_argument("--report", type=Path, required=True)
     render_p.add_argument("--output", type=Path, required=True)
+    render_p.add_argument("--language", choices=("en", "ru"), default="en",
+                          help="HTML interface language and time/number locale (default: en); source data is preserved")
     validate_p = commands.add_parser("validate")
     validate_p.add_argument("path", type=Path)
     args = parser.parse_args()
@@ -367,7 +380,7 @@ def main():
                               args.windows, args.baseline_window, policy, load(args.catalog) if args.catalog else None)
         save(args.output, result, "report")
     elif args.command == "render":
-        render(load(args.report), args.output)
+        render(load(args.report), args.output, args.language)
     else:
         data = load(args.path)
         if data.get("kind") not in {"jobs", "report"}:

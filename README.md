@@ -37,7 +37,7 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The report UI is in English. The agent skill instructions are currently in Russian.
+The report UI supports English (default) and Russian. The agent skill instructions are currently in Russian.
 
 ## Run the CLI directly
 
@@ -61,6 +61,24 @@ glab auth login --hostname gitlab.example.com
 Open `reports/run-001/report.html` directly in a browser. Each run needs a new
 output path; existing artifacts are not overwritten. UTC is the default;
 `--timezone` accepts an IANA timezone.
+
+Choose the HTML interface language with `render --language en|ru`:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/run-001/report.json --language ru \
+  --output reports/run-001/report-ru.html
+```
+
+Omitting `--language` keeps English; unsupported values are rejected. Headings,
+controls, chart labels, tooltips, status explanations, dates, numbers and time
+units follow the selected language. The timezone still comes from the saved
+snapshot. Job names, stages, refs, URLs and verified catalog descriptions stay
+as supplied. The report JSON and embedded source data are unchanged, so the
+same JSON can be rendered in both languages without collecting again.
+New reports record `purpose_from_catalog` so generated unknown-purpose messages
+can be localized without translating catalog text. Legacy reports without this
+optional field keep every saved description verbatim.
 
 For a saved baseline, add `--baseline reports/run-000/jobs.json` to `report`.
 Overlapping pipeline cohorts are explicitly marked and do not produce a
@@ -105,7 +123,9 @@ and [optional catalog example](examples/catalog.json) for details.
 Generate another synthetic demo with `examples/generate_demo.py --output-dir
 reports/new-demo` using the same Python environment and a new output path. `tests/browser_check.cjs` is an optional Playwright/Chrome
 check of local-file viewing with the network disabled. Install Playwright in a
-development environment and pass a file URL and screenshot output directory.
+development environment and pass a file URL, screenshot output directory and
+optional expected language (`en` by default, or `ru`). Run it for both HTML
+variants; the checks use the synthetic demo's job and pipeline IDs.
 
 ## License
 
