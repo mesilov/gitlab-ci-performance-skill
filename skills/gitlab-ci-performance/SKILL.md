@@ -1,7 +1,7 @@
 ---
 name: gitlab-ci-performance
 license: MIT
-description: "Use when preparing GitLab CI performance improvement recommendations, analyzing job execution, runner queues or timing changes, collecting bounded trace evidence, or regenerating an offline report from saved snapshots."
+description: "Use when preparing GitLab CI performance improvement recommendations, analyzing job execution, runner queues or timing changes, collecting bounded trace evidence, verifying workflow chains or independent operations with historical configuration coverage, or regenerating offline HTML and workflow LLM exports from saved snapshots."
 ---
 
 # GitLab CI Performance Analysis
@@ -133,6 +133,38 @@ particular command's duration; lifecycle and remaining pre-start time are separa
 Finish with a viewable report link, observed queue/execution changes, job purpose,
 sample/coverage limits and concrete investigation directions. Scheduling,
 notifications and runner/CI changes require their own request.
+
+## Workflow route (2.0.0)
+
+Read [references/workflows.md](references/workflows.md) for definition authoring,
+collection bounds, outcome/interval rules, cohorts and CLI examples. Inspect the
+resolved CI configuration and verify required/optional/manual roles, actual
+dependencies and parallel groups. Record unknowns and explicit pipeline/commit
+configuration coverage; names or the current ref alone do not prove a chain or
+describe historical runs. Use separate histories for independent operations.
+
+Start from [assets/workflow-model.json](assets/workflow-model.json), replacing
+its synthetic selectors/context with verified target-repository facts. Use
+`define-workflows --model ... --config ...` to stamp source/ref/commit,
+verification time and the resolved configuration byte hash. Apply evidence only
+to pipelines/configurations actually verified. The helper validates and applies
+the model; it does not infer YAML semantics or verify the agent's claims.
+
+Collect with `collect --workflow-window` (default 32 pipeline runs) or
+`--workflow-window 64`; retain all pages/attempts for those pipelines including
+retries. Default workflow page budget is 10 per endpoint scope. No traces are
+needed or requested. Partial results preserve explicit coverage and unknowns.
+Then use `report --snapshot ... --workflows ...`, `render`, and optional
+`export-llm --report ...`. A clean installed copy contains every required module,
+schema and template; never patch generated HTML or inject project-specific JS.
+
+Elapsed includes intermediate gaps but excludes waiting before first start. Active
+is an interval union, queue is a separate known sum, and missing times remain
+null/partial. Latest attempts determine outcomes; earlier attempts remain in
+timing. Compare the latest complete successful run to up to ten earlier comparable
+successes, with a minimum of three. Report sample IDs, N, cohort and exclusions;
+duration change alone does not establish its cause. Cross-pipeline chains remain
+unsupported. Link the offline report and compact export when useful.
 
 ## Optimization recommendations
 

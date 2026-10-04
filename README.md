@@ -112,6 +112,56 @@ See [methodology](skills/gitlab-ci-performance/references/methodology.md),
 [trace precision/cache rules](skills/gitlab-ci-performance/references/trace-analysis.md)
 and [changelog](CHANGELOG.md).
 
+## Workflow analysis (unreleased)
+
+![Synthetic workflow performance report](docs/workflow-report.png)
+
+Workflow mode adds separate **2.0.0** contracts alongside reviewed job reports
+and preserved v1 artifacts. It is pending release; the published v2.0.1 tag does
+not include this route. Read the [workflow methodology and CLI examples](skills/gitlab-ci-performance/references/workflows.md)
+and use the installed [generic model](skills/gitlab-ci-performance/assets/workflow-model.json).
+The agent verifies resolved CI configuration, records explicit historical coverage
+and stamps it with `define-workflows`. `--workflow-window` defaults to 32 pipeline
+runs; `--workflow-window 64` requests 64. Every retained attempt in those pipelines
+stays in the selected job view.
+
+```bash
+# After creating verified workflows.json as documented in references/workflows.md:
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
+  --host gitlab.example.com --project group/project --workflow-window 64 \
+  --output reports/workflow-run/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/workflow-run/jobs.json --workflows workflows.json \
+  --output reports/workflow-run/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/workflow-run/report.json --output reports/workflow-run/report.html
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export-llm \
+  --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
+```
+
+Workflow schema/calculation 2.0.0 exports nullable elapsed/active/gap/queue values,
+coverage, membership, evidence and exact baseline sample IDs. Parallel time is an
+interval union. Latest attempts determine outcomes; all retained attempts contribute
+timing. Independent operations keep separate histories. Missing historical
+configuration is explicit; cross-pipeline chains are unsupported. Baselines need
+at least three preceding comparable complete successes, up to ten. Failed/partial
+measurements are excluded. Canonical JSON and compact LLM exports share seconds.
+HTML switches to minutes strictly above 300 seconds in the selected series/metric
+and offers English/Russian selection. v1 snapshots require recollection for workflows.
+
+Generate the offline synthetic workflow demo with unit-boundary fixtures:
+
+```bash
+.venv/bin/python examples/generate_workflow_demo.py --output-dir reports/workflow-demo
+```
+
+Additional contracts: [workflows](skills/gitlab-ci-performance/schemas/workflows.schema.json),
+[workflow-jobs](skills/gitlab-ci-performance/schemas/workflow-jobs.schema.json),
+[workflow-report](skills/gitlab-ci-performance/schemas/workflow-report.schema.json),
+[workflow-llm](skills/gitlab-ci-performance/schemas/workflow-llm.schema.json).
+A clean installed skill contains the required modules, templates, schemas and the model;
+it does not depend on this repository's tests/examples.
+
 ## Development and evidence
 
 ```sh
@@ -126,6 +176,8 @@ bundled browser in CI. Checks cover en/ru, 32/64, all retained attempts, evidenc
 320/375/1280 px light/dark, keyboard/focus, safe links, moved HTML and denied network.
 `tests/test_installed_skill.py` tests a clean skill-only installation/update with
 a synthetic standalone glab transport, request/payload limits and privacy sentinels.
+
+`tests/workflow_browser_check.cjs` checks offline workflow parity, 32/64 pipeline windows, attempts, en/ru, mobile layout and the 300-second boundary.
 
 ## Canonical report and compact LLM exports (#4)
 

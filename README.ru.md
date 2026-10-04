@@ -113,6 +113,56 @@ workers 1–8, по умолчанию 4, timeout 60 с, лимит 32 MiB (`--m
 [точность/кэш логов](skills/gitlab-ci-performance/references/trace-analysis.md),
 [история изменений](CHANGELOG.md).
 
+## Workflow-анализ (не выпущен)
+
+![Синтетический workflow-отчёт](docs/workflow-report.png)
+
+Workflow-режим добавляет отдельные контракты **2.0.0**, сохраняя reviewed-отчёты
+и артефакты v1. Режим пока не выпущен; опубликованный тег v2.0.1 его не содержит. Правила и CLI — в [методике workflow](skills/gitlab-ci-performance/references/workflows.md),
+структура модели — в [установленном примере](skills/gitlab-ci-performance/assets/workflow-model.json).
+Агент проверяет разрешённую CI-конфигурацию, явно указывает историческое покрытие
+и сохраняет подтверждения через `define-workflows`. `--workflow-window` выбирает
+32 pipeline по умолчанию; `--workflow-window 64` выбирает 64. Все сохранённые
+попытки jobs этих pipeline входят в то же выбранное окно.
+
+```bash
+# Сначала подготовьте проверенный workflows.json по references/workflows.md:
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
+  --host gitlab.example.com --project group/project --workflow-window 64 \
+  --output reports/workflow-run/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/workflow-run/jobs.json --workflows workflows.json \
+  --output reports/workflow-run/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/workflow-run/report.json --output reports/workflow-run/report.html
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export-llm \
+  --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
+```
+
+Схема/расчёт workflow 2.0.0 экспортируют nullable elapsed/active/gap/queue,
+покрытие, членство попыток, подтверждения определения и точные ID baseline.
+Параллельное время считается объединением интервалов. Последняя попытка задаёт
+исход, а все сохранённые попытки входят во время. Независимые операции имеют
+отдельные истории. Отсутствие исторической конфигурации явно отмечается;
+цепочки между pipeline не поддерживаются. Baseline требует минимум три
+предшествующих сопоставимых успешных полных измерения, максимум десять.
+Ошибочные/частичные измерения исключены. JSON и LLM-export используют одинаковые
+секунды; HTML переходит к минутам строго выше 300 секунд в выбранной серии/метрике
+и позволяет выбрать русский/английский интерфейс. Для v1-снимков нужен новый сбор.
+
+Автономный синтетический пример, включая фикстуры границы единиц:
+
+```bash
+.venv/bin/python examples/generate_workflow_demo.py --output-dir reports/workflow-demo
+```
+
+Новые контракты: [workflows](skills/gitlab-ci-performance/schemas/workflows.schema.json),
+[workflow-jobs](skills/gitlab-ci-performance/schemas/workflow-jobs.schema.json),
+[workflow-report](skills/gitlab-ci-performance/schemas/workflow-report.schema.json),
+[workflow-llm](skills/gitlab-ci-performance/schemas/workflow-llm.schema.json).
+Установленная копия содержит необходимые модули, шаблоны, схемы и модель; папки tests/examples
+исходного репозитория ей не нужны.
+
 ## Разработка
 
 ```sh
@@ -127,6 +177,8 @@ CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исхо
 доказательства, 320/375/1280 px, обе темы, клавиатура, перенос HTML и запрет сети.
 `tests/test_installed_skill.py` проверяет чистую установку/обновление через
 синтетический glab, ограничения запросов/размера и отсутствие сырого содержимого.
+
+`tests/workflow_browser_check.cjs` проверяет автономный workflow-отчёт: окна 32/64 pipeline, попытки, en/ru, мобильную вёрстку и границу 300 секунд.
 
 ## Канонический отчёт и compact JSON для LLM (#4)
 

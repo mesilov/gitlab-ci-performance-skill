@@ -7,7 +7,7 @@ const url=process.argv[2],output=process.argv[3],language=process.argv[4]||'en',
 if(!url||!output||!['en','ru'].includes(language))throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_DIRECTORY [en|ru]');
 (async()=>{
   fs.mkdirSync(output,{recursive:true});
-  const browser=await chromium.launch({channel:'chrome',headless:true});
+  const browser=await chromium.launch({channel:process.env.CI_REPORT_BROWSER_CHANNEL||'chrome',headless:true});
   try{
     const context=await browser.newContext({viewport:{width:1280,height:1000},offline:true});
     const page=await context.newPage(),errors=[],requests=[];

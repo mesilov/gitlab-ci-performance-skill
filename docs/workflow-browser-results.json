@@ -1,0 +1,17 @@
+{
+  "offline": true,
+  "checks": [
+    "canonical metric and chart parity",
+    "32/64 pipeline windows",
+    "shared keyboard/pipeline selection",
+    "job and attempt drill-down",
+    "independent operation series",
+    "failed baseline exclusion",
+    "unknown not zero",
+    "CLI and in-report language selection",
+    "desktop/mobile/dark rendering",
+    "300-second boundary",
+    "standalone rendering",
+    "no network or console errors"
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "collection_started_at",
+    "collected_at",
+    "timezone",
+    "project",
+    "source",
+    "jobs",
+    "pipelines"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0.0"
+    },
+    "kind": {
+      "const": "workflow-jobs"
+    },
+    "collection_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transport",
+        "glab_version",
+        "gitlab_version",
+        "requested_window",
+        "anchor_pipeline_id",
+        "pipeline_pages",
+        "max_pages",
+        "pipeline_list_complete",
+        "pipelines",
+        "limitations",
+        "pipeline_history_exhausted"
+      ],
+      "properties": {
+        "transport": {
+          "const": "glab"
+        },
+        "glab_version": {
+          "type": "string"
+        },
+        "gitlab_version": {
+          "type": "string"
+        },
+        "requested_window": {
+          "enum": [
+            32,
+            64
+          ]
+        },
+        "anchor_pipeline_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "pipeline_pages": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_pages": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pipeline_list_complete": {
+          "type": "boolean"
+        },
+        "pipelines": {
+          "type": "object",
+          "patternProperties": {
+            "^[1-9][0-9]*$": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "metadata_complete",
+                "jobs_complete",
+                "pages",
+                "anchor_job_id",
+                "error"
+              ],
+              "properties": {
+                "metadata_complete": {
+                  "type": "boolean"
+                },
+                "jobs_complete": {
+                  "type": "boolean"
+                },
+                "pages": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "anchor_job_id": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1
+                },
+                "error": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pipeline_history_exhausted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "pipeline_id",
+          "name",
+          "stage",
+          "ref",
+          "status",
+          "allow_failure",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "queued_seconds",
+          "failure_reason",
+          "runner",
+          "web_url"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "ID \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u0439 \u043f\u043e\u043f\u044b\u0442\u043a\u0438 \u0437\u0430\u043f\u0443\u0441\u043a\u0430; \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u0442\u0441\u044f \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u0439 \u0437\u0430\u043f\u0438\u0441\u044c\u044e."
+          },
+          "pipeline_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "name": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "allow_failure": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "\u0412\u0440\u0435\u043c\u044f \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f \u0438\u0437 GitLab API duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; null \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u0438\u044f."
+          },
+          "queued_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "\u0412\u0440\u0435\u043c\u044f \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u044f \u0438\u0437 GitLab API queued_duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; null \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u0438\u044f."
+          },
+          "failure_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "runner": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "description"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      }
+    },
+    "pipelines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ref",
+          "sha",
+          "status",
+          "source",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "duration_seconds",
+          "queued_seconds",
+          "web_url"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ref": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "\u0421\u043e\u0431\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u0435 \u0432\u0440\u0435\u043c\u044f pipeline \u0438\u0437 GitLab API duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; \u043d\u0435 \u0441\u0443\u043c\u043c\u0430 \u0432\u0440\u0435\u043c\u0451\u043d \u0434\u0436\u043e\u0431."
+          },
+          "queued_seconds": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "\u0412\u0440\u0435\u043c\u044f \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u044f \u0438\u0437 GitLab API queued_duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; null \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u0438\u044f."
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gitlab-ci-performance:workflow-jobs:2"
+}

@@ -8,7 +8,7 @@ if(!url||!output||!['en','ru'].includes(language))throw Error('Usage: browser_ch
 const russian=language==='ru';
 (async()=>{
   fs.mkdirSync(output,{recursive:true});
-  const browser=await chromium.launch({channel:'chrome',headless:true});
+  const browser=await chromium.launch({channel:process.env.CI_REPORT_BROWSER_CHANNEL||'chrome',headless:true});
   try{
     const context=await browser.newContext({viewport:{width:1280,height:1000},offline:true});
     const page=await context.newPage(),errors=[],requests=[];

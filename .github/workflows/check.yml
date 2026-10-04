@@ -29,6 +29,17 @@ jobs:
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --language ru --output reports/smoke/report-ru.html
           python examples/generate_release_demo.py --output-dir reports/release-smoke
           python examples/generate_reviewed.py --output-dir reports/reviewed-smoke
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/release-smoke/report.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/release-smoke/report.json --language ru --output reports/release-smoke/report-ru.html
+      - run: |
+          python examples/generate_workflow_demo.py --output-dir reports/workflows
+          tar --exclude='__pycache__' --exclude='*.pyc' -czf reports/gitlab-ci-performance-workflow-smoke.tar.gz -C skills gitlab-ci-performance
+          mkdir -p "$RUNNER_TEMP/workflow-install"
+          tar -xzf reports/gitlab-ci-performance-workflow-smoke.tar.gz -C "$RUNNER_TEMP/workflow-install"
+          python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" report --snapshot reports/workflows/jobs.json --workflows reports/workflows/workflows.json --output reports/installed/report.json
+          python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" render --report reports/installed/report.json --output reports/installed/report.html
+          python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" export-llm --report reports/installed/report.json --output reports/installed/llm.json
+          python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" validate reports/installed/llm.json
       - run: |
           python examples/generate_v2.py --output-dir reports/v2-contract-smoke
           python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/jobs.json
@@ -44,13 +55,25 @@ jobs:
           python-version: '3.12'
       - run: |
           python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
-      - run: npm install --no-save playwright@1.62.1
-      - run: npx playwright install --with-deps chromium
+      - run: npm install --prefix "$RUNNER_TEMP/workflow-browser" --ignore-scripts --no-audit --no-fund playwright@1.62.1
+      - run: node "$RUNNER_TEMP/workflow-browser/node_modules/playwright/cli.js" install --with-deps chromium
       - run: |
-          python examples/generate_reviewed.py --output-dir reports/browser-demo
           python examples/generate_v2.py --output-dir reports/browser-contract-demo
           python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-contract-demo/report.json --language ru --output reports/browser-contract-demo/report-ru.html
       - run: |
+          python examples/generate_demo.py --output-dir reports/jobs
+          python examples/generate_workflow_demo.py --output-dir reports/workflows
+          python examples/generate_release_demo.py --output-dir reports/releases
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/jobs/report.json --language ru --output reports/jobs/report-ru.html
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/releases/report.json --language ru --output reports/releases/report-ru.html
+          export CI_REPORT_PLAYWRIGHT="$RUNNER_TEMP/workflow-browser/node_modules/playwright"
+          export CI_REPORT_BROWSER_CHANNEL=chromium
+          node tests/browser_check.cjs "file://$GITHUB_WORKSPACE/reports/jobs/report.html" reports/jobs/qa
+          node tests/browser_check.cjs "file://$GITHUB_WORKSPACE/reports/jobs/report-ru.html" reports/jobs/qa-ru ru
+          node tests/browser_release_check.cjs "file://$GITHUB_WORKSPACE/reports/releases/report.html" reports/releases/qa
+          node tests/browser_release_check.cjs "file://$GITHUB_WORKSPACE/reports/releases/report-ru.html" reports/releases/qa-ru ru
+          node tests/workflow_browser_check.cjs "file://$GITHUB_WORKSPACE/reports/workflows/report.html" reports/workflows/qa
+          python examples/generate_reviewed.py --output-dir reports/browser-demo
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report.html" reports/browser-en
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
           node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/browser-contract-en
