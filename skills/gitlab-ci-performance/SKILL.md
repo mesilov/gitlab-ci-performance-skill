@@ -37,6 +37,19 @@ The examples above assume installation in the current project's .agents/skills;
 for other installations, use the helper's actual path. The default timezone is
 UTC; --timezone selects another IANA timezone for display.
 
+Choose the HTML language with `render --language en|ru`. For Russian:
+`ci_report.py render --report <run-dir>/report.json --language ru --output <run-dir>/report-ru.html`.
+The default is English (`en`); unsupported language values are rejected.
+Headings, controls, chart labels, tooltips, status explanations, dates, numbers,
+and time units follow the selected language. The timezone comes from the saved
+snapshot; set `--timezone` during `collect`.
+Preserve job names, stages, refs, URLs, and verified catalog descriptions verbatim.
+Rendering does not change JSON or embedded source data: the same report.json can
+produce both languages using separate unused output paths.
+Generated unknown-purpose text is localized only with explicit
+`purpose_from_catalog: false`; legacy JSON without that field keeps all saved
+descriptions verbatim.
+
 Verify job purposes against the CI configuration, recording the source URL/ref
 and verification date in the catalog; leave unknown purposes unknown. The catalog
 explains the verified configuration, not every historical version.
@@ -54,7 +67,7 @@ Choose refs from the user's scope and verified CI configuration; tag names alone
 do not establish comparability. Patterns and absent refs are rejected.
 This optional mode leaves same-ref comparison as the default.
 
-Open “Release history across selected refs / tags” in the HTML, choose a job,
+Open the release-history panel in the HTML (its label follows the report language), choose a job,
 then select an attempt. The stack separates execution and runner queue time;
 details preserve refs, IDs, status, pipeline source, SHA and runner metadata.
 Unsuccessful attempts stay visible but are excluded from successful baselines.
@@ -81,7 +94,7 @@ their cause is unknown without a separate investigation.
 
 Finish with a link to the viewable report.html and a brief conclusion: what regressed,
 whether queue or execution time was affected, what the affected jobs do, and where
-data is insufficient. The HTML report UI is in English. Job descriptions are taken
+data is insufficient. The HTML report UI uses the selected language (`en` by default, also `ru`). Job descriptions are taken
 from the catalog without translation.
 For a preview, open the local report.html directly in a browser through file://;
 do not start a server. Data is embedded in the HTML, with separate JSON files kept

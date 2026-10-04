@@ -18,6 +18,20 @@ def releases():
 
 
 class ReleaseHistoryTests(unittest.TestCase):
+    def test_catalog_provenance_and_legacy_release_groups_are_preserved(self):
+        s = releases()
+        refs = [p['ref'] for p in s['pipelines']]
+        fallback = {'description': 'Purpose is not documented in the verified catalog.',
+                    'source_url': None, 'verified_at': None}
+        generated = ci.build_report(s, release_refs=refs)
+        self.assertIs(generated['release_history']['groups'][0].get('purpose_from_catalog'), False)
+        supplied = ci.build_report(s, release_refs=refs, catalog={'project': s['project']['path'], 'jobs': {'build': fallback}})
+        self.assertTrue(supplied['release_history']['groups'][0].get('purpose_from_catalog'))
+        self.assertEqual(supplied['release_history']['groups'][0]['purpose'], fallback)
+        for report in [generated, supplied]:
+            del report['release_history']['groups'][0]['purpose_from_catalog']
+            ci.validate(report, 'report')
+
     def history(self, snapshot=None, refs=None):
         snapshot = snapshot or releases()
         return ci.build_report(snapshot, release_refs=refs or [p["ref"] for p in snapshot["pipelines"]])["release_history"]

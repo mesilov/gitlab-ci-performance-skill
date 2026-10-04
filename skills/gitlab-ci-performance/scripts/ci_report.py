@@ -5,6 +5,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
+import html
 import json
 import math
 import os
@@ -44,7 +45,7 @@ def digest(value):
 def load(path):
     def reject(value):
         raise ValueError("Non-finite JSON value")
-    return json.loads(Path(path).read_text(), parse_constant=reject)
+    return json.loads(Path(path).read_text(encoding="utf-8"), parse_constant=reject)
 
 
 def validate(value, kind):
@@ -78,9 +79,13 @@ def validate(value, kind):
             raise ValueError("Job/pipeline relation mismatch")
     history = value.get("release_history")
     if history is not None:
-        descriptions = {g["name"]: g["purpose"] for g in history["groups"]}
+        descriptions = {g["name"]: g["purpose"] for g in history["groups"]
+                        if g.get("purpose_from_catalog") is not False}
         expected = build_release_history(value, history["refs"], history["baseline_window"],
                                          value["method"]["policy"], descriptions)
+        for original, calculated in zip(history["groups"], expected["groups"]):
+            if "purpose_from_catalog" not in original:
+                calculated.pop("purpose_from_catalog", None)
         if history != expected:
             raise ValueError("Release history does not match source attempts, samples or calculations")
 
@@ -313,6 +318,7 @@ def build_release_history(snapshot, refs, baseline_window, policy, descriptions)
         if contexts["current"]["missing_runner_attempts"] or contexts["baseline"]["missing_runner_attempts"]:
             limitations.append("runner_context_incomplete")
         groups.append({"name": name, "stage": stage,
+                       "purpose_from_catalog": name in descriptions,
                        "purpose": descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
                                                            "source_url": None, "verified_at": None}),
                        "attempt_ids": [j["id"] for j in attempts],
@@ -369,6 +375,7 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
                 purpose = descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
                                                    "source_url": None, "verified_at": None})
                 groups.append({"name": name, "stage": stage, "ref": ref_name, "purpose": purpose,
+                               "purpose_from_catalog": name in descriptions,
                                "current": c, "baseline": b, "execution_change": execution, "queue_change": queue,
                                "drivers": [key for key, result in [("execution", execution), ("queue", queue)] if result["status"] == "regressed"],
                                "latest_attempt_id": max((j["id"] for j in cj), default=None)})
@@ -397,17 +404,26 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
     return result
 
 
-def render(report, output):
+def render(report, output, language="en"):
+    if language not in {"en", "ru"}:
+        raise ValueError("Unsupported report language: choose en or ru")
     validate(report, "report")
-    payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    template = (ROOT / "assets" / "report.html").read_text()
-    html = template.replace("__REPORT_DATA__", payload)
+
+    def script_json(value):
+        return json.dumps(value, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+    messages = load(ROOT / "locales" / f"{language}.json")
+    template = (ROOT / "assets" / "report.html").read_text(encoding="utf-8")
+    # Resolve template tokens before inserting source data, which may itself contain tokens.
+    template = re.sub(r"__TEXT:([a-z0-9_]+)__", lambda m: html.escape(messages[m[1]], quote=True), template)
+    template = template.replace("__LANGUAGE__", language)
+    rendered = template.replace("__REPORT_I18N__", script_json(messages)).replace("__REPORT_DATA__", script_json(report))
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     if output.exists():
         raise ValueError("HTML output уже существует")
-    with output.open("x") as f:
-        f.write(html)
+    with output.open("x", encoding="utf-8") as f:
+        f.write(rendered)
 
 
 def main():
@@ -435,6 +451,8 @@ def main():
     render_p = commands.add_parser("render")
     render_p.add_argument("--report", type=Path, required=True)
     render_p.add_argument("--output", type=Path, required=True)
+    render_p.add_argument("--language", choices=("en", "ru"), default="en",
+                          help="HTML interface language and time/number locale (default: en); source data is preserved")
     validate_p = commands.add_parser("validate")
     validate_p.add_argument("path", type=Path)
     args = parser.parse_args()
@@ -447,7 +465,7 @@ def main():
                               args.windows, args.baseline_window, policy, load(args.catalog) if args.catalog else None, args.release_refs)
         save(args.output, result, "report")
     elif args.command == "render":
-        render(load(args.report), args.output)
+        render(load(args.report), args.output, args.language)
     else:
         data = load(args.path)
         if data.get("kind") not in {"jobs", "report"}:

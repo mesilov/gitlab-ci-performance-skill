@@ -1,6 +1,9 @@
 import copy
 import importlib.util
 import json
+import re
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -183,6 +186,70 @@ class ContractAndTransportTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path=Path(d)/'bad.json';path.write_text('{"x": NaN}')
             with self.assertRaises(ValueError):ci.load(path)
+
+
+class ReportLanguageTests(unittest.TestCase):
+    def test_fallback_origin_does_not_depend_on_catalog_text_or_nullable_provenance(self):
+        s = sample()
+        fallback = {'description': 'Purpose is not documented in the verified catalog.',
+                    'source_url': None, 'verified_at': None}
+        catalog = {'project': s['project']['path'], 'jobs': {'build': fallback}}
+        supplied = ci.build_report(s, catalog=catalog)['views'][0]['groups'][0]
+        missing = ci.build_report(s)['views'][0]['groups'][0]
+        self.assertTrue(supplied.get('purpose_from_catalog'))
+        self.assertIs(missing.get('purpose_from_catalog'), False)
+        self.assertEqual(supplied['purpose'], fallback)
+
+    def test_render_defaults_to_english_and_localizes_russian_without_changing_data(self):
+        s = sample()
+        s['jobs'][0]['name'] = 'job __LANGUAGE__ __TEXT:execution_p50__ __REPORT_I18N__ </script><img src=x> русский'
+        catalog = {'project': s['project']['path'], 'jobs': {
+            'build': {'description': 'Verified original description', 'source_url': None, 'verified_at': None}}}
+        report = ci.build_report(s, catalog=catalog)
+        original = copy.deepcopy(report)
+        with tempfile.TemporaryDirectory() as d:
+            for language, title in [('en', 'How CI is performing'), ('ru', 'Как работает CI')]:
+                path = Path(d) / f'{language}.html'
+                if language == 'en':
+                    ci.render(report, path)
+                else:
+                    ci.render(report, path, language=language)
+                html = path.read_text()
+                self.assertIn(f'<html lang="{language}">', html)
+                self.assertIn(f'<h1>{title}</h1>', html)
+                self.assertNotRegex(html.split('<script id="report-data"')[0], r'__TEXT:[a-z0-9_]+__')
+                embedded = re.search(r'<script id="report-data" type="application/json">(.*?)</script>', html, re.S)
+                self.assertEqual(json.loads(embedded.group(1)), original)
+                self.assertNotIn('</script><img', html)
+        self.assertEqual(report, original)
+
+    def test_render_rejects_unsupported_language_before_creating_output(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'nested' / 'report.html'
+            with self.assertRaisesRegex(ValueError, 'language'):
+                ci.render(ci.build_report(sample()), path, language='de')
+            self.assertFalse(path.parent.exists())
+
+    def test_render_cli_language_default_choices_and_help(self):
+        script = str(ci.ROOT / 'scripts' / 'ci_report.py')
+        with tempfile.TemporaryDirectory() as d:
+            report = Path(d) / 'report.json'
+            ci.save(report, ci.build_report(sample()), 'report')
+            for extra, expected in [([], 'en'), (['--language', 'en'], 'en'), (['--language', 'ru'], 'ru')]:
+                path = Path(d) / ('report-' + str(len(list(Path(d).glob('*.html')))) + '.html')
+                result = subprocess.run([sys.executable, script, 'render', '--report', str(report),
+                                         '--output', str(path)] + extra, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(f'<html lang="{expected}">', path.read_text())
+            invalid = Path(d) / 'invalid.html'
+            result = subprocess.run([sys.executable, script, 'render', '--report', str(report),
+                                     '--output', str(invalid), '--language', 'de'], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('invalid choice', result.stderr)
+            self.assertFalse(invalid.exists())
+        help_result = subprocess.run([sys.executable, script, 'render', '--help'], capture_output=True, text=True)
+        self.assertIn('--language {en,ru}', help_result.stdout)
+        self.assertIn('default: en', ' '.join(help_result.stdout.split()))
 
 
 if __name__ == '__main__':unittest.main()

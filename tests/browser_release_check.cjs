@@ -3,8 +3,8 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {fileURLToPath,pathToFileURL}=require('node:url');
-const url=process.argv[2],output=process.argv[3];
-if(!url||!output)throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_DIRECTORY');
+const url=process.argv[2],output=process.argv[3],language=process.argv[4]||'en',russian=language==='ru';
+if(!url||!output||!['en','ru'].includes(language))throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_DIRECTORY [en|ru]');
 (async()=>{
   fs.mkdirSync(output,{recursive:true});
   const browser=await chromium.launch({channel:'chrome',headless:true});
@@ -16,12 +16,18 @@ if(!url||!output)throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_D
     const g=data.release_history.groups.find(g=>g.name==='build');
     await page.goto(url);
     assert.equal(await page.locator('#release-panel').getAttribute('open'),null);
-    assert.match(await page.locator('#situation').innerText(),/not enough|No successful/i);
+    assert.equal(await page.locator('html').getAttribute('lang'),language);
+    assert.match(await page.locator('#situation').innerText(),russian?/недостаточно|Нет успешных/:/not enough|No successful/i);
     await page.locator('#release-panel summary').click();
+    assert.equal(await page.locator('#release-panel summary').innerText(),russian?'История релизов по выбранным refs / тегам':'Release history across selected refs / tags');
+    assert.equal(await page.locator('#release-job').getAttribute('aria-label'),russian?'Задание релиза':'Release job');
     assert.equal(await page.locator('.release-attempt').count(),32);
-    assert.match(await page.locator('#release-comparison').innerText(),/Exploratory/);
+    assert.match(await page.locator('#release-comparison').innerText(),russian?/Исследовательское/:/Exploratory/);
     assert.match(await page.locator('#release-comparison').innerText(),new RegExp(String(g.execution_change.delta_seconds)));
-    assert.match(await page.locator('#release-context').innerText(),/configuration.*not verified/i);
+    assert.match(await page.locator('#release-context').innerText(),russian?/Конфигурация.*не проверены/:/configuration.*not verified/i);
+    assert.match(await page.locator('#release-purpose').innerText(),russian?/Назначение не описано/:/Purpose is not documented/);
+    assert.match(await page.locator('#release-chart svg').getAttribute('aria-label'),russian?/Выполнение задания релиза/:/Release job execution/);
+    assert.match(await page.locator('#release-chart title').first().textContent(),russian?/очередь раннера.*выполнение/:/runner queue.*execution/);
     const run=page.locator('.release-attempt[data-id="2700"] [data-component="execution"]');
     assert.equal(Number(await run.getAttribute('data-seconds')),200);
     await page.locator('#release-window').selectOption('64');
@@ -30,10 +36,12 @@ if(!url||!output)throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_D
     assert.equal(await missing.locator('[data-component="execution"]').count(),0);
     await missing.focus();await page.keyboard.press('Enter');
     assert.match(await page.locator('#release-selected').innerText(),/v1.8/);
-    assert.match(await page.locator('#release-selected').innerText(),/not available/);
+    assert.match(await page.locator('#release-selected').innerText(),russian?/нет данных/:/not available/);
     await page.locator('.release-attempt[data-id="2122"]').click();
-    assert.match(await page.locator('#release-selected').innerText(),/failed/);
-    assert.match(await page.locator('#release-selected').innerText(),/Excluded/);
+    assert.match(await page.locator('#release-selected').innerText(),russian?/ошибка/:/failed/);
+    assert.match(await page.locator('#release-selected').innerText(),russian?/Исключено/:/Excluded/);
+    assert.doesNotMatch(await page.locator('#release-panel').innerText(),/\{[a-z0-9_]+\}|__TEXT:/);
+    assert.deepEqual(await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent)),data);
     await page.locator('#release-job').selectOption('1');
     assert.match(await page.locator('#release-purpose').innerText(),/publish/);
     assert.equal(await page.locator('.release-attempt[data-id="2700"]').count(),0);
@@ -48,7 +56,7 @@ if(!url||!output)throw Error('Usage: browser_release_check.cjs FILE_URL OUTPUT_D
     await page.goto(pathToFileURL(detached).href);await page.locator('#release-panel summary').click();
     assert.equal(await page.locator('.release-attempt').count(),32);fs.unlinkSync(detached);
     assert.deepEqual(errors,[]);assert.equal(requests.some(u=>!u.startsWith('file:')),false);
-    const result={offline:true,checks:['same-ref default','32/64 release attempts','explicit refs and sample sizes','execution/queue JSON parity','unknown versus zero','failed attempts excluded from baseline','keyboard selection','job selection','mobile overflow','dark mode','standalone HTML','no network or JS errors']};
+    const result={offline:true,language,checks:['localized release controls, context, statuses, tooltips and accessibility','source JSON preservation','same-ref default','32/64 release attempts','explicit refs and sample sizes','execution/queue JSON parity','unknown versus zero','failed attempts excluded from baseline','keyboard selection','job selection','mobile overflow','dark mode','standalone HTML','no network or JS errors']};
     fs.writeFileSync(path.join(output,'release-browser-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
