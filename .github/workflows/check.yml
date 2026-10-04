@@ -29,6 +29,12 @@ jobs:
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --language ru --output reports/smoke/report-ru.html
           python examples/generate_release_demo.py --output-dir reports/release-smoke
           python examples/generate_reviewed.py --output-dir reports/reviewed-smoke
+      - run: |
+          python examples/generate_v2.py --output-dir reports/v2-contract-smoke
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/jobs.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/report.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py validate reports/v2-contract-smoke/overview.json
+          python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/v2-contract-smoke/report.json --language ru --output reports/v2-contract-smoke/report-ru.html
   browser:
     runs-on: ubuntu-latest
     steps:
@@ -40,9 +46,14 @@ jobs:
           python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
       - run: npm install --no-save playwright@1.62.1
       - run: npx playwright install --with-deps chromium
-      - run: python examples/generate_reviewed.py --output-dir reports/browser-demo
+      - run: |
+          python examples/generate_reviewed.py --output-dir reports/browser-demo
+          python examples/generate_v2.py --output-dir reports/browser-contract-demo
+          python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-contract-demo/report.json --language ru --output reports/browser-contract-demo/report-ru.html
       - run: |
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report.html" reports/browser-en
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
+          node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/browser-contract-en
+          node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/browser-contract-ru
         env:
           CI_REPORT_BROWSER_CHANNEL: chromium

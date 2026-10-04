@@ -1,0 +1,1674 @@
+{
+  "baseline_job_ids": [],
+  "collected_at": "2026-10-04T00:00:00+00:00",
+  "collection_started_at": "2026-10-04T00:00:00+00:00",
+  "jobs": [
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T04:00:00+00:00",
+      "duration_seconds": 35,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T04:00:40+00:00",
+      "id": 104,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "release",
+      "pipeline_id": 104,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000068",
+      "stage": "release",
+      "started_at": "2026-09-01T04:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/104"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T03:00:00+00:00",
+      "duration_seconds": 35,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T03:00:40+00:00",
+      "id": 103,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "release",
+      "pipeline_id": 103,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000067",
+      "stage": "release",
+      "started_at": "2026-09-01T03:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/103"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T02:00:00+00:00",
+      "duration_seconds": 35,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T02:00:40+00:00",
+      "id": 102,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "release",
+      "pipeline_id": 102,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000066",
+      "stage": "release",
+      "started_at": "2026-09-01T02:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/102"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T01:00:00+00:00",
+      "duration_seconds": 35,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T01:00:40+00:00",
+      "id": 101,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "release",
+      "pipeline_id": 101,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000065",
+      "stage": "release",
+      "started_at": "2026-09-01T01:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/101"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T04:00:00+00:00",
+      "duration_seconds": 330,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T04:05:35+00:00",
+      "id": 4,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "image_build",
+      "pipeline_id": 4,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000004",
+      "stage": "build",
+      "started_at": "2026-09-01T04:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/4"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T03:00:00+00:00",
+      "duration_seconds": 330,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T03:05:35+00:00",
+      "id": 3,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "image_build",
+      "pipeline_id": 3,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000003",
+      "stage": "build",
+      "started_at": "2026-09-01T03:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/3"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T02:00:00+00:00",
+      "duration_seconds": 330,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T02:05:35+00:00",
+      "id": 2,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "image_build",
+      "pipeline_id": 2,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000002",
+      "stage": "build",
+      "started_at": "2026-09-01T02:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/2"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T01:00:00+00:00",
+      "duration_seconds": 330,
+      "erased_at": null,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T01:05:35+00:00",
+      "id": 1,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "name": "image_build",
+      "pipeline_id": 1,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "synthetic-runner",
+        "id": 1
+      },
+      "sha": "0000000000000000000000000000000000000001",
+      "stage": "build",
+      "started_at": "2026-09-01T01:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1"
+    }
+  ],
+  "kind": "gitlab_job_performance_source",
+  "pipelines": [
+    {
+      "created_at": "2026-09-01T04:00:00+00:00",
+      "duration_seconds": 35,
+      "finished_at": "2026-09-01T04:00:40+00:00",
+      "id": 104,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000068",
+      "source": "push",
+      "started_at": "2026-09-01T04:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/104"
+    },
+    {
+      "created_at": "2026-09-01T03:00:00+00:00",
+      "duration_seconds": 35,
+      "finished_at": "2026-09-01T03:00:40+00:00",
+      "id": 103,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000067",
+      "source": "push",
+      "started_at": "2026-09-01T03:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/103"
+    },
+    {
+      "created_at": "2026-09-01T02:00:00+00:00",
+      "duration_seconds": 35,
+      "finished_at": "2026-09-01T02:00:40+00:00",
+      "id": 102,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000066",
+      "source": "push",
+      "started_at": "2026-09-01T02:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/102"
+    },
+    {
+      "created_at": "2026-09-01T01:00:00+00:00",
+      "duration_seconds": 35,
+      "finished_at": "2026-09-01T01:00:40+00:00",
+      "id": 101,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000065",
+      "source": "push",
+      "started_at": "2026-09-01T01:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/101"
+    },
+    {
+      "created_at": "2026-09-01T04:00:00+00:00",
+      "duration_seconds": 330,
+      "finished_at": "2026-09-01T04:05:35+00:00",
+      "id": 4,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000004",
+      "source": "push",
+      "started_at": "2026-09-01T04:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/4"
+    },
+    {
+      "created_at": "2026-09-01T03:00:00+00:00",
+      "duration_seconds": 330,
+      "finished_at": "2026-09-01T03:05:35+00:00",
+      "id": 3,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000003",
+      "source": "push",
+      "started_at": "2026-09-01T03:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/3"
+    },
+    {
+      "created_at": "2026-09-01T02:00:00+00:00",
+      "duration_seconds": 330,
+      "finished_at": "2026-09-01T02:05:35+00:00",
+      "id": 2,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000002",
+      "source": "push",
+      "started_at": "2026-09-01T02:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/2"
+    },
+    {
+      "created_at": "2026-09-01T01:00:00+00:00",
+      "duration_seconds": 330,
+      "finished_at": "2026-09-01T01:05:35+00:00",
+      "id": 1,
+      "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+      "metadata_error": null,
+      "metadata_fresh": true,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000001",
+      "source": "push",
+      "started_at": "2026-09-01T01:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/1"
+    }
+  ],
+  "project": {
+    "default_branch": "main",
+    "host": "gitlab.example.com",
+    "id": 42,
+    "path": "example/demo-service",
+    "web_url": "https://gitlab.example.com/example/demo-service"
+  },
+  "retained_job_ids": [
+    104,
+    103,
+    102,
+    101,
+    4,
+    3,
+    2,
+    1
+  ],
+  "schema_version": "2.0.0",
+  "skill_version": "2.0.1",
+  "source": {
+    "anchor_max_job_id": 104,
+    "budgets": {
+      "baseline_per_type": 10,
+      "concurrency": 4,
+      "max_job_types": 16,
+      "max_pages": 10,
+      "retained_per_type": 64,
+      "timeout_seconds": 60,
+      "trace_bytes": 4194304,
+      "trace_lines": 50000
+    },
+    "complete_available_history": true,
+    "cursor": null,
+    "gitlab_version": "synthetic",
+    "glab_version": "synthetic",
+    "limitations": [
+      "Synthetic sources; no GitLab requests were made"
+    ],
+    "observed_counts": [
+      {
+        "available_count": 4,
+        "count_kind": "exact",
+        "name": "image_build",
+        "stage": "build",
+        "type_id": "jobtype-ed596d8361aeb47303e9"
+      },
+      {
+        "available_count": 4,
+        "count_kind": "exact",
+        "name": "release",
+        "stage": "release",
+        "type_id": "jobtype-b9d2346c8d14d06f8eea"
+      }
+    ],
+    "pages": 2,
+    "requests": {
+      "metadata": 0,
+      "pages": 0,
+      "pipelines": 0,
+      "project": 0,
+      "traces": 0,
+      "version": 0
+    },
+    "resumed_from_sha256": null,
+    "selection_policy": {
+      "cache_max_age_seconds": 86400,
+      "comparison_mode": "same_ref",
+      "job_selectors": [],
+      "refs": []
+    },
+    "stop_reason": "eof",
+    "transport": "glab"
+  },
+  "timezone": "UTC",
+  "traces": [
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 235,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 6,
+        "total_lines": 6,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j104-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j104-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 6,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 35.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j104-command-1",
+          "kind": "command",
+          "lines": {
+            "end": 4,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 15.0,
+            "end_seconds": 25.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j104-command-2",
+          "kind": "command",
+          "lines": {
+            "end": 6,
+            "start": 5
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 35.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 25.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 104,
+      "line_count": 6,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "b72214fe1803fdc36afadda7ad52b28c681f2979b4dc4e3f1efadc664b1e3dcb",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 235,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 6,
+        "total_lines": 6,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j103-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j103-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 6,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 35.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j103-command-1",
+          "kind": "command",
+          "lines": {
+            "end": 4,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 15.0,
+            "end_seconds": 25.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j103-command-2",
+          "kind": "command",
+          "lines": {
+            "end": 6,
+            "start": 5
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 35.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 25.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 103,
+      "line_count": 6,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "83c5f2f90121cea3248b277dd5756e966ef7ca2bc134f370c9cae6db76f45058",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 235,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 6,
+        "total_lines": 6,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j102-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j102-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 6,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 35.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j102-command-1",
+          "kind": "command",
+          "lines": {
+            "end": 4,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 15.0,
+            "end_seconds": 25.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j102-command-2",
+          "kind": "command",
+          "lines": {
+            "end": 6,
+            "start": 5
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 35.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 25.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 102,
+      "line_count": 6,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "000a3306530036169bca3f213e31982918afab9323da4c15b369d3fee7e3a792",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 235,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 6,
+        "total_lines": 6,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j101-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j101-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 6,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 35.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j101-command-1",
+          "kind": "command",
+          "lines": {
+            "end": 4,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 15.0,
+            "end_seconds": 25.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "script_command",
+          "complete": true,
+          "id": "j101-command-2",
+          "kind": "command",
+          "lines": {
+            "end": 6,
+            "start": 5
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 35.0,
+            "origin": "log_interval",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 25.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 101,
+      "line_count": 6,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "448741a2091a4914eb2767aba83e301e7dd079657713ab339f419a001ef012e0",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 654,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 14,
+        "total_lines": 14,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j4-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j4-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 14,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 325.0,
+            "end_seconds": 330.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "image_build",
+          "complete": true,
+          "id": "j4-image-1",
+          "kind": "image",
+          "lines": {
+            "end": 13,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "excluded",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 40.0,
+            "origin": "inferred",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "base_image",
+          "complete": true,
+          "id": "j4-image-1-op-1",
+          "kind": "operation",
+          "lines": {
+            "end": 5,
+            "start": 4
+          },
+          "parent_id": "j4-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 3.0,
+            "end_seconds": 13.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "context_application_copy",
+          "complete": true,
+          "id": "j4-image-1-op-2",
+          "kind": "operation",
+          "lines": {
+            "end": 7,
+            "start": 6
+          },
+          "parent_id": "j4-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 20.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 14.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "dependencies_builder_setup",
+          "complete": true,
+          "id": "j4-image-1-op-3",
+          "kind": "operation",
+          "lines": {
+            "end": 9,
+            "start": 8
+          },
+          "parent_id": "j4-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 8.0,
+            "end_seconds": 29.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 21.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j4-image-1-op-4",
+          "kind": "operation",
+          "lines": {
+            "end": 13,
+            "start": 10
+          },
+          "parent_id": "j4-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j4-image-1-op-4-part-1",
+          "kind": "part",
+          "lines": {
+            "end": 11,
+            "start": 11
+          },
+          "parent_id": "j4-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 36.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j4-image-1-op-4-part-2",
+          "kind": "part",
+          "lines": {
+            "end": 12,
+            "start": 12
+          },
+          "parent_id": "j4-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 36.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 4,
+      "line_count": 14,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "eb84241419303491e5543182b73fa71c04042f0dcef449b8176d6f2a72260837",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 654,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 14,
+        "total_lines": 14,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j3-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j3-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 14,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 325.0,
+            "end_seconds": 330.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "image_build",
+          "complete": true,
+          "id": "j3-image-1",
+          "kind": "image",
+          "lines": {
+            "end": 13,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "excluded",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 40.0,
+            "origin": "inferred",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "base_image",
+          "complete": true,
+          "id": "j3-image-1-op-1",
+          "kind": "operation",
+          "lines": {
+            "end": 5,
+            "start": 4
+          },
+          "parent_id": "j3-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 3.0,
+            "end_seconds": 13.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "context_application_copy",
+          "complete": true,
+          "id": "j3-image-1-op-2",
+          "kind": "operation",
+          "lines": {
+            "end": 7,
+            "start": 6
+          },
+          "parent_id": "j3-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 20.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 14.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "dependencies_builder_setup",
+          "complete": true,
+          "id": "j3-image-1-op-3",
+          "kind": "operation",
+          "lines": {
+            "end": 9,
+            "start": 8
+          },
+          "parent_id": "j3-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 8.0,
+            "end_seconds": 29.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 21.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j3-image-1-op-4",
+          "kind": "operation",
+          "lines": {
+            "end": 13,
+            "start": 10
+          },
+          "parent_id": "j3-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j3-image-1-op-4-part-1",
+          "kind": "part",
+          "lines": {
+            "end": 11,
+            "start": 11
+          },
+          "parent_id": "j3-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 36.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j3-image-1-op-4-part-2",
+          "kind": "part",
+          "lines": {
+            "end": 12,
+            "start": 12
+          },
+          "parent_id": "j3-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 36.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 3,
+      "line_count": 14,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "826f62e612eaa40abc66c4c41b0f32fff1fe622118dfacb1aec4a86acfff01a3",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 654,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 14,
+        "total_lines": 14,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j2-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j2-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 14,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 325.0,
+            "end_seconds": 330.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "image_build",
+          "complete": true,
+          "id": "j2-image-1",
+          "kind": "image",
+          "lines": {
+            "end": 13,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "excluded",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 40.0,
+            "origin": "inferred",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "base_image",
+          "complete": true,
+          "id": "j2-image-1-op-1",
+          "kind": "operation",
+          "lines": {
+            "end": 5,
+            "start": 4
+          },
+          "parent_id": "j2-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 3.0,
+            "end_seconds": 13.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "context_application_copy",
+          "complete": true,
+          "id": "j2-image-1-op-2",
+          "kind": "operation",
+          "lines": {
+            "end": 7,
+            "start": 6
+          },
+          "parent_id": "j2-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 20.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 14.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "dependencies_builder_setup",
+          "complete": true,
+          "id": "j2-image-1-op-3",
+          "kind": "operation",
+          "lines": {
+            "end": 9,
+            "start": 8
+          },
+          "parent_id": "j2-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 8.0,
+            "end_seconds": 29.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 21.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j2-image-1-op-4",
+          "kind": "operation",
+          "lines": {
+            "end": 13,
+            "start": 10
+          },
+          "parent_id": "j2-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j2-image-1-op-4-part-1",
+          "kind": "part",
+          "lines": {
+            "end": 11,
+            "start": 11
+          },
+          "parent_id": "j2-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 36.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j2-image-1-op-4-part-2",
+          "kind": "part",
+          "lines": {
+            "end": 12,
+            "start": 12
+          },
+          "parent_id": "j2-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 36.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 2,
+      "line_count": 14,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "ab68c26415cd1f189dd3a4e28d5809e4d9629baad19e7a72a936afba6c5626d1",
+      "state": "available"
+    },
+    {
+      "analyzed_at": "2026-10-04T00:00:00+00:00",
+      "bytes_read": 654,
+      "cached": false,
+      "coverage": {
+        "complete": true,
+        "recognized_lines": 14,
+        "total_lines": 14,
+        "truncated": false
+      },
+      "evidence": [
+        {
+          "cached": false,
+          "code": "get_sources",
+          "complete": true,
+          "id": "j1-phase-1",
+          "kind": "phase",
+          "lines": {
+            "end": 2,
+            "start": 1
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 4.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 0.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "step_script",
+          "complete": true,
+          "id": "j1-phase-2",
+          "kind": "phase",
+          "lines": {
+            "end": 14,
+            "start": 3
+          },
+          "parent_id": null,
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 325.0,
+            "end_seconds": 330.0,
+            "origin": "section",
+            "precision_seconds": 1.0,
+            "quality": "exact",
+            "start_seconds": 5.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "image_build",
+          "complete": true,
+          "id": "j1-image-1",
+          "kind": "image",
+          "lines": {
+            "end": 13,
+            "start": 4
+          },
+          "parent_id": null,
+          "push_coverage": "excluded",
+          "timing": {
+            "duration_seconds": 30.0,
+            "end_seconds": 40.0,
+            "origin": "inferred",
+            "precision_seconds": 1.0,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "base_image",
+          "complete": true,
+          "id": "j1-image-1-op-1",
+          "kind": "operation",
+          "lines": {
+            "end": 5,
+            "start": 4
+          },
+          "parent_id": "j1-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 3.0,
+            "end_seconds": 13.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 10.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "context_application_copy",
+          "complete": true,
+          "id": "j1-image-1-op-2",
+          "kind": "operation",
+          "lines": {
+            "end": 7,
+            "start": 6
+          },
+          "parent_id": "j1-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 20.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 14.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "dependencies_builder_setup",
+          "complete": true,
+          "id": "j1-image-1-op-3",
+          "kind": "operation",
+          "lines": {
+            "end": 9,
+            "start": 8
+          },
+          "parent_id": "j1-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 8.0,
+            "end_seconds": 29.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 21.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j1-image-1-op-4",
+          "kind": "operation",
+          "lines": {
+            "end": 13,
+            "start": 10
+          },
+          "parent_id": "j1-image-1",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 10.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j1-image-1-op-4-part-1",
+          "kind": "part",
+          "lines": {
+            "end": 11,
+            "start": 11
+          },
+          "parent_id": "j1-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 6.0,
+            "end_seconds": 36.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 30.0
+          }
+        },
+        {
+          "cached": false,
+          "code": "export_local_unpack",
+          "complete": true,
+          "id": "j1-image-1-op-4-part-2",
+          "kind": "part",
+          "lines": {
+            "end": 12,
+            "start": 12
+          },
+          "parent_id": "j1-image-1-op-4",
+          "push_coverage": "unknown",
+          "timing": {
+            "duration_seconds": 4.0,
+            "end_seconds": 40.0,
+            "origin": "buildkit_reported",
+            "precision_seconds": 0.1,
+            "quality": "inferred",
+            "start_seconds": 36.0
+          }
+        }
+      ],
+      "fetched_at": "2026-10-04T00:00:00+00:00",
+      "job_id": 1,
+      "line_count": 14,
+      "parser_version": "1.0.0",
+      "prefix_sha256": null,
+      "reason_code": "parsed",
+      "sha256": "ecde260ba2cc004ccb7f3270db1eaf035984c5a25890512f9f00b826071da8c0",
+      "state": "available"
+    }
+  ]
+}

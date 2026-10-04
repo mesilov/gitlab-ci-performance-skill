@@ -1,13 +1,12 @@
 """Generate a generic multi-tag fixture without GitLab access."""
 import argparse
 from datetime import datetime, timedelta, timezone
-import importlib.util
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('ci_report', ROOT / 'skills/gitlab-ci-performance/scripts/ci_report.py')
-ci = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(ci)
+sys.path.insert(0, str(ROOT / 'skills/gitlab-ci-performance/scripts'))
+import ci_report as ci
 
 
 def main():
