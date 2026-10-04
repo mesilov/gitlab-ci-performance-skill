@@ -50,7 +50,11 @@ def _timestamp(value):
     if not isinstance(value, str):
         return None
     try:
-        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        # Python 3.10 accepts only three/six fractional digits; runner logs
+        # can have any precision. Normalize to datetime's microsecond precision.
+        normalized = re.sub(r"\.(\d+)(?=[+-]\d\d:\d\d$)",
+                            lambda m: "." + m[1][:6].ljust(6, "0"), value.replace("Z", "+00:00"))
+        result = datetime.fromisoformat(normalized)
         return result.timestamp() if result.tzinfo is not None else None
     except (ValueError, OverflowError, OSError):
         return None
