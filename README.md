@@ -1,3 +1,5 @@
+[English](README.md) | [Русский](README.ru.md)
+
 # GitLab CI Performance Analyzer
 
 An agent skill for analyzing GitLab CI job durations, runner queues, and timing
@@ -37,7 +39,8 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The report UI is in English. The agent skill instructions are currently in Russian.
+The report UI, agent skill instructions, and methodology reference are in English.
+Russian documentation is available in [README.ru.md](README.ru.md).
 
 ## Run the CLI directly
 
