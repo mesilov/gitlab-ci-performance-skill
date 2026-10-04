@@ -197,11 +197,14 @@ for selectors, budgets, sample/interval policies and unavailable guidance.
 Generate its public synthetic example with the [demo generator](examples/generate_v2.py).
 The canonical HTML now follows the reviewed report layout: compact job cards with
 baseline/outcome context, a framed vertical list of action priorities, collapsed history and a compact
-two-level attempt timeline. Select a saved build fragment, then an operation to see
+two-level attempt timeline. Select an image build, then an operation to see
 its source lines and nested substeps. Runner phases and technical metadata are
-collapsed. The canonical parser does not retain image names or original BuildKit
-step numbers; anonymous fragments are labeled honestly rather than merged into
-invented images. See the [synthetic preview](examples/v2/report.html). Calculation and
+collapsed. Canonical schema/calculation 2.1.0 and parser 1.1.0 preserve confirmed
+safe image basenames, original BuildKit step numbers and physical source ranges.
+Unknown, conflicting or redacted identities are explicit. Export progress stays
+inside its source operation; nested/overlapping durations are not added. Only the
+current canonical contract is supported; collect fresh data instead of migrating
+old reports. See the regenerated [synthetic preview](examples/v2/report.html). Calculation and
 queue-spike policies remain specific to each contract.
 Its `gitlab_job_performance_*` kinds distinguish it from the `ci_report.py` workflow;
 entrypoints reject incompatible artifacts rather than silently converting them.

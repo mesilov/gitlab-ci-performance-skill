@@ -24,7 +24,7 @@ AT = '2026-10-04T00:00:00Z'
 TRACE_KEYS = {'job_id', 'state', 'reason_code', 'sha256', 'prefix_sha256', 'bytes_read',
               'line_count', 'parser_version', 'fetched_at', 'analyzed_at', 'cached',
               'coverage', 'evidence'}
-NODE_KEYS = {'id', 'kind', 'code', 'parent_id', 'timing', 'cached', 'complete', 'lines', 'push_coverage'}
+NODE_KEYS = {'id', 'kind', 'code', 'parent_id', 'timing', 'cached', 'complete', 'lines', 'push_coverage', 'buildkit', 'identity'}
 
 
 class TraceTests(unittest.TestCase):
@@ -125,6 +125,106 @@ class TraceTests(unittest.TestCase):
         self.assertNotIn('SECRET', json.dumps(result))
         self.assertTrue(all(set(n) == NODE_KEYS for n in nodes))
 
+    def test_export_manifest_and_config_stay_in_one_build(self):
+        result = self.parse('#0 building with "default" instance using docker driver\n'
+                            '#1 [stage-0 1/1] FROM example\n#1 DONE 1.0s\n'
+                            '#2 exporting to image\n#2 exporting layers 2.0s done\n'
+                            '#2 exporting manifest sha256:example done\n'
+                            '#2 exporting config sha256:example done\n'
+                            '#2 naming to example/service:tag done\n'
+                            '#2 unpacking to example/service:tag 1.0s done\n'
+                            '#2 DONE 3.0s\n')
+        images = [n for n in result['evidence'] if n['kind'] == 'image']
+        self.assertEqual(len(images), 1)
+        operations = [n for n in result['evidence'] if n['kind'] == 'operation']
+        self.assertEqual(len(operations), 2)
+        export = operations[1]
+        self.assertEqual(export['lines'], {'start': 4, 'end': 10})
+        self.assertEqual(export['timing']['duration_seconds'], 3.0)
+
+    def test_identity_and_source_step_ids_have_physical_provenance(self):
+        result = self.parse('#0 building with "default" instance using docker driver\n'
+                            '#16 exporting to image\n#16 exporting manifest sha256:example done\n'
+                            '#16 naming to registry.example:5000/group/service:tag done\n'
+                            '#16 unpacking to registry.example:5000/group/service:tag 1s done\n#16 DONE 3s\n')
+        image = result['evidence'][0]
+        self.assertEqual(image['identity'], {'state':'known','name':'service','origin':'buildkit_naming',
+                                           'step_id':16,'lines':{'start':4,'end':4}})
+        self.assertTrue(all(n['buildkit']=={'step_id':16} for n in result['evidence'][1:]))
+        self.assertNotIn('registry.example', json.dumps(result))
+        self.assertNotIn(':tag', json.dumps(result))
+
+    def test_identical_banners_and_ids_are_new_builds_after_completion(self):
+        build = ('#0 building with "default" instance using docker driver\n'
+                 '#1 [1/1] COPY app /app\n#1 CACHED\n#2 exporting to image\n'
+                 '#2 naming to example/service:tag done\n#2 DONE 1s\n')
+        result = self.parse(build + build)
+        images = [n for n in result['evidence'] if n['kind']=='image']
+        self.assertEqual(len(images), 2)
+        self.assertEqual([n['identity']['name'] for n in images], ['service','service'])
+        self.assertEqual(result['state'], 'available')
+
+    def test_digest_extraction_progress_updates_cumulative_from_duration(self):
+        digest = 'a'*64
+        result = self.parse('#1 [1/1] FROM example/base\n#1 DONE 2s\n'
+                            f'#1 [1/1] FROM example/base\n#1 extracting sha256:{digest} 3.0s done\n'
+                            '#1 DONE 5s\n#1 DONE 5s\n')
+        ops = [n for n in result['evidence'] if n['kind']=='operation']
+        self.assertEqual(len(ops), 1)
+        self.assertEqual(ops[0]['timing']['duration_seconds'], 5)
+        self.assertEqual(result['state'], 'available')
+
+    def test_conflicting_done_without_supported_progress_remains_partial(self):
+        result = self.parse('#1 [1/1] RUN arbitrary\n#1 DONE 2s\n#1 DONE 5s\n')
+        self.assertEqual(result['state'], 'partial')
+
+    def test_unknown_conflicting_and_sensitive_identities_are_not_invented(self):
+        unknown=self.parse('#1 [1/1] FROM example/base\n#1 DONE 1s\n')['evidence'][0]
+        self.assertEqual(unknown['identity']['state'], 'unknown')
+        self.assertIsNone(unknown['identity']['name'])
+        conflict=self.parse('#2 exporting to image\n#2 naming to example/one:tag done\n'
+                            '#2 naming to example/two:tag done\n#2 DONE 1s\n')['evidence'][0]
+        self.assertEqual(conflict['identity']['state'], 'conflicting')
+        self.assertIsNone(conflict['identity']['name'])
+        for target in ['https://user:password@example/image', 'user:password@example/image',
+                       'example/$ENV/image', 'example/image?token=abc', 'SECRET-registry/image:latest',
+                       'example/access_token_abcdef:latest', 'example/image:SECRET_TAG']:
+            with self.subTest(target=target):
+                result=self.parse(f'#2 exporting to image\n#2 naming to {target} done\n#2 DONE 1s\n')
+                self.assertIsNone(result['evidence'][0]['identity']['name'])
+                self.assertNotIn(target, json.dumps(result))
+        malformed=self.parse('#2 exporting to image\n#2 naming to example/service:tag done secret\n#2 DONE 1s\n')
+        self.assertEqual(malformed['evidence'][0]['identity']['state'], 'unknown')
+
+    def test_conflicting_export_steps_retain_resolvable_first_provenance(self):
+        result=self.parse('#1 exporting to image\n#1 naming to example/one:tag done\n#1 DONE 1s\n'
+                          '#2 exporting to image\n#2 naming to example/two:tag done\n#2 DONE 1s\n')
+        identity=result['evidence'][0]['identity']
+        self.assertEqual(identity['state'],'conflicting')
+        self.assertIsNone(identity['name'])
+        self.assertEqual(identity['step_id'],1)
+        self.assertEqual(identity['lines'],{'start':2,'end':2})
+
+    def test_failed_canceled_and_partial_sessions_remain_distinct(self):
+        result=self.parse('#0 building with "default" instance using docker driver\n'
+                          '#1 [1/1] RUN command\n#1 ERROR: private output\n'
+                          '#0 building with "default" instance using docker driver\n'
+                          '#1 [1/1] RUN command\n#1 CANCELED\n')
+        self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']), 2)
+        self.assertEqual(result['state'], 'partial')
+        self.assertNotIn('private', json.dumps(result))
+
+    def test_limit_still_processes_closures_and_identity_of_admitted_nodes(self):
+        from unittest.mock import patch
+        with patch.object(parser,'MAX_EVIDENCE_NODES',2):
+            full=self.parse('#16 exporting to image\n#16 naming to example/service:tag done\n#16 DONE 3s\n')
+            limited=self.parse('#16 exporting to image\n#16 exporting layers 2s done\n'
+                               '#16 naming to example/service:tag done\n#16 DONE 3s\n')
+        self.assertEqual(full['state'], 'available')
+        self.assertEqual(limited['reason_code'], 'evidence_limit')
+        self.assertTrue(limited['evidence'][1]['complete'])
+        self.assertEqual(limited['evidence'][0]['identity']['name'], 'service')
+
     def test_repeated_step_ids_are_scoped_to_explicit_sessions(self):
         result = self.parse('#0 building with "one" instance using docker driver\n#1 [1/1] RUN secret\n#1 DONE 2s\n'
                             '#0 building with "two" instance using docker driver\n#1 [1/1] RUN secret2\n#1 DONE 5s\n')
@@ -174,6 +274,21 @@ class TraceTests(unittest.TestCase):
                             '#1 [1/1] RUN secret\n#1 DONE 3s\n')
         self.assertEqual(len([n for n in result['evidence'] if n['kind'] == 'image']), 1)
         self.assertEqual(len([n for n in result['evidence'] if n['kind'] == 'operation']), 1)
+
+    def test_banner_redraw_after_internal_step_does_not_end_build(self):
+        result=self.parse('#0 building with "default" instance using docker driver\n'
+                          '#1 [internal] load build definition from Dockerfile\n#1 DONE 0.1s\n'
+                          '#0 building with "default" instance using docker driver\n'
+                          '#2 [1/1] FROM example/base\n#2 DONE 1s\n'
+                          '#3 exporting to image\n#3 naming to example/service:tag done\n#3 DONE 2s\n')
+        self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']),1)
+        self.assertEqual(result['state'],'available')
+
+    def test_banner_after_export_with_other_active_work_is_still_a_redraw(self):
+        result=self.parse('#0 building with "default" instance using docker driver\n'
+                          '#1 [1/1] RUN command\n#2 exporting to image\n#2 DONE 2s\n'
+                          '#0 building with "default" instance using docker driver\n#1 DONE 3s\n')
+        self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']),1)
 
     def test_timestamped_image_span_is_inferred_without_summing_parallel_steps(self):
         result = self.parse('2026-10-04T00:00:00.000Z 00O #0 building with "secret" instance using docker driver\n'
@@ -262,6 +377,42 @@ class TraceTests(unittest.TestCase):
                             '2026-10-04T00:00:07Z #1 DONE 3.0s\n')
         timing = result['evidence'][1]['timing']
         self.assertEqual((timing['start_seconds'], timing['end_seconds']), (0,3))
+        self.assertEqual(result['evidence'][0]['timing']['duration_seconds'], 3)
+
+    def test_completed_export_cached_and_bare_done_redraws_keep_image_envelope(self):
+        def frame(second, body):
+            return f'2026-10-04T00:00:{second:02d}Z {body}\n'
+        original=''.join(frame(s,b) for s,b in [
+            (0,'#0 building with "default" instance using docker driver'),
+            (0,'#1 [1/1] COPY app /app'),(0,'#1 CACHED'),
+            (0,'#2 [1/1] RUN command'),(0,'#2 DONE'),
+            (0,'#16 exporting to image'),(2,'#16 exporting layers 2s done'),
+            (3,'#16 exporting manifest sha256:example done'),
+            (3,'#16 naming to example/service:tag done'),
+            (4,'#16 unpacking to example/service:tag 1s done'),(5,'#16 DONE 5s')])
+        redraw=''.join(frame(s,b) for s,b in [
+            (10,'#16 exporting layers 2s done'),(11,'#16 exporting manifest sha256:example done'),
+            (11,'#16 naming to example/service:tag done'),
+            (12,'#16 unpacking to example/service:tag 1s done'),(13,'#16 DONE 5s'),
+            (14,'#1 CACHED'),(15,'#2 DONE')])
+        result=self.parse(original+redraw)
+        self.assertEqual(result['state'],'available')
+        self.assertEqual(result['evidence'][0]['timing']['duration_seconds'],5)
+        self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']),1)
+        self.assertEqual(result['evidence'][0]['identity']['lines'],{'start':9,'end':14})
+
+    def test_maximum_named_summary_stays_under_serialized_byte_budget(self):
+        name='a'*128
+        build=('#0 building with "default" instance using docker driver\n'
+               '#2147483647 exporting to image\n'
+               f'#2147483647 naming to example/{name}:tag done\n#2147483647 DONE 3.14159265s\n')
+        result=self.parse(build*(parser.MAX_EVIDENCE_NODES//2))
+        self.assertEqual(len(result['evidence']), parser.MAX_EVIDENCE_NODES)
+        self.assertEqual(result['state'],'available')
+        self.assertLess(len(contract.encoded(result)),128*1024)
+        limited=self.parse(build*(parser.MAX_EVIDENCE_NODES//2+1))
+        self.assertEqual(limited['reason_code'],'evidence_limit')
+        self.assertLess(len(contract.encoded(limited)),128*1024)
 
     def test_part_without_known_parent_bounds_keeps_unknown_positions(self):
         result = self.parse('2026-10-04T00:00:00Z #1 exporting to docker image\n'

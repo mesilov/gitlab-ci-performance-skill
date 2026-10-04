@@ -21,15 +21,19 @@ allowlisted summaries, offline calculation, overview/window/attempt exports and
 canonical JSON/HTML parity. Its HTML follows the reviewed report layout with
 baseline/outcome cards, collapsed history and two-level selected-attempt timelines, while
 keeping its own saved calculation semantics. Existing outputs are never overwritten.
-Select a saved build fragment, then an operation to inspect source lines and
-substeps. Runner phases and technical metadata stay collapsed. Canonical evidence
-does not retain image names or original BuildKit step numbers: render anonymous
-fragments and sequential display labels, never invent names, numbers or merges.
+Select an image build, then an operation to inspect source lines and
+substeps. Runner phases and technical metadata stay collapsed. Canonical schema
+2.1.0 / parser 1.1.0 retains safe image basenames from naming/unpack evidence and
+original BuildKit step numbers. Show saved identity states honestly, including
+unknown/conflicting/redacted names; use saved source numbers without inventing
+names, numbers or merges.
 
 The contract has distinct `gitlab_job_performance_*` kinds and its own schemas.
 Use the same entrypoint throughout its collect → report → export → render chain.
 The published workflow below keeps its 2.0.1 contract and reviewed UI; its artifacts
-are not inputs to `report_cli.py` without explicit legacy handling or recollection.
+are not inputs to `report_cli.py`; collect a fresh canonical source. This route
+rejects older artifacts for calculation, rendering and export, and rejects older
+resume/cache sources before transport requests.
 Never infer compatibility from a numeric version alone. Report schema/calculation,
 parser and installed skill versions are independent and preserved in JSON.
 

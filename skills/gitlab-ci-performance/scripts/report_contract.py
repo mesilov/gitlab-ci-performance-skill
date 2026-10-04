@@ -5,14 +5,15 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import tempfile
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '2.0.0'
+VERSION = '2.1.0'
 SKILL_VERSION = (ROOT/'VERSION').read_text(encoding='utf-8').strip()
-PARSER_VERSION = '1.0.0'
+PARSER_VERSION = '1.1.0'
 MAX_PAYLOAD_BYTES = 16 * 1024 * 1024
 KINDS = {'gitlab_job_performance_source':'jobs','gitlab_job_performance_report':'report',
          'gitlab_job_performance_compact':'compact'}
@@ -73,6 +74,7 @@ def check_dates(item):
 
 
 def check_trace(t):
+    require(t['parser_version']==PARSER_VERSION,'Unsupported trace parser version; collect fresh trace evidence')
     c=t['coverage'];nodes=unique(t['evidence'])
     require(c['recognized_lines']<=c['total_lines']==t['line_count'],'Contradictory trace line coverage')
     if t['state'] in {'unavailable','erased','permission_denied','not_run'}:
@@ -116,13 +118,31 @@ def check_trace(t):
         if parent is not None:
             require(parent in nodes,'Unresolved evidence parent')
             p=nodes[parent]
-            if n['kind']=='part':require(p['kind']=='operation','Part parent must be an operation')
+            if n['kind']=='part':
+                require(p['kind']=='operation','Part parent must be an operation')
+                require(n['buildkit']==p['buildkit'],'Part source step differs from parent operation')
+                require(p['lines']['start']<=lines['start']<=lines['end']<=p['lines']['end'],
+                        'Part source lines exceed parent operation')
             for k,cmp in [('start_seconds',lambda a,b:a>=b),('end_seconds',lambda a,b:a<=b)]:
                 if v[k] is not None and p['timing'][k] is not None:
                     require(cmp(v[k],p['timing'][k]),'Child interval exceeds parent')
         while parent is not None:
             require(parent in nodes and parent not in visited,'Cyclic/unresolved evidence parent')
             visited.add(parent);parent=nodes[parent]['parent_id']
+        identity=n['identity']
+        if identity is not None:
+            if identity['name'] is not None:
+                require(re.fullmatch(r'[a-z0-9]+(?:[._-][a-z0-9]+)*',identity['name']) is not None,
+                        'Unsafe image identity basename')
+            source_lines=identity['lines']
+            if source_lines is not None:
+                require(lines['start']<=source_lines['start']<=source_lines['end']<=lines['end'],
+                        'Image identity source lines exceed image node range')
+                sources=[p for p in nodes.values() if p['kind']=='operation' and
+                         p['parent_id']==n['id'] and p['buildkit'] is not None and
+                         p['buildkit']['step_id']==identity['step_id']]
+                require(any(p['lines']['start']<=source_lines['start']<=source_lines['end']<=p['lines']['end']
+                            for p in sources),'Image identity source does not resolve inside its BuildKit operation')
 
 
 def check_source(s):
@@ -335,7 +355,7 @@ def validate(value, kind=None):
     from jsonschema import Draft202012Validator, FormatChecker
     from referencing import Registry, Resource
     if kind != 'trace':
-        require(value.get('schema_version')==VERSION,'Unsupported schema version; v2 requires fresh v2 collection, use --legacy for v1 report generation/rendering')
+        require(value.get('schema_version')==VERSION,'Unsupported schema version; collect a fresh 2.1.0 source')
     artifact=KINDS.get(value.get('kind'))
     if kind=='trace':artifact='trace'
     require(artifact is not None,'Unknown artifact kind')

@@ -10,10 +10,10 @@ import hashlib
 import math
 import re
 
-PARSER_VERSION = '1.0.0'
+PARSER_VERSION = '1.1.0'
 # The source contract bounds each formatted safe summary at 128 KiB. Reserve
 # space for provenance; an input cap alone does not bound generated evidence.
-MAX_EVIDENCE_NODES = 120
+MAX_EVIDENCE_NODES = 160
 PHASES = frozenset(('prepare_executor', 'prepare_script', 'get_sources', 'restore_cache',
                     'download_artifacts', 'step_script', 'after_script', 'archive_cache',
                     'upload_artifacts', 'cleanup_file_variables'))
@@ -26,6 +26,41 @@ FRAME = re.compile(r'^#(\d+)\s+(.+)$')
 DONE = re.compile(r'^DONE\s+(\d+(?:\.\d+)?)s(?:\s|$)')
 PART = re.compile(r'^(exporting layers|unpacking to|sending tarball|pushing layers|pushing manifest)(?:\s|$)')
 DURATION = re.compile(r'(\d+(?:\.\d+)?)s\s+done(?:\s|$)')
+EXPORT_PROGRESS = re.compile(r'^(?:exporting (?:layers|manifest|config|attestation manifest|manifest list)|naming to)(?:\s|$)')
+# A digest transfer/extraction is a progress event, never a new header. Its
+# text/digest is not retained. FROM may emit cumulative DONE after each layer.
+LAYER_PROGRESS = re.compile(r'^(?:extracting )?sha256:[a-f0-9]{64}(?:\s|$)')
+NAME_FRAME = re.compile(r'^(naming to|unpacking to) (\S+)(?: (\d+(?:\.\d+)?)s)? done$')
+COMPONENT = r'[a-z0-9]+(?:[._-][a-z0-9]+)*'
+SENSITIVE = re.compile(r'(?:secret|password|passwd|credential|access[_-]?token|auth[_-]?token|private[_-]?key|api[_-]?key)', re.I)
+
+
+def _unknown_identity():
+    return {'state':'unknown', 'name':None, 'origin':'unknown', 'step_id':None, 'lines':None}
+
+
+def _image_name(reference):
+    """Validate the whole structured destination; export only its safe basename.
+
+    Registry, repository path, tag and digest are intentionally discarded. No
+    shell/URL syntax is accepted; sensitive-looking references are redacted.
+    """
+    if len(reference)>512 or SENSITIVE.search(reference):
+        return None
+    base, separator, digest = reference.partition('@')
+    if separator and not re.fullmatch(r'sha256:[a-f0-9]{64}', digest):
+        return None
+    path = base.split('/')
+    leaf, colon, tag = path[-1].partition(':')
+    if colon and not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', tag):
+        return None
+    if len(leaf)>128 or not re.fullmatch(COMPONENT, leaf):
+        return None
+    for index, component in enumerate(path[:-1]):
+        pattern = COMPONENT + (r'(?::[0-9]{1,5})?' if index==0 else '')
+        if not re.fullmatch(pattern, component):
+            return None
+    return leaf
 
 
 def empty_trace(job_id, state, reason_code, at):
@@ -47,7 +82,8 @@ def _timing(duration=None, start=None, end=None, origin='unknown', quality='unkn
 def _node(identifier, kind, code, parent, line):
     return {'id': identifier, 'kind': kind, 'code': code, 'parent_id': parent,
             'timing': _timing(), 'cached': False, 'complete': False,
-            'lines': {'start': line, 'end': line}, 'push_coverage': 'unknown'}
+            'lines': {'start': line, 'end': line}, 'push_coverage': 'unknown',
+            'buildkit': None, 'identity': _unknown_identity() if kind=='image' else None}
 
 
 def _precision(number):
@@ -101,8 +137,9 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
     """Parse already bounded original bytes; caller owns transport/input limits.
 
     Supports Runner section epochs, ISO8601-prefixed shell echoes, and BuildKit
-    plain progress. Repeated step headers with differing labels split ambiguous
-    sessions; this deliberately prefers partial evidence to false aggregation.
+    plain progress. Export suboperations never open sessions. Explicit banners
+    after completion/failure open a new session even with identical text/IDs;
+    differing genuine headers without a banner remain ambiguous partial builds.
     """
     result = empty_trace(job_id, 'empty', 'empty_response', fetched_at)
     result['analyzed_at'] = analyzed_at
@@ -137,7 +174,11 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
     parts = {}
     reports = {}
     first_observed = {}
-    ambiguous = False
+    frames_seen = {}
+    ambiguous_sessions = set()
+    limited_sessions = set()
+    failed_sessions = set()
+    layer_advanced = set()
     evidence_limited = False
     parsed_lines = 0
 
@@ -147,12 +188,45 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
     def new_image(line, stamp, stamp_precision):
         nonlocal image, steps, labels, parts
         image = _node(f'j{job_id}-image-{len(sessions) + 1}', 'image', 'image_build', None, line)
-        evidence.append(image)
+        steps, labels, parts = {}, {}, {}
+        if not admit(image):
+            image = None
+            return None
         sessions.append(image)
         image_operations[image['id']] = []
         image_times[image['id']] = [stamp, stamp, stamp_precision, line, line]
-        steps, labels, parts = {}, {}, {}
         return image
+
+    def admit(node):
+        nonlocal evidence_limited
+        if len(evidence)>=MAX_EVIDENCE_NODES:
+            evidence_limited = True
+            if image is not None and node['kind'] in {'image','operation','part'}:
+                limited_sessions.add(image['id'])
+            return False
+        evidence.append(node)
+        return True
+
+    def identify(match, step, line):
+        if match is None:
+            return
+        name = _image_name(match[2])
+        old = image['identity']
+        source = 'buildkit_naming' if match[1]=='naming to' else 'buildkit_unpack'
+        candidate = {'state':'known' if name else 'redacted', 'name':name,
+                     'origin':source, 'step_id':int(step), 'lines':{'start':line,'end':line}}
+        if old['state']=='unknown':
+            image['identity'] = candidate
+        elif old['state']=='known' and name and old['name']==name:
+            # Prefer the explicit naming event over a fallback unpacking event.
+            if source=='buildkit_naming' and old['origin']=='buildkit_unpack':
+                image['identity'] = candidate
+            elif source==old['origin'] and int(step)==old['step_id']:
+                old['lines']['end']=line
+        elif old['state'] not in {'conflicting','redacted'}:
+            old.update(state='conflicting' if name else 'redacted', name=None)
+            # Keep the first event's resolvable source. A second destination may
+            # belong to another export step; never claim its line as step one.
 
     def close_command(end, line, precision, complete):
         nonlocal command
@@ -207,9 +281,8 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             return
 
     for line_no, raw_line in enumerate(lines, 1):
-        if len(evidence) >= MAX_EVIDENCE_NODES:
-            evidence_limited = True
-            break
+        # The budget controls admission, not processing of existing evidence.
+        # DONE/section closures and identity must survive an exhausted budget.
         parsed_lines = line_no
         line = ANSI.sub('', raw_line.decode('utf-8', errors='replace')).strip('\r')
         timestamp, precision, content = _stamp(line)
@@ -230,10 +303,12 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                 node = _node(f'j{job_id}-phase-{counters["phase"]}',
                              'phase', code, None, line_no)
                 node['timing'] = _timing(start=offset(epoch), origin='section', quality='partial', precision=1.0)
-                evidence.append(node)
-                sections.setdefault(name, []).append((node, epoch))
+                accepted = admit(node)
+                sections.setdefault(name, []).append((node if accepted else None, epoch))
             elif sections.get(name):
                 node, start = sections[name].pop()
+                if node is None:
+                    continue
                 node['lines']['end'] = line_no
                 if epoch >= start and offset(epoch) is not None and node['timing']['start_seconds'] is not None:
                     node['timing'].update(duration_seconds=float(epoch-start), end_seconds=offset(epoch), quality='exact')
@@ -249,61 +324,96 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             command = _node(f'j{job_id}-command-{counters["command"]}',
                             'command', 'script_command', None, line_no)
             command['timing'] = _timing(start=offset(timestamp), origin='log_interval', quality='partial', precision=precision)
-            evidence.append(command)
+            if not admit(command):
+                command = None
             continue
 
         frame = FRAME.match(content.strip())
         if not frame:
             continue
         step, body = frame.groups()
+        if len(step)>10 or int(step)>2147483647:
+            continue
         # Plain frames must carry a recognized header/status; arbitrary # output
         # alone cannot create measured operations or copy data into the summary.
         session_start = body.startswith('building with ')
-        header = body.startswith('[') or body.startswith('exporting ') or body.startswith('importing cache ') or body.startswith('preparing build cache ')
+        header = body.startswith('[') or body.startswith('exporting to ') or body.startswith('importing cache ') or body.startswith('preparing build cache ')
         done = DONE.match(body)
         cached = body == 'CACHED'
         part = PART.match(body)
+        export_progress = EXPORT_PROGRESS.match(body)
+        layer_progress = LAYER_PROGRESS.match(body)
+        naming = NAME_FRAME.fullmatch(body)
         status = bool(done or cached or body == 'DONE' or body.startswith(('ERROR:', 'CANCELED')))
-        if not (session_start or header or status or part or (step in steps and re.match(r'^\d+(?:\.\d+)?\s', body))):
+        if not (session_start or header or status or part or export_progress or layer_progress or (step in steps and re.match(r'^\d+(?:\.\d+)?\s', body))):
             continue
         recognized.add(line_no)
         if session_start:
-            if image is None or banner != body or (steps and all(n['complete'] for n in steps.values())):
+            exported = (any(n['code']=='export_local_unpack' and n['complete'] for n in steps.values())
+                        and all(n['complete'] for n in steps.values()))
+            if image is None or banner != body or image['id'] in failed_sessions or exported:
                 new_image(line_no, timestamp, precision)
             banner = body
+            if image is None:
+                continue
             image['lines']['end'] = line_no
             continue
         if image is None:
             new_image(line_no, timestamp, precision)
+        if image is None:
+            continue
         # A reused ID with changed header cannot safely belong to the same build.
         if header and not part and step in labels and labels[step] != body:
-            ambiguous = True
+            ambiguous_sessions.add(image['id'])
             image['complete'] = False
             new_image(line_no, timestamp, precision)
+            if image is None:
+                continue
+            ambiguous_sessions.add(image['id'])
         image['lines']['end'] = line_no
-        if timestamp is not None:
+        existing = steps.get(step)
+        record = reports.get(existing['id']) if existing else None
+        # Transient digests deduplicate structured progress redraws without
+        # retaining their text in the safe summary. Storage is bounded by the
+        # caller's physical-line/input budget, like recognized-line accounting.
+        signature = hashlib.sha256(body.encode('utf-8')).digest()
+        repeated_frame = bool(existing and existing['complete'] and signature in frames_seen.get(existing['id'],set()))
+        repeated_completion = bool(done and record and Decimal(done[1])==record['duration'])
+        repeated_header = bool(header and existing and existing['complete'] and labels.get(step)==body)
+        if timestamp is not None and not (repeated_completion or repeated_header or repeated_frame):
             previous = image_times[image['id']][1]
             image_times[image['id']][1] = max(timestamp, previous) if previous is not None else timestamp
             image_times[image['id']][2] = max(image_times[image['id']][2] or 0, precision)
             image_times[image['id']][4] = line_no
         if step not in steps:
-            if len(evidence) >= MAX_EVIDENCE_NODES:
-                evidence_limited = True
-                break
-            node = _node(f'{image["id"]}-op-{len(steps) + 1}', 'operation', _operation_code(body), image['id'], line_no)
-            evidence.append(node)
+            node = _node(f'{image["id"]}-op-{len(steps) + 1}', 'operation', 'export_local_unpack' if export_progress or part else _operation_code(body), image['id'], line_no)
+            node['buildkit'] = {'step_id':int(step)}
+            if not admit(node):
+                continue
             image_operations[image['id']].append(node)
             steps[step] = node
             first_observed[node['id']] = timestamp
         node = steps[step]
+        frames_seen.setdefault(node['id'],set()).add(signature)
         node['lines']['end'] = line_no
+        identify(naming, step, line_no)
+        if layer_progress and node['code']=='base_image' and not repeated_frame:
+            layer_advanced.add(node['id'])
+            node['complete'] = False
         if header and not part:
             labels[step] = body
             node['code'] = _operation_code(body)
-            if body.startswith('exporting to docker image') or body.startswith('exporting to local') or body.startswith('exporting to tar'):
+            if body.startswith(('exporting to image', 'exporting to docker image', 'exporting to local', 'exporting to tar')):
                 if image['push_coverage'] != 'included':
                     image['push_coverage'] = 'excluded'
         if done:
+            record = reports.get(node['id'])
+            if (record and node['id'] in layer_advanced and not record['conflict']
+                    and Decimal(done[1])>record['duration']):
+                # FROM's subsequent digest extraction reports cumulative elapsed
+                # time. Replace the earlier checkpoint; never add durations.
+                reports.pop(node['id'])
+            layer_advanced.discard(node['id'])
             reported(node, done[1], timestamp)
             node['complete'] = True
         elif cached:
@@ -311,6 +421,9 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             node['timing'] = _timing()
         elif body == 'DONE':
             node['complete'] = True
+        elif body.startswith(('ERROR:', 'CANCELED')):
+            node['complete'] = False
+            failed_sessions.add(image['id'])
         if part:
             semantic = part[1]
             if semantic.startswith('pushing '):
@@ -318,11 +431,10 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             node['code'] = 'export_local_unpack'
             key = (step, semantic)
             if key not in parts:
-                if len(evidence) >= MAX_EVIDENCE_NODES:
-                    evidence_limited = True
-                    break
                 child = _node(f'{node["id"]}-part-{len(parts) + 1}', 'part', 'export_local_unpack', node['id'], line_no)
-                evidence.append(child)
+                child['buildkit'] = {'step_id':int(step)}
+                if not admit(child):
+                    continue
                 parts[key] = child
                 first_observed[child['id']] = timestamp
             child = parts[key]
@@ -336,12 +448,13 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
 
     close_command(last_stamp, parsed_lines, last_precision, False)
     for node, _ in (item for stack in sections.values() for item in stack):
-        node['lines']['end'] = max(node['lines']['end'], parsed_lines)
+        if node is not None:
+            node['lines']['end'] = max(node['lines']['end'], parsed_lines)
     for image in sessions:
         children = image_operations[image['id']]
         for child in children:
             infer_positions(child)
-        image['complete'] = bool(children) and all(n['complete'] for n in children) and not ambiguous
+        image['complete'] = bool(children) and all(n['complete'] for n in children) and image['id'] not in (ambiguous_sessions | limited_sessions | failed_sessions)
         image['cached'] = bool(children) and all(n['cached'] for n in children)
         start, end, precision, first_line, last_line = image_times[image['id']]
         if (last_line > first_line and start is not None and end is not None and end >= start

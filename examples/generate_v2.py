@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'skills/gitlab-ci-performance/scripts'))
-from report_contract import save,type_id,SKILL_VERSION
+from report_contract import save,type_id,SKILL_VERSION,VERSION
 from report_trace import parse_trace,empty_trace
 from report_calculate import build_report
 from report_export import export_report
@@ -38,7 +38,7 @@ def synthetic_source(count=70,root_operations=False):
                 def stamp(seconds):return (started+timedelta(seconds=seconds)).isoformat()
                 lines=[f'section_start:{epoch}:get_sources\r',f'section_end:{epoch+4}:get_sources\r',f'section_start:{epoch+5}:step_script\r']
                 if offset==0:
-                    lines += [f'{stamp(10)} #1 [internal] load metadata for base',f'{stamp(13)} #1 DONE 3.0s',f'{stamp(14)} #2 [1/2] COPY application /app',f'{stamp(20)} #2 DONE 6.0s',f'{stamp(21)} #3 [2/2] RUN install-dependencies',f'{stamp(29)} #3 DONE 8.0s',f'{stamp(30)} #4 exporting to docker image',f'{stamp(36)} #4 exporting layers 6.0s done',f'{stamp(40)} #4 unpacking to local 4.0s done',f'{stamp(40)} #4 DONE 10.0s']
+                    lines += [f'{stamp(10)} #1 [internal] load metadata for base',f'{stamp(13)} #1 DONE 3.0s',f'{stamp(14)} #2 [1/2] COPY application /app',f'{stamp(20)} #2 DONE 6.0s',f'{stamp(21)} #3 [2/2] RUN install-dependencies',f'{stamp(29)} #3 DONE 8.0s',f'{stamp(30)} #4 exporting to docker image',f'{stamp(36)} #4 exporting layers 6.0s done',f'{stamp(37)} #4 naming to registry.example/example/demo-service:synthetic done',f'{stamp(40)} #4 unpacking to registry.example/example/demo-service:synthetic 4.0s done',f'{stamp(40)} #4 DONE 10.0s']
                 else:lines += [f'{stamp(10)} $ perform-release',f'{stamp(25)} $ verify-release']
                 lines += [f'section_end:{epoch+execution}:step_script\r']
                 if i==61:lines.pop()  # supported partial trace
@@ -55,7 +55,7 @@ def synthetic_source(count=70,root_operations=False):
                 t['evidence']=[base,export,nested,leaf,part]
             traces.append(t)
         counts.append({'type_id':type_id(project,stage,name),'stage':stage,'name':name,'available_count':count,'count_kind':'exact'})
-    return {'schema_version':'2.0.0','skill_version':SKILL_VERSION,'kind':'gitlab_job_performance_source','collection_started_at':AT,'collected_at':AT,'timezone':'UTC','project':project,'source':{'transport':'glab','glab_version':'synthetic','gitlab_version':'synthetic','anchor_max_job_id':100+count,'pages':2,'cursor':None,'complete_available_history':True,'stop_reason':'eof','resumed_from_sha256':None,'requests':{'project':0,'version':0,'pages':0,'metadata':0,'pipelines':0,'traces':0},'budgets':{'max_pages':10,'max_job_types':16,'retained_per_type':64,'baseline_per_type':10,'concurrency':4,'trace_bytes':4194304,'trace_lines':50000,'timeout_seconds':60},'observed_counts':counts,'selection_policy':{'comparison_mode':'same_ref','refs':[],'job_selectors':[],'cache_max_age_seconds':86400},'limitations':['Synthetic sources; no GitLab requests were made']},'jobs':sorted(jobs,key=lambda x:x['id'],reverse=True),'pipelines':sorted(pipelines,key=lambda x:x['id'],reverse=True),'retained_job_ids':sorted(retained,reverse=True),'baseline_job_ids':[],'traces':sorted(traces,key=lambda x:x['job_id'],reverse=True)}
+    return {'schema_version':VERSION,'skill_version':SKILL_VERSION,'kind':'gitlab_job_performance_source','collection_started_at':AT,'collected_at':AT,'timezone':'UTC','project':project,'source':{'transport':'glab','glab_version':'synthetic','gitlab_version':'synthetic','anchor_max_job_id':100+count,'pages':2,'cursor':None,'complete_available_history':True,'stop_reason':'eof','resumed_from_sha256':None,'requests':{'project':0,'version':0,'pages':0,'metadata':0,'pipelines':0,'traces':0},'budgets':{'max_pages':10,'max_job_types':16,'retained_per_type':64,'baseline_per_type':10,'concurrency':4,'trace_bytes':4194304,'trace_lines':50000,'timeout_seconds':60},'observed_counts':counts,'selection_policy':{'comparison_mode':'same_ref','refs':[],'job_selectors':[],'cache_max_age_seconds':86400},'limitations':['Synthetic sources; no GitLab requests were made']},'jobs':sorted(jobs,key=lambda x:x['id'],reverse=True),'pipelines':sorted(pipelines,key=lambda x:x['id'],reverse=True),'retained_job_ids':sorted(retained,reverse=True),'baseline_job_ids':[],'traces':sorted(traces,key=lambda x:x['job_id'],reverse=True)}
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--attempts-per-type',type=int,default=70,choices=range(1,71));parser.add_argument('--root-operations',action='store_true',help='Author synthetic root and nested operation evidence for browser regression checks');args=parser.parse_args();out=args.output_dir

@@ -1,5 +1,5 @@
 """Bounded, read-only GitLab metadata and safe trace-summary collection."""
-from report_contract import SKILL_VERSION
+from report_contract import SKILL_VERSION, VERSION, PARSER_VERSION
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -13,10 +13,9 @@ import time
 from urllib.parse import quote, urlsplit, parse_qs
 from zoneinfo import ZoneInfo
 
-from report_trace import parse_trace, empty_trace, PARSER_VERSION
+from report_trace import parse_trace, empty_trace
 from report_contract import now, digest, type_id, validate
 
-VERSION = '2.0.0'
 TERMINAL = {'success', 'failed', 'canceled', 'skipped'}
 ERRORS = {'unavailable', 'permission_denied', 'timeout', 'invalid_response', 'transport_error'}
 LIMITATIONS = ['Deleted jobs cannot be recovered', 'API collection is not an atomic transaction',
@@ -183,7 +182,7 @@ def _input_snapshot(value, host, project):
     validate(value, 'jobs')
     if (value.get('schema_version') != VERSION or value.get('kind') != 'gitlab_job_performance_source' or
             any(value.get('project', {}).get(k) != project[k] for k in ('host', 'id', 'path'))):
-        raise ValueError('Resume/cache requires a v2 source for the same host/project')
+        raise ValueError('Resume/cache requires a 2.1.0 source for the same host/project')
     if len({j['id'] for j in value['jobs']}) != len(value['jobs']):
         raise ValueError('Resume/cache has duplicate job IDs')
 
@@ -239,6 +238,9 @@ def collect(host, project_path, display_timezone='UTC', *, max_pages=10, max_job
         selectors_set = {(x['stage'], x['name']) for x in job_selectors}
         if len(selectors_set) > max_job_types:
             raise ValueError('Job selection exceeds max_job_types')
+    for previous in (resume, cache):
+        if previous is not None:
+            validate(previous, 'jobs')
     started = now()
     transport = GlabTransport(host)
     _, raw_project = transport.json('projects/' + quote(project_path, safe=''))

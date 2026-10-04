@@ -20,6 +20,12 @@ if(!url||!out)throw Error('Usage: browser_drilldown_v2.cjs FILE_URL OUTPUT_DIREC
   assert.equal(await page.locator('#image-axis-end').getAttribute('data-seconds'),String(a.timing.execution.value_seconds));
   assert.match(await page.locator('#image-axis-label').innerText(),ru?/от первой отметки лога/:/from first log timestamp/,'parser offsets must not claim an API job-start anchor');
   for(const group of groups){const row=page.locator(`#image-timeline [data-evidence="${group.id}"]`);await row.focus();await page.keyboard.press('Enter');
+   if(group.kind==='image'){
+    const label=await row.locator('.timeline-label').innerText();
+    if(group.identity.state==='known')assert.equal(label,group.identity.name,'confirmed basename is shown verbatim');
+    else assert.match(label,ru?/Неизвестный образ/:/Unknown image/,'unknown identity stays explicit');
+    if(group.identity.lines){const note=await page.locator('#group-evidence-note').innerText();assert.ok(note.includes('#'+group.identity.step_id));assert.ok(note.includes(group.identity.lines.start+'–'+group.identity.lines.end),'name provenance is shown');}
+   }
    assert.equal(await row.getAttribute('aria-pressed'),'true');groupsChecked++;
    assert.equal(await row.locator('.timeline-label').evaluate(e=>getComputedStyle(e).color),await page.locator('body').evaluate(e=>getComputedStyle(e).color));
    assert.equal(await row.evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(237, 243, 255)');
@@ -33,6 +39,7 @@ if(!url||!out)throw Error('Usage: browser_drilldown_v2.cjs FILE_URL OUTPUT_DIREC
    const span=group.timing.start_seconds!=null&&group.timing.end_seconds!=null?group.timing.end_seconds-group.timing.start_seconds:null;
    assert.equal(await page.locator('#step-axis-end').getAttribute('data-seconds'),String(span));
    for(const n of ops){const op=page.locator(`#step-timeline [data-evidence="${n.id}"]`);await op.click();operationsChecked++;
+    if(n.buildkit){assert.equal(await op.getAttribute('data-buildkit-step'),String(n.buildkit.step_id));assert.ok((await op.locator('.timeline-label').innerText()).startsWith('#'+n.buildkit.step_id+' '),'source BuildKit number is shown, not an ordinal');}
     assert.equal(await op.getAttribute('aria-pressed'),'true');assert.equal(await op.getAttribute('data-seconds'),String(n.timing.duration_seconds));
     assert.equal(await page.locator('#step-evidence-block').getAttribute('data-selected-evidence'),n.id);
     assert.equal(await page.locator('#step-evidence-note').getAttribute('data-line-start'),String(n.lines.start));

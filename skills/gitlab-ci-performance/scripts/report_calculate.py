@@ -1,5 +1,5 @@
 """Offline v2 calculation; every supported view is materialized here."""
-from report_contract import SKILL_VERSION
+from report_contract import SKILL_VERSION, VERSION, PARSER_VERSION
 from collections import Counter
 from copy import deepcopy
 from statistics import median
@@ -9,8 +9,6 @@ import re
 
 from report_contract import digest, now, timestamp, type_id, validate
 
-VERSION = '2.0.0'
-PARSER_VERSION = '1.0.0'
 CATEGORIES = ('export_local_unpack', 'context_application_copy', 'base_image',
               'dependencies_builder_setup', 'runner_phase', 'queue')
 METRICS = ('queue', 'execution', 'total')

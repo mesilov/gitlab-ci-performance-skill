@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.gitlab-ci-performance.invalid/v2/common.schema.json",
+  "$id": "https://schemas.gitlab-ci-performance.invalid/v2.1/common.schema.json",
   "$defs": {
     "project": {
       "type": "object",
@@ -512,6 +512,26 @@
             "excluded",
             "unknown"
           ]
+        },
+        "buildkit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/buildkit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/image_identity"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -523,7 +543,54 @@
         "cached",
         "complete",
         "lines",
-        "push_coverage"
+        "push_coverage",
+        "buildkit",
+        "identity"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "image"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "identity": {
+                "$ref": "#/$defs/image_identity"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "identity": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "phase",
+                  "image",
+                  "command"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "buildkit": {
+                "type": "null"
+              }
+            }
+          }
+        }
       ]
     },
     "trace": {
@@ -580,7 +647,7 @@
           "minimum": 0
         },
         "parser_version": {
-          "const": "1.0.0"
+          "const": "1.1.0"
         },
         "fetched_at": {
           "type": "string",
@@ -899,7 +966,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "skill_version": {
           "type": "string",
@@ -2157,7 +2224,7 @@
           "const": "per-run-interval-union-then-median"
         },
         "trace_parser": {
-          "const": "1.0.0"
+          "const": "1.1.0"
         },
         "timing_evidence_policy": {
           "const": "reported-duration-with-inferred-positions-allowed"
@@ -2181,13 +2248,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "calculation_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "trace_parser_version": {
-          "const": "1.0.0"
+          "const": "1.1.0"
         },
         "skill_version": {
           "type": "string",
@@ -2320,13 +2387,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "calculation_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "trace_parser_version": {
-          "const": "1.0.0"
+          "const": "1.1.0"
         },
         "skill_version": {
           "type": "string",
@@ -2496,7 +2563,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.0.0"
+          "const": "2.1.0"
         },
         "kind": {
           "const": "gitlab_job_performance_compact"
@@ -2618,6 +2685,174 @@
         "windows",
         "attempts",
         "external_references"
+      ]
+    },
+    "buildkit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "step_id": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "step_id"
+      ]
+    },
+    "image_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "known",
+            "unknown",
+            "conflicting",
+            "redacted"
+          ]
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "buildkit_naming",
+            "buildkit_unpack",
+            "unknown"
+          ]
+        },
+        "step_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lines": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lines"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "name",
+        "origin",
+        "step_id",
+        "lines"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "origin": {
+                "enum": [
+                  "buildkit_naming",
+                  "buildkit_unpack"
+                ]
+              },
+              "step_id": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "lines": {
+                "$ref": "#/$defs/lines"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "name": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "origin": {
+                "const": "unknown"
+              },
+              "step_id": {
+                "type": "null"
+              },
+              "lines": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "origin": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "step_id": {
+                "type": "null"
+              },
+              "lines": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "step_id": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "lines": {
+                "$ref": "#/$defs/lines"
+              }
+            }
+          }
+        }
       ]
     }
   }

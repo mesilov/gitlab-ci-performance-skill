@@ -1,4 +1,4 @@
-# Report contract 2.0.0
+# Report contract 2.1.0
 
 This contract implements issue #4 through the installed `scripts/report_cli.py`.
 It coexists with the published `scripts/ci_report.py` reviewed-report workflow
@@ -12,17 +12,18 @@ report's visual hierarchy: localized heading, compact baseline/outcome cards,
 a framed vertical action-priority list, collapsed history and a selected latest attempt with
 two-level timing timelines. The selected attempt shows compact queue/execution/
 total/runner/outcome context, collapsed runner phases and technical metadata,
-saved build fragments on a shared execution-length axis, and only the selected fragment's
+saved image builds on a shared execution-length axis, and only the selected build's
 operations on a relative axis. Selected evidence shows source lines, quality,
-push coverage and nested substeps; the selected fragment's own source lines,
+push coverage and nested substeps; the selected build's own source lines,
 quality, completeness and push coverage remain visible beside the operation view.
 Other command intervals remain accessible. Stored offsets use the first log
 timestamp/marker as origin; its alignment with API job start is not known. The
 shared scale must not claim that its zero is the API start.
 Unknown positions receive no invented bar; CACHED is labeled without a numeric
-zero. Fragment labels and operation ordinals are display labels, not image names
-or original BuildKit step IDs. The canonical closed evidence vocabulary does not
-store those fields, and ambiguous parser sessions must not be merged by HTML.
+zero. Known image identities show a safe lowercase basename from a naming or
+unpack line; absent, conflicting or redacted names remain explicit. Operations
+and parts retain their original BuildKit source step IDs. An unknown image's
+ordinal is only a display label; ambiguous parser sessions must not be merged by HTML.
 The reviewed renderer stays available through
 `ci_report.py`. Shared presentation does not imply shared calculation semantics:
 queue-spike rules, baseline eligibility and evidence policies remain in each saved
@@ -43,16 +44,16 @@ python scripts/report_cli.py export --report <new-run>/report.json --scope overv
 python scripts/report_cli.py render --report <new-run>/report.json --language ru --output <new-run>/report.html
 ```
 
-Only collection performs transport requests. A v1 source cannot be silently
-upgraded to this contract: recollect it, use explicit `report_cli.py report --legacy`
-or use the published `ci_report.py` reviewed workflow with its own evidence policy.
+Only collection performs transport requests. This route accepts only canonical
+schema 2.1.0 and parser 1.1.0. Collect a fresh source for older artifacts; there
+is no migration, old-source calculation or old-report rendering/export support.
 
 ## Artifacts and validation
 
 | Artifact | Kind | Schema |
 |---|---|---|
 | Safe metadata and compact trace summaries | `gitlab_job_performance_source` | `source-contract-v2.schema.json` |
-| Individual trace summary | parser `1.0.0` | `trace.schema.json` |
+| Individual trace summary | parser `1.1.0` | `trace.schema.json` |
 | Canonical report | `gitlab_job_performance_report` | `report-contract-v2.schema.json` |
 | LLM selection | `gitlab_job_performance_compact` | `compact.schema.json` |
 
@@ -72,7 +73,7 @@ and recomputed sample aggregates/category unions/ranks. Run `report_cli.py valid
 
 ## Envelope and source provenance
 
-The report stores schema/calculation versions `2.0.0`, parser `1.0.0`, the actual
+The report stores schema/calculation versions `2.1.0`, parser `1.1.0`, the actual
 installed skill version read from `VERSION`, and a
 stable report kind. These versions are independent; the local prototype's version
 is unrelated. `report_id` hashes input provenance and policies, excluding generated
@@ -106,10 +107,13 @@ per type, up to 10 baseline-only metadata candidates/type, concurrency 4, reques
 60 s, trace 4 MiB/50,000 physical lines. Page budget may be explicitly increased;
 concurrency/type/trace caps cannot exceed these ceilings. Positive limits and
 selector types are checked before collection. The report/export payload cap is
-16 MiB, individual trace summary 128 KiB. The parser stops adding evidence at
-120 nodes (a frame can add a parent+child and reach 121), while preserving source
-hash/size/line counts and recording `partial/evidence_limit`. Schema ceiling is
-512 nodes, allowing explicit future parser evolution without uncapped runtime work.
+16 MiB, individual trace summary 128 KiB. The parser admits at most 160 nodes;
+each parent and child consumes one slot. This replaces the 120-node budget after
+measuring 126 correctly segmented nodes / about 77 KiB for the reported eight-build
+job. Maximum-length named fixtures also stay under 128 KiB. Existing operations
+still receive progress, DONE, naming and section closures after admission stops.
+Omitted nodes retain `partial/evidence_limit`, whole-source hash/size/line counts
+and explicit incomplete coverage. The schema ceiling of 512 is not a runtime budget.
 
 Let P be metadata pages, R retained attempts and B extra baseline candidates. Per
 invocation, requests are bounded by `2 + P + 2*(R+B) + R`: project/version, pages,
@@ -139,6 +143,8 @@ per-invocation page budget. Request/page counters are cumulative; budgets descri
 the current invocation. Already-seen IDs are deduplicated across resume snapshots;
 duplicates/cycles within a new invocation are errors. Fresh job/pipeline checks are
 repeated. `resumed_from_sha256` records the previous snapshot.
+Resume and cache inputs must use schema 2.1.0 / parser 1.1.0; incompatible inputs
+fail before any transport request.
 
 `--cache source.json` reuses only validated summaries for unchanged freshly checked
 terminal jobs, same parser, within recorded `cache_max_age_seconds` (default 86400)
@@ -203,12 +209,47 @@ GitLab may not support direct line-range deep links.
 
 Allowlisted nodes cover phases, image sessions, operations, nested parts and command
 intervals. Arbitrary section labels, command strings, arguments, output/environment
-and credentials are omitted; only fixed semantic codes and numerical evidence survive.
+and credentials are omitted. Safe image basenames, fixed semantic codes, bounded
+source step IDs and numerical evidence survive.
 BuildKit instruction matching is anchored, so keywords inside RUN arguments cannot
 misclassify COPY/FROM. Repeated frames deduplicate within a session; repeated step
 IDs across explicit sessions remain separate. Ambiguous changed headers split partial
 sessions. Identical reused IDs/headers without any observable boundary cannot be
 reliably distinguished and remain a documented parser limitation.
+
+Only `exporting to ...` starts an export operation. Layers, manifest, config,
+naming and unpacking extend that operation's source range. An identical banner
+after a completed export with all admitted operations complete, or failed/canceled
+work, starts a new session; an active-session
+banner redraw does not. Recognized FROM digest transfer/extraction followed by a
+larger cumulative DONE replaces its earlier checkpoint, without adding durations.
+Conflicting DONE measurements without that progress remain partial. Repeated
+identical DONE does not extend the image's elapsed envelope.
+The same applies to completed export substeps, CACHED and bare DONE redraws.
+Transient frame digests are bounded by the trace input/line budget and never
+exported; physical source ranges still include repeated observations.
+Without an export/failure boundary, an identical banner may be a redraw; it does
+not by itself prove another build. Changed genuine headers still flag ambiguity.
+
+Every node includes `buildkit` and `identity`, using JSON null where inapplicable.
+For an operation or part, `buildkit` is null for authored evidence without a
+BuildKit source step, or `{step_id: INTEGER}` with a source ID from 0 through
+2147483647. Phase, command and image nodes use null. A part's source step must
+equal its parent operation's source step; nested timings do not add to the parent.
+Part source lines also remain inside their parent operation's line range.
+
+Only image nodes have an `identity` object. It contains `state`, `name`, `origin`,
+`step_id` and `lines`. State is known, unknown, conflicting or redacted. A known
+name is a lowercase leaf basename matching `[a-z0-9]+(?:[._-][a-z0-9]+)*`, at
+most 128 characters; registry/path, credentials, tag and digest are omitted.
+Known identities have `origin=buildkit_naming|buildkit_unpack`, the original
+source step ID and physical source line range. The range stays inside the image
+node's source range and resolves to a direct child operation with the same
+BuildKit source step; its lines stay inside that operation's range. Unknown
+identities have null name/step/lines and origin
+unknown. Conflicting/redacted identities keep a null name and may retain complete
+safe source provenance. Other node kinds have null identity. The closed schema
+rejects raw headers, destinations and additional identity fields.
 
 BuildKit durations remain `origin=buildkit_reported`. With a timestamped DONE,
 defensible positions can be inferred from completion time minus reported duration:
@@ -278,17 +319,14 @@ cohort selection, median, union or ranking implementation exists. HTML embeds th
 canonical report and works as one relocated offline file. Reanalysis needs the saved
 source/evidence and recorded calculation policy, never HTML scraping/browser execution.
 
-## Evolution, legacy and installed verification
+## Versions and installed verification
 
-Breaking fields/semantics need a major schema bump. Calculation/parser changes need
-independent version bumps; unknown versions/fields reject with actionable help. No
-silent reinterpretation of v1. Frozen schemas/templates validate/render existing v1
-artifacts (1.0 and 1.1); legacy generation is explicit `report --legacy` and
-retains the 1.1 release-history extension. Rendering keeps legacy full en/ru
-localization, accepts `--language en|ru` for either path, and preserves embedded JSON.
-For v2 the override affects HTML only; saved language metadata remains unchanged. New v2 report generation from
-v1 source fails with recollection/legacy instructions because freshness/trace evidence
-cannot be invented. The original v1 demo remains a legacy fixture.
+Schema, calculation and parser versions identify the accepted artifact semantics.
+This route supports only schema/calculation 2.1.0 with parser 1.1.0. Unknown or
+older versions/fields reject; there are no frozen canonical schemas, migration
+or old-report support. A new collection supplies the required evidence.
+`render --language en|ru` affects HTML only; saved language metadata and embedded
+JSON remain unchanged.
 
 After updating/copying the skill directory, install its pinned requirements in a venv
 and run documented commands using the copied helper. Unit tests copy the complete skill
