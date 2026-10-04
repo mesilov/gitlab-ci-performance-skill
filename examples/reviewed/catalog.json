@@ -1,0 +1,12 @@
+{
+  "jobs": {
+    "container-build": {
+      "configuration_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "description": "Build and publish application container images.",
+      "source_ref": "main",
+      "source_url": "https://gitlab.example.com/example/service/-/blob/main/.gitlab-ci.yml",
+      "verified_at": "2026-10-04T00:00:00Z"
+    }
+  },
+  "project": "example/service"
+}

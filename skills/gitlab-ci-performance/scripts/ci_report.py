@@ -18,6 +18,7 @@ from urllib.parse import quote, urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 VERSION = "1.0.0"
 REPORT_VERSION = "1.1.0"
 POLICY = {"relative_growth_percent": 20.0, "absolute_growth_seconds": 30.0,
@@ -52,6 +53,12 @@ def validate(value, kind):
     if kind in {"workflows", "workflow-jobs", "workflow-report", "workflow-llm"}:
         from workflow_report import validate_artifact
         return validate_artifact(value, kind)
+    version = value.get('schema_version')
+    if version in {'2.0.0','2.0.1'} or kind in {'metadata', 'timings'}:
+        from contracts import validate_v2
+        return validate_v2(value, kind)
+    if version not in {'1.0.0', '1.1.0'}:
+        raise ValueError('Unsupported artifact version; use a compatible skill or re-analyze into new outputs')
     try:
         from jsonschema import Draft202012Validator, FormatChecker
     except ImportError:
@@ -413,6 +420,14 @@ def render(report, output, language="en"):
     if report.get("kind") not in {"report", "workflow-report"}:
         raise ValueError("Render requires a calculated report artifact")
     validate(report, report["kind"])
+    if report['kind'] == 'report' and report['schema_version'] in {'2.0.0','2.0.1'}:
+        payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
+        template = (ROOT/'assets'/'report.html').read_text(encoding='utf-8')
+        rendered = template.replace('__REPORT_LANGUAGE__', language).replace('__REPORT_DATA__', payload)
+        output = Path(output); output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open('x', encoding='utf-8') as f:
+            f.write(rendered)
+        return
 
     def script_json(value):
         return json.dumps(value, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
@@ -423,7 +438,7 @@ def render(report, output, language="en"):
         rendered = template.replace("__REPORT_DATA__", script_json(report))
     else:
         messages = load(ROOT / "locales" / f"{language}.json")
-        template = (ROOT / "assets" / "report.html").read_text(encoding="utf-8")
+        template = (ROOT / "assets" / "report-v1.html").read_text(encoding="utf-8")
         # Resolve template tokens before source insertion; data may contain tokens.
         template = re.sub(r"__TEXT:([a-z0-9_]+)__", lambda m: html.escape(messages[m[1]], quote=True), template)
         template = template.replace("__LANGUAGE__", language)
@@ -462,6 +477,16 @@ def main():
     collect_p.add_argument("--workflow-window", type=int, nargs="?", const=32, choices=[32, 64],
                            help="Use workflow mode; defaults to 32 pipeline runs when the flag has no value")
     collect_p.add_argument("--output", type=Path, required=True)
+    details_p = commands.add_parser('collect-details', help='Refresh metadata and analyze traces for newest 64 attempts per type')
+    details_p.add_argument('--snapshot',type=Path,required=True)
+    details_p.add_argument('--output-dir',type=Path,required=True)
+    details_p.add_argument('--workers',type=int,default=4)
+    details_p.add_argument('--job',action='append',dest='job_names')
+    details_p.add_argument('--stage',action='append',dest='stages')
+    details_p.add_argument('--trace-cache',type=Path)
+    details_p.add_argument('--reuse-cache',action='store_true')
+    details_p.add_argument('--no-traces',action='store_true')
+    details_p.add_argument('--max-trace-bytes',type=int,default=32*1024*1024)
     report_p = commands.add_parser("report")
     report_p.add_argument("--snapshot", type=Path, required=True)
     report_p.add_argument("--baseline", type=Path)
@@ -474,8 +499,12 @@ def main():
     report_p.add_argument("--catalog", type=Path)
     report_p.add_argument("--workflows", type=Path)
     report_p.add_argument("--release-refs", nargs="+", metavar="REF",
-                          help="Optional exploratory job history across these exact refs/tags")
+                          help="Compatibility route: preserved 1.1 exploratory report across these exact refs/tags")
     report_p.add_argument("--output", type=Path, required=True)
+    report_p.add_argument('--details',type=Path,help='Saved directory containing metadata.json and timings.json')
+    report_p.add_argument('--legacy',action='store_true',help='Generate preserved 1.1 report instead of reviewed 2.0')
+    report_p.add_argument('--job',action='append',dest='job_names')
+    report_p.add_argument('--stage',action='append',dest='stages')
     render_p = commands.add_parser("render")
     render_p.add_argument("--report", type=Path, required=True)
     render_p.add_argument("--output", type=Path, required=True)
@@ -504,16 +533,38 @@ def main():
             save(args.output, result, "workflow-jobs")
         else:
             save(args.output, collect(args.host, args.project, args.timezone, args.max_pages if args.max_pages is not None else 100), "jobs")
+    elif args.command == 'collect-details':
+        if args.reuse_cache and not args.trace_cache:raise ValueError('--reuse-cache requires --trace-cache')
+        if args.output_dir.exists():raise ValueError('Details output directory already exists; choose a new run directory')
+        snapshot=load(args.snapshot);validate(snapshot,'jobs')
+        from collection import collect_details
+        metadata,timings=collect_details(snapshot,args.workers,args.job_names,args.stages,args.trace_cache,args.reuse_cache,args.no_traces,args.max_trace_bytes)
+        validate(metadata,'metadata');validate(timings,'timings')
+        args.output_dir.mkdir(parents=True)
+        save(args.output_dir/'metadata.json',metadata,'metadata');save(args.output_dir/'timings.json',timings,'timings')
+        print(json.dumps(metadata['coverage'],sort_keys=True))
     elif args.command == "report":
         if args.workflows:
-            if args.baseline or args.catalog or args.release_refs:
-                raise ValueError("Workflow mode uses its definitions and retained pipeline window, without --baseline/--catalog/--release-refs")
+            if args.baseline or args.catalog or args.release_refs or args.details or args.legacy or args.job_names or args.stages:
+                raise ValueError("Workflow mode uses its definitions and retained pipeline window, without --baseline/--catalog/--release-refs/--details/--legacy/--job/--stage")
             save(args.output, workflow_build(load(args.snapshot), load(args.workflows)), "workflow-report")
             return
         policy = {"relative_growth_percent": args.growth_percent, "absolute_growth_seconds": args.growth_seconds,
                   "minimum_baseline_observations": args.min_baseline, "minimum_current_observations": args.min_current}
+        catalog=load(args.catalog) if args.catalog else None
+        legacy_catalog={'project':catalog.get('project'),'jobs':{name:{k:v for k,v in purpose.items() if k in {'description','source_url','verified_at'}}
+                       for name,purpose in catalog.get('jobs',{}).items()}} if catalog else None
         result = build_report(load(args.snapshot), load(args.baseline) if args.baseline else None,
-                              args.windows, args.baseline_window, policy, load(args.catalog) if args.catalog else None, args.release_refs)
+                              args.windows, args.baseline_window, policy, legacy_catalog, args.release_refs)
+        if not args.legacy and args.release_refs is None:
+            from reviewed_report import build
+            metadata=load(args.details/'metadata.json') if args.details else None
+            timings=load(args.details/'timings.json') if args.details else None
+            if metadata is not None:
+                validate(metadata,'metadata');validate(timings,'timings')
+            result=build(load(args.snapshot),metadata,timings,result,catalog,args.job_names,args.stages)
+        elif args.details or args.job_names or args.stages:
+            raise ValueError('--legacy does not accept reviewed detail/type options')
         save(args.output, result, "report")
     elif args.command == "render":
         render(load(args.report), args.output, args.language)
@@ -526,7 +577,7 @@ def main():
         save(args.output, workflow_export(load(args.report)), "workflow-llm")
     else:
         data = load(args.path)
-        if data.get("kind") not in {"jobs", "report", "workflows", "workflow-jobs", "workflow-report", "workflow-llm"}:
+        if data.get("kind") not in {"jobs", "report", "metadata", "timings", "workflows", "workflow-jobs", "workflow-report", "workflow-llm"}:
             raise ValueError("Unknown artifact kind")
         validate(data, data["kind"])
         print("JSON Schema и связи IDs: OK")

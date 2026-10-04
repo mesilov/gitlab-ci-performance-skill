@@ -1,0 +1,446 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "2.0.0"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "metadata"
+      ]
+    },
+    "collection_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_complete_available_history": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "snapshot_sha256",
+        "source_attempts",
+        "source_complete_available_history"
+      ]
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/type_scope"
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "job": {
+            "$ref": "#/$defs/safe_job"
+          },
+          "metadata_status": {
+            "enum": [
+              "fresh",
+              "stale"
+            ]
+          },
+          "metadata_collected_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trace_status": {
+            "enum": [
+              "available",
+              "partial",
+              "not_run",
+              "empty",
+              "erased",
+              "unavailable",
+              "disabled"
+            ]
+          },
+          "trace_source": {
+            "enum": [
+              "live",
+              "cache",
+              "none"
+            ]
+          },
+          "trace_collected_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "metadata_error": {
+            "enum": [
+              null,
+              "metadata_request_failed",
+              "metadata_identity_mismatch"
+            ]
+          }
+        },
+        "required": [
+          "job_id",
+          "job",
+          "metadata_status",
+          "metadata_collected_at",
+          "trace_status",
+          "trace_source",
+          "trace_collected_at",
+          "metadata_error"
+        ]
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "missing_job_start",
+          "truncated_trace",
+          "incomplete_sections",
+          "invalid_section_timing",
+          "unmatched_section_end",
+          "incomplete_commands",
+          "estimated_command_intervals",
+          "ambiguous_build_boundary",
+          "duplicate_frames",
+          "incomplete_operations",
+          "incomplete_substeps",
+          "missing_operation_durations",
+          "partial_build_span",
+          "inferred_operation_positions",
+          "missing_operation_positions",
+          "unknown_push_coverage",
+          "missing_timestamps",
+          "trace_disabled",
+          "job_not_run",
+          "trace_erased",
+          "trace_forbidden",
+          "trace_unavailable",
+          "trace_timeout",
+          "trace_request_failed",
+          "trace_byte_limit",
+          "active_trace",
+          "trace_cache_write_failed",
+          "details_not_collected",
+          "collection_not_atomic",
+          "details_retained_64_per_type",
+          "traces_may_be_unavailable"
+        ]
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "collection_started_at",
+    "collected_at",
+    "timezone",
+    "project",
+    "source",
+    "types",
+    "jobs",
+    "coverage",
+    "limitations"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/gitlab-ci-performance/metadata-v2.schema.json",
+  "$defs": {
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "retained_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata_fresh": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "workers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "max_trace_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_bytes_received": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "retained_attempts",
+        "metadata_requests",
+        "metadata_fresh",
+        "trace_requests",
+        "trace_status_counts",
+        "workers",
+        "max_trace_bytes",
+        "trace_bytes_received"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "runner": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "description"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "safe_job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "pipeline_id",
+        "name",
+        "stage",
+        "ref",
+        "status",
+        "allow_failure",
+        "created_at",
+        "started_at",
+        "finished_at",
+        "duration_seconds",
+        "queued_seconds",
+        "failure_reason",
+        "runner",
+        "web_url",
+        "commit_sha",
+        "erased_at",
+        "runner_version"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "ID \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u0439 \u043f\u043e\u043f\u044b\u0442\u043a\u0438 \u0437\u0430\u043f\u0443\u0441\u043a\u0430; \u043f\u043e\u0432\u0442\u043e\u0440\u043d\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u0442\u0441\u044f \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e\u0439 \u0437\u0430\u043f\u0438\u0441\u044c\u044e."
+        },
+        "pipeline_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "allow_failure": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "\u0412\u0440\u0435\u043c\u044f \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f \u0438\u0437 GitLab API duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; null \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u0438\u044f."
+        },
+        "queued_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "\u0412\u0440\u0435\u043c\u044f \u043e\u0436\u0438\u0434\u0430\u043d\u0438\u044f \u0438\u0437 GitLab API queued_duration, \u0432 \u0441\u0435\u043a\u0443\u043d\u0434\u0430\u0445; null \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0438\u0435 \u0438\u0437\u043c\u0435\u0440\u0435\u043d\u0438\u044f."
+        },
+        "failure_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "runner": {
+          "$ref": "#/$defs/runner"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "commit_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "erased_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "runner_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "type_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retained_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "stage",
+        "source_count",
+        "retained_ids"
+      ]
+    }
+  }
+}

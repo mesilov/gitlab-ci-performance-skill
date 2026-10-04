@@ -257,6 +257,21 @@ class WorkflowTimingTests(unittest.TestCase):
             self.assertEqual(ci.load(out)['views'],ci.load(compact)['views'])
             self.assertIn('workflow-select',html.read_text())
 
+    def test_workflow_cli_rejects_job_only_options_after_integration(self):
+        s,d=fixture(1)
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);jobs=root/'jobs.json';definitions=root/'workflows.json'
+            jobs.write_bytes(ci.encoded(s));definitions.write_bytes(ci.encoded(d))
+            for options in [('--details',tmp),('--legacy',),('--job','compile'),('--stage','build')]:
+                with self.subTest(options=options):
+                    output=root/(options[0][2:]+'.json')
+                    result=subprocess.run([sys.executable,str(SCRIPTS/'ci_report.py'),'report',
+                        '--snapshot',str(jobs),'--workflows',str(definitions),'--output',str(output),
+                        *options],capture_output=True,text=True)
+                    self.assertNotEqual(result.returncode,0)
+                    self.assertIn('Workflow mode',result.stderr)
+                    self.assertFalse(output.exists())
+
 
 class WorkflowCollectionTests(unittest.TestCase):
     def fake_api(self, count, calls, detail_failure=False, late_attempt=False):

@@ -6,6 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python: ['3.10', '3.12']
     steps:
@@ -16,21 +17,25 @@ jobs:
       - run: |
           python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
       - run: python -m unittest discover -s tests -v
-      - run: python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/jobs.json
-      - run: python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/report.json
+      - run: |
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/jobs.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/report.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/reviewed/metadata.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/reviewed/timings.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/reviewed/report.json
       - run: |
           python skills/gitlab-ci-performance/scripts/ci_report.py report --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/smoke/report.json
-          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --output reports/smoke/report.html
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --language en --output reports/smoke/report.html
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --language ru --output reports/smoke/report-ru.html
-      - run: |
           python examples/generate_release_demo.py --output-dir reports/release-smoke
+          python examples/generate_reviewed.py --output-dir reports/reviewed-smoke
           python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/release-smoke/report.json
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/release-smoke/report.json --language ru --output reports/release-smoke/report-ru.html
       - run: |
           python examples/generate_workflow_demo.py --output-dir reports/workflows
-          tar --exclude='__pycache__' --exclude='*.pyc' -czf reports/gitlab-ci-performance-2.0.0.tar.gz -C skills gitlab-ci-performance
+          tar --exclude='__pycache__' --exclude='*.pyc' -czf reports/gitlab-ci-performance-workflow-smoke.tar.gz -C skills gitlab-ci-performance
           mkdir -p "$RUNNER_TEMP/workflow-install"
-          tar -xzf reports/gitlab-ci-performance-2.0.0.tar.gz -C "$RUNNER_TEMP/workflow-install"
+          tar -xzf reports/gitlab-ci-performance-workflow-smoke.tar.gz -C "$RUNNER_TEMP/workflow-install"
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" report --snapshot reports/workflows/jobs.json --workflows reports/workflows/workflows.json --output reports/installed/report.json
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" render --report reports/installed/report.json --output reports/installed/report.html
           python "$RUNNER_TEMP/workflow-install/gitlab-ci-performance/scripts/ci_report.py" export-llm --report reports/installed/report.json --output reports/installed/llm.json
@@ -59,3 +64,6 @@ jobs:
           node tests/browser_release_check.cjs "file://$GITHUB_WORKSPACE/reports/releases/report.html" reports/releases/qa
           node tests/browser_release_check.cjs "file://$GITHUB_WORKSPACE/reports/releases/report-ru.html" reports/releases/qa-ru ru
           node tests/workflow_browser_check.cjs "file://$GITHUB_WORKSPACE/reports/workflows/report.html" reports/workflows/qa
+          python examples/generate_reviewed.py --output-dir reports/browser-demo
+          node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report.html" reports/browser-en
+          node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
