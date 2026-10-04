@@ -1,6 +1,7 @@
 {
   "offline": true,
   "checks": [
+    "English overview, details and methodology",
     "synthetic pipeline stack",
     "execution and queue regressions",
     "keyboard selection",

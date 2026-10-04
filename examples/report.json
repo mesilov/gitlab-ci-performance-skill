@@ -1,6 +1,6 @@
 {
   "calculation_version": "1.0.0",
-  "generated_at": "2026-10-04T05:38:17.353857+00:00",
+  "generated_at": "2026-10-04T05:48:29.407322+00:00",
   "inputs": {
     "baseline_collected_at": null,
     "baseline_sha256": null,
@@ -1050,7 +1050,7 @@
           "latest_attempt_id": 1080,
           "name": "build",
           "purpose": {
-            "description": "Собирает образ приложения.",
+            "description": "Builds the application image.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1140,7 +1140,7 @@
           "latest_attempt_id": 1083,
           "name": "integration_tests",
           "purpose": {
-            "description": "Проверяет взаимодействие компонентов.",
+            "description": "Tests how application components work together.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1230,7 +1230,7 @@
           "latest_attempt_id": 1082,
           "name": "lint",
           "purpose": {
-            "description": "Проверяет стиль и статические ошибки кода.",
+            "description": "Checks code style and static errors.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1320,7 +1320,7 @@
           "latest_attempt_id": 1084,
           "name": "security_scan",
           "purpose": {
-            "description": "Проверяет зависимости на известные уязвимости.",
+            "description": "Checks dependencies for known vulnerabilities.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1412,7 +1412,7 @@
           "latest_attempt_id": 1081,
           "name": "unit_tests",
           "purpose": {
-            "description": "Проверяет приложение unit-тестами.",
+            "description": "Runs application unit tests.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1545,7 +1545,7 @@
           "latest_attempt_id": 1080,
           "name": "build",
           "purpose": {
-            "description": "Собирает образ приложения.",
+            "description": "Builds the application image.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1633,7 +1633,7 @@
           "latest_attempt_id": 1083,
           "name": "integration_tests",
           "purpose": {
-            "description": "Проверяет взаимодействие компонентов.",
+            "description": "Tests how application components work together.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1721,7 +1721,7 @@
           "latest_attempt_id": 1082,
           "name": "lint",
           "purpose": {
-            "description": "Проверяет стиль и статические ошибки кода.",
+            "description": "Checks code style and static errors.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1809,7 +1809,7 @@
           "latest_attempt_id": 1084,
           "name": "security_scan",
           "purpose": {
-            "description": "Проверяет зависимости на известные уязвимости.",
+            "description": "Checks dependencies for known vulnerabilities.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },
@@ -1897,7 +1897,7 @@
           "latest_attempt_id": 1081,
           "name": "unit_tests",
           "purpose": {
-            "description": "Проверяет приложение unit-тестами.",
+            "description": "Runs application unit tests.",
             "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
             "verified_at": "2026-09-09T10:00:00+00:00"
           },

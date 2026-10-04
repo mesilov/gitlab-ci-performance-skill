@@ -61,9 +61,9 @@ def main():
                            'anchor_max_job_id': max(j['id'] for j in jobs), 'pages': 1,
                            'complete_available_history': True, 'limitations': ['Synthetic demonstration data; not collected from GitLab']},
                 'jobs': list(reversed(jobs)), 'pipelines': list(reversed(pipelines))}
-    descriptions = {'build': 'Собирает образ приложения.', 'unit_tests': 'Проверяет приложение unit-тестами.',
-                    'lint': 'Проверяет стиль и статические ошибки кода.', 'integration_tests': 'Проверяет взаимодействие компонентов.',
-                    'security_scan': 'Проверяет зависимости на известные уязвимости.'}
+    descriptions = {'build': 'Builds the application image.', 'unit_tests': 'Runs application unit tests.',
+                    'lint': 'Checks code style and static errors.', 'integration_tests': 'Tests how application components work together.',
+                    'security_scan': 'Checks dependencies for known vulnerabilities.'}
     catalog = {'project': project['path'], 'jobs': {name: {'description': text,
                'source_url': project['web_url'] + '/-/blob/main/.gitlab-ci.yml', 'verified_at': collected}
                for name, text in descriptions.items()}}

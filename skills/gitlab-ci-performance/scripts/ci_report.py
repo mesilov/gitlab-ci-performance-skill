@@ -290,7 +290,7 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
                 if not overlap and (not cj or not bj):
                     for change in (execution, queue):
                         change["status"] = "new_job" if cj else "missing_job"
-                purpose = descriptions.get(name, {"description": "Назначение не описано в проверенном каталоге.",
+                purpose = descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
                                                    "source_url": None, "verified_at": None})
                 groups.append({"name": name, "stage": stage, "ref": ref_name, "purpose": purpose,
                                "current": c, "baseline": b, "execution_change": execution, "queue_change": queue,

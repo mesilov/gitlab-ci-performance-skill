@@ -14,6 +14,8 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
     await page.goto(url);await page.locator('#job-rows tr').first().waitFor();
     assert.equal(new URL(url).protocol,'file:');
+    assert.equal(await page.locator('html').getAttribute('lang'),'en');
+    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('body').innerText()),false);
     assert.equal(await page.locator('#job-rows tr').count(),5);
     assert.equal(await page.locator('.driver').count(),2);
     assert.equal(await page.locator('#ci-history .pipeline-bar').count(),8);
@@ -29,9 +31,12 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     await page.getByRole('button',{name:'unit_tests',exact:true}).click();
     assert.equal(await page.locator('#attempt-rows tr').count(),8);
     assert.equal(await page.locator('#history svg').count(),1);
-    await page.getByRole('button',{name:'Закрыть'}).click();
+    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('body').innerText()),false);
+    await page.locator('details.method summary').click();
+    assert.equal(/[А-Яа-яЁё]/.test(await page.locator('#method').innerText()),false);
+    await page.getByRole('button',{name:'Close'}).click();
     await page.locator('#window-select').selectOption('10');
-    assert.match(await page.locator('#situation').innerText(),/недостаточно/);
+    assert.match(await page.locator('#situation').innerText(),/Not enough/);
     await page.locator('#window-select').selectOption('1');
     await page.setViewportSize({width:360,height:800});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -42,7 +47,7 @@ if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY
     const detached=path.join(output,'standalone.html');fs.copyFileSync(fileURLToPath(url),detached);
     await page.goto(pathToFileURL(detached).href);assert.equal(await page.locator('#job-rows tr').count(),5);fs.unlinkSync(detached);
     assert.deepEqual(errors,[]);assert.equal(requests.some(u=>!u.startsWith('file:')),false);
-    const result={offline:true,checks:['synthetic pipeline stack','execution and queue regressions','keyboard selection','job history','sparse baseline','mobile overflow','dark mode','sidecar JSON','standalone HTML','no network or JS errors']};
+    const result={offline:true,checks:['English overview, details and methodology','synthetic pipeline stack','execution and queue regressions','keyboard selection','job history','sparse baseline','mobile overflow','dark mode','sidecar JSON','standalone HTML','no network or JS errors']};
     fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -112,7 +112,7 @@ class MetricsTests(unittest.TestCase):
     def test_empty_snapshot_and_unknown_purpose(self):
         s = sample((), ());report = ci.build_report(s)
         self.assertEqual(report["views"][0]["situation"], "insufficient_data")
-        self.assertIn("не описано", ci.build_report(sample())["views"][0]["groups"][0]["purpose"]["description"])
+        self.assertIn("not documented", ci.build_report(sample())["views"][0]["groups"][0]["purpose"]["description"])
 
 
 class ContractAndTransportTests(unittest.TestCase):

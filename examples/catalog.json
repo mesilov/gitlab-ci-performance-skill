@@ -1,27 +1,27 @@
 {
   "jobs": {
     "build": {
-      "description": "Собирает образ приложения.",
+      "description": "Builds the application image.",
       "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
       "verified_at": "2026-09-09T10:00:00+00:00"
     },
     "integration_tests": {
-      "description": "Проверяет взаимодействие компонентов.",
+      "description": "Tests how application components work together.",
       "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
       "verified_at": "2026-09-09T10:00:00+00:00"
     },
     "lint": {
-      "description": "Проверяет стиль и статические ошибки кода.",
+      "description": "Checks code style and static errors.",
       "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
       "verified_at": "2026-09-09T10:00:00+00:00"
     },
     "security_scan": {
-      "description": "Проверяет зависимости на известные уязвимости.",
+      "description": "Checks dependencies for known vulnerabilities.",
       "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
       "verified_at": "2026-09-09T10:00:00+00:00"
     },
     "unit_tests": {
-      "description": "Проверяет приложение unit-тестами.",
+      "description": "Runs application unit tests.",
       "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
       "verified_at": "2026-09-09T10:00:00+00:00"
     }

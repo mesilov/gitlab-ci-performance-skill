@@ -37,7 +37,7 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The skill instructions and report UI are currently in Russian.
+The report UI is in English. The agent skill instructions are currently in Russian.
 
 ## Run the CLI directly
 
