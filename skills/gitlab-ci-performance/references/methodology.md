@@ -1,4 +1,12 @@
-# Methodology version 1.0.0
+# Methodology
+
+The maintained v2 workflow uses schema/calculation 2.0.0, parser 1.0.0 and skill
+2.0.0. Read [contract-v2.md](contract-v2.md) for bounded collection, window/baseline
+policies, interval-union findings, LLM exports and provenance. The section below
+documents the frozen v1 method used only by explicit legacy calculations/rendering.
+It does not describe v2 collection or authorize silent migration.
+
+# Legacy methodology version 1.0.0
 
 JSON Schema 2020-12; schema_version/calculation_version 1.0.0. Sources:
 [Jobs API](https://docs.gitlab.com/api/jobs/),

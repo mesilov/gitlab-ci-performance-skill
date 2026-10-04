@@ -1,7 +1,7 @@
 # Issue #4: reviewed report JSON contract v2
 
 Date: 2026-10-04 (Asia/Bishkek)
-Status: proposed design, awaiting owner review; implementation is not complete.
+Status: approved by owner in chat; implementation in progress.
 Issue: https://github.com/mesilov/gitlab-ci-performance-skill/issues/4
 Inspected base: `7185372` on `origin/main`.
 

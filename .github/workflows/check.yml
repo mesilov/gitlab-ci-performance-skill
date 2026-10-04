@@ -19,5 +19,12 @@ jobs:
       - run: python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/jobs.json
       - run: python skills/gitlab-ci-performance/scripts/ci_report.py validate examples/report.json
       - run: |
-          python skills/gitlab-ci-performance/scripts/ci_report.py report --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/smoke/report.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py report --legacy --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/smoke/report.json
           python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/smoke/report.json --output reports/smoke/report.html
+      - run: |
+          python examples/generate_v2.py --output-dir reports/v2-smoke
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/v2-smoke/jobs.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/v2-smoke/report.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/v2-smoke/overview.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py report --snapshot reports/v2-smoke/jobs.json --language ru --output reports/v2-smoke/report-ru.json
+          python skills/gitlab-ci-performance/scripts/ci_report.py render --report reports/v2-smoke/report-ru.json --output reports/v2-smoke/report-ru.html

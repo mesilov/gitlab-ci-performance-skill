@@ -1,0 +1,3267 @@
+{
+  "attempts": [
+    {
+      "baseline_eligible": true,
+      "id": 104,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T04:00:00+00:00",
+        "duration_seconds": 35,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T04:00:40+00:00",
+        "id": 104,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "release",
+        "pipeline_id": 104,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000068",
+        "stage": "release",
+        "started_at": "2026-09-01T04:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/104"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T04:00:00+00:00",
+        "duration_seconds": 35,
+        "finished_at": "2026-09-01T04:00:40+00:00",
+        "id": 104,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000068",
+        "source": "push",
+        "started_at": "2026-09-01T04:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/104"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 35
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 40.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 40
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 103,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T03:00:00+00:00",
+        "duration_seconds": 35,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T03:00:40+00:00",
+        "id": 103,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "release",
+        "pipeline_id": 103,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000067",
+        "stage": "release",
+        "started_at": "2026-09-01T03:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/103"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T03:00:00+00:00",
+        "duration_seconds": 35,
+        "finished_at": "2026-09-01T03:00:40+00:00",
+        "id": 103,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000067",
+        "source": "push",
+        "started_at": "2026-09-01T03:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/103"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 35
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 40.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 40
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 102,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T02:00:00+00:00",
+        "duration_seconds": 35,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T02:00:40+00:00",
+        "id": 102,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "release",
+        "pipeline_id": 102,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000066",
+        "stage": "release",
+        "started_at": "2026-09-01T02:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/102"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T02:00:00+00:00",
+        "duration_seconds": 35,
+        "finished_at": "2026-09-01T02:00:40+00:00",
+        "id": 102,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000066",
+        "source": "push",
+        "started_at": "2026-09-01T02:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/102"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 35
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 40.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 40
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 101,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T01:00:00+00:00",
+        "duration_seconds": 35,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T01:00:40+00:00",
+        "id": 101,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "release",
+        "pipeline_id": 101,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000065",
+        "stage": "release",
+        "started_at": "2026-09-01T01:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/101"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T01:00:00+00:00",
+        "duration_seconds": 35,
+        "finished_at": "2026-09-01T01:00:40+00:00",
+        "id": 101,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000065",
+        "source": "push",
+        "started_at": "2026-09-01T01:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/101"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 35
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 40.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 40
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 4,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T04:00:00+00:00",
+        "duration_seconds": 330,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T04:05:35+00:00",
+        "id": 4,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "image_build",
+        "pipeline_id": 4,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000004",
+        "stage": "build",
+        "started_at": "2026-09-01T04:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/4"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T04:00:00+00:00",
+        "duration_seconds": 330,
+        "finished_at": "2026-09-01T04:05:35+00:00",
+        "id": 4,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000004",
+        "source": "push",
+        "started_at": "2026-09-01T04:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/4"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 330
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 335.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 335
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 3,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T03:00:00+00:00",
+        "duration_seconds": 330,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T03:05:35+00:00",
+        "id": 3,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "image_build",
+        "pipeline_id": 3,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000003",
+        "stage": "build",
+        "started_at": "2026-09-01T03:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/3"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T03:00:00+00:00",
+        "duration_seconds": 330,
+        "finished_at": "2026-09-01T03:05:35+00:00",
+        "id": 3,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000003",
+        "source": "push",
+        "started_at": "2026-09-01T03:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/3"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 330
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 335.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 335
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 2,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T02:00:00+00:00",
+        "duration_seconds": 330,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T02:05:35+00:00",
+        "id": 2,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "image_build",
+        "pipeline_id": 2,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000002",
+        "stage": "build",
+        "started_at": "2026-09-01T02:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/2"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T02:00:00+00:00",
+        "duration_seconds": 330,
+        "finished_at": "2026-09-01T02:05:35+00:00",
+        "id": 2,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000002",
+        "source": "push",
+        "started_at": "2026-09-01T02:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/2"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 330
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 335.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 335
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    },
+    {
+      "baseline_eligible": true,
+      "id": 1,
+      "metadata": {
+        "allow_failure": false,
+        "created_at": "2026-09-01T01:00:00+00:00",
+        "duration_seconds": 330,
+        "erased_at": null,
+        "failure_reason": null,
+        "finished_at": "2026-09-01T01:05:35+00:00",
+        "id": 1,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "name": "image_build",
+        "pipeline_id": 1,
+        "queued_seconds": 5,
+        "ref": "main",
+        "runner": {
+          "description": "synthetic-runner",
+          "id": 1
+        },
+        "sha": "0000000000000000000000000000000000000001",
+        "stage": "build",
+        "started_at": "2026-09-01T01:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1"
+      },
+      "pipeline": {
+        "created_at": "2026-09-01T01:00:00+00:00",
+        "duration_seconds": 330,
+        "finished_at": "2026-09-01T01:05:35+00:00",
+        "id": 1,
+        "metadata_checked_at": "2026-10-04T00:00:00+00:00",
+        "metadata_error": null,
+        "metadata_fresh": true,
+        "queued_seconds": 5,
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000001",
+        "source": "push",
+        "started_at": "2026-09-01T01:00:05+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/1"
+      },
+      "timing": {
+        "execution": {
+          "eligible": true,
+          "origin": "api_execution",
+          "quality": "known",
+          "value_seconds": 330
+        },
+        "lifecycle": {
+          "eligible": true,
+          "origin": "lifecycle",
+          "quality": "known",
+          "value_seconds": 335.0
+        },
+        "prestart": {
+          "eligible": true,
+          "origin": "prestart",
+          "quality": "known",
+          "value_seconds": 0.0
+        },
+        "queue": {
+          "eligible": true,
+          "origin": "api_queue",
+          "quality": "known",
+          "value_seconds": 5
+        },
+        "total": {
+          "eligible": true,
+          "origin": "derived_total",
+          "quality": "known",
+          "value_seconds": 335
+        }
+      },
+      "trace": null,
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    }
+  ],
+  "canonical_report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60",
+  "canonical_report_sha256": "1f4fc9962478ba39785f9d25c61a071cbb2d1998fd8bda6099b4b87d78850e47",
+  "envelope": {
+    "calculation_version": "2.0.0",
+    "collected_at": "2026-10-04T00:00:00+00:00",
+    "coverage": {
+      "baseline_source": null,
+      "source": {
+        "anchor_max_job_id": 104,
+        "budgets": {
+          "baseline_per_type": 10,
+          "concurrency": 4,
+          "max_job_types": 16,
+          "max_pages": 10,
+          "retained_per_type": 64,
+          "timeout_seconds": 60,
+          "trace_bytes": 4194304,
+          "trace_lines": 50000
+        },
+        "complete_available_history": true,
+        "cursor": null,
+        "gitlab_version": "synthetic",
+        "glab_version": "synthetic",
+        "limitations": [
+          "Synthetic sources; no GitLab requests were made"
+        ],
+        "observed_counts": [
+          {
+            "available_count": 4,
+            "count_kind": "exact",
+            "name": "image_build",
+            "stage": "build",
+            "type_id": "jobtype-ed596d8361aeb47303e9"
+          },
+          {
+            "available_count": 4,
+            "count_kind": "exact",
+            "name": "release",
+            "stage": "release",
+            "type_id": "jobtype-b9d2346c8d14d06f8eea"
+          }
+        ],
+        "pages": 2,
+        "requests": {
+          "metadata": 0,
+          "pages": 0,
+          "pipelines": 0,
+          "project": 0,
+          "traces": 0,
+          "version": 0
+        },
+        "resumed_from_sha256": null,
+        "selection_policy": {
+          "cache_max_age_seconds": 86400,
+          "comparison_mode": "same_ref",
+          "job_selectors": [],
+          "refs": []
+        },
+        "stop_reason": "eof",
+        "transport": "glab"
+      }
+    },
+    "generated_at": "2026-10-04T00:00:00+00:00",
+    "kind": "gitlab_job_performance_report",
+    "language": "en",
+    "metadata_analyzed_at": "2026-10-04T00:00:00+00:00",
+    "policies": {
+      "aggregation": "per-run-interval-union-then-median",
+      "baseline_maximum": 10,
+      "comparison_mode": "same_ref",
+      "display_threshold_seconds": 300,
+      "group_key": "host+project+stage+name",
+      "highlight_minimum": 3,
+      "queue_spike": {
+        "absolute_seconds": 30,
+        "minimum_known": 3,
+        "relative_multiplier": 2
+      },
+      "refs": [],
+      "timing_evidence_policy": "reported-duration-with-inferred-positions-allowed",
+      "trace_parser": "1.0.0"
+    },
+    "project": {
+      "default_branch": "main",
+      "host": "gitlab.example.com",
+      "id": 42,
+      "path": "example/demo-service",
+      "web_url": "https://gitlab.example.com/example/demo-service"
+    },
+    "provenance": {
+      "baseline_sha256": null,
+      "catalog_sha256": null,
+      "guidance_sha256": null,
+      "snapshot_sha256": "183566f318a4242e7a82c9fc37ff1c40865281dc355dde597332b83a0458ca52",
+      "source_configuration": []
+    },
+    "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60",
+    "schema_version": "2.0.0",
+    "selection": {
+      "job_type_id": "jobtype-ed596d8361aeb47303e9",
+      "reason_code": "longest_known_total"
+    },
+    "skill_version": "2.0.0",
+    "timezone": "UTC",
+    "trace_analyzed_at": "2026-10-04T00:00:00+00:00",
+    "trace_parser_version": "1.0.0"
+  },
+  "external_references": [
+    {
+      "collection": "traces",
+      "id": "1",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "101",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "102",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "103",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "104",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "2",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "3",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    },
+    {
+      "collection": "traces",
+      "id": "4",
+      "report_id": "cc1571997388cd59505579a865e519251e3024dcc1e8bbac2ee3fef125b12a60"
+    }
+  ],
+  "job_types": [
+    {
+      "baseline": {
+        "attempt_ids": [
+          103,
+          102,
+          101
+        ],
+        "complete": true,
+        "deltas": {
+          "execution": {
+            "baseline_seconds": 35,
+            "classification": "unchanged",
+            "current_seconds": 35,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          },
+          "queue": {
+            "baseline_seconds": 5,
+            "classification": "unchanged",
+            "current_seconds": 5,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          },
+          "total": {
+            "baseline_seconds": 40,
+            "classification": "unchanged",
+            "current_seconds": 40,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          }
+        },
+        "maximum": 10,
+        "metrics": {
+          "execution": {
+            "known": 3,
+            "max_seconds": 35,
+            "median_seconds": 35,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 3,
+            "max_seconds": 5,
+            "median_seconds": 5,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 3,
+            "max_seconds": 40,
+            "median_seconds": 40,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        }
+      },
+      "id": "jobtype-b9d2346c8d14d06f8eea",
+      "latest_attempt_id": 104,
+      "name": "release",
+      "overview": {
+        "available_count": 4,
+        "count_kind": "exact",
+        "fresh_count": 4,
+        "retained_count": 4,
+        "status_counts": {
+          "success": 4
+        },
+        "trace_count": 4
+      },
+      "purpose": {
+        "description": "Purpose is not documented in the verified catalog.",
+        "source_url": null,
+        "status": "unknown",
+        "verified_at": null
+      },
+      "refs": [
+        "main"
+      ],
+      "retained_attempt_ids": [
+        104,
+        103,
+        102,
+        101
+      ],
+      "stage": "release",
+      "window_ids": [
+        "window-3a759595eee2a70e7c831e95",
+        "window-419ee4f67021ec706ebdac6d"
+      ]
+    },
+    {
+      "baseline": {
+        "attempt_ids": [
+          3,
+          2,
+          1
+        ],
+        "complete": true,
+        "deltas": {
+          "execution": {
+            "baseline_seconds": 330,
+            "classification": "unchanged",
+            "current_seconds": 330,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          },
+          "queue": {
+            "baseline_seconds": 5,
+            "classification": "unchanged",
+            "current_seconds": 5,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          },
+          "total": {
+            "baseline_seconds": 335,
+            "classification": "unchanged",
+            "current_seconds": 335,
+            "delta_percent": 0.0,
+            "delta_seconds": 0
+          }
+        },
+        "maximum": 10,
+        "metrics": {
+          "execution": {
+            "known": 3,
+            "max_seconds": 330,
+            "median_seconds": 330,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 3,
+            "max_seconds": 5,
+            "median_seconds": 5,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 3,
+            "max_seconds": 335,
+            "median_seconds": 335,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        }
+      },
+      "id": "jobtype-ed596d8361aeb47303e9",
+      "latest_attempt_id": 4,
+      "name": "image_build",
+      "overview": {
+        "available_count": 4,
+        "count_kind": "exact",
+        "fresh_count": 4,
+        "retained_count": 4,
+        "status_counts": {
+          "success": 4
+        },
+        "trace_count": 4
+      },
+      "purpose": {
+        "description": "Purpose is not documented in the verified catalog.",
+        "source_url": null,
+        "status": "unknown",
+        "verified_at": null
+      },
+      "refs": [
+        "main"
+      ],
+      "retained_attempt_ids": [
+        4,
+        3,
+        2,
+        1
+      ],
+      "stage": "build",
+      "window_ids": [
+        "window-edbe40a02133fd13b5be604f",
+        "window-24aa4fd42742fd9266d9b6bb"
+      ]
+    }
+  ],
+  "kind": "gitlab_job_performance_compact",
+  "schema_version": "2.0.0",
+  "scope": {
+    "attempt_ids": [],
+    "job_type_id": null,
+    "kind": "overview",
+    "window_id": null
+  },
+  "windows": [
+    {
+      "anchor_attempt_id": 104,
+      "attempt_ids": [
+        104,
+        103,
+        102,
+        101
+      ],
+      "comparison_mode": "same_ref",
+      "descriptive": {
+        "attempt_ids": [
+          104,
+          103,
+          102,
+          101
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        }
+      },
+      "display_unit": "seconds",
+      "findings": {
+        "categories": [
+          {
+            "code": "export_local_unpack",
+            "finding": {
+              "applicability": "Applies to recognized image export or local unpack intervals; push coverage must be checked separately.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure layer bytes, export and local unpack intervals on another comparable successful run.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Compare image size, exported layers and local unpack time; inspect the configured image output and push coverage.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-0a7b4e997cf750b6d8ca",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "context_application_copy",
+            "finding": {
+              "applicability": "Applies to recognized build context transfer or application COPY intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure context bytes, COPY intervals and cache hits with the same input revision.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect build context size, ignore rules and COPY ordering; compare transferred files and cache reuse.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-2cf5ac3653eb6d95739b",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "base_image",
+            "finding": {
+              "applicability": "Applies to recognized base image metadata resolution, pull or extraction intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare registry resolution and base image transfer times on warm and cold runner caches.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect base image size, registry latency and image cache availability on the selected runner.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-e47fe809bf7f2254ccb6",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "dependencies_builder_setup",
+            "finding": {
+              "applicability": "Applies to recognized dependency or builder setup operations with usable timing.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure dependency fetch, installation and builder preparation separately for equivalent inputs.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect dependency installation and builder setup; compare lockfiles and configured reusable caches.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-2dc5659720b1a4d85863",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "runner_phase",
+            "finding": {
+              "applicability": "Applies to allowlisted runner section intervals; phase and nested build costs are not additive.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Record runner section times and transfer volumes for another successful attempt on the same runner configuration.",
+              "observed_fact": "runner_phase_interval_union_cost",
+              "proposed_action": "Inspect the representative runner phase and compare checkout, cache and artifact transfer behavior.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-579ab45460c63d864851",
+            "known": 4,
+            "median_seconds": 34.0,
+            "missing": 0,
+            "rank": 1,
+            "representative": {
+              "attempt_id": 101,
+              "duration_seconds": 30.0,
+              "evidence_id": "j101-phase-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/101",
+              "lines": {
+                "end": 6,
+                "start": 3
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": true,
+                "interval_ids": [
+                  "j104-phase-1",
+                  "j104-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 103,
+                "complete": true,
+                "interval_ids": [
+                  "j103-phase-1",
+                  "j103-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 102,
+                "complete": true,
+                "interval_ids": [
+                  "j102-phase-1",
+                  "j102-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 101,
+                "complete": true,
+                "interval_ids": [
+                  "j101-phase-1",
+                  "j101-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              }
+            ]
+          },
+          {
+            "code": "queue",
+            "finding": {
+              "applicability": "Applies to GitLab API queued duration; queue delay does not establish an execution bottleneck.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare queue timing with runner utilization, active jobs and resource lock waits at matching timestamps.",
+              "observed_fact": "api_queue_cost",
+              "proposed_action": "Inspect runner availability, matching tags, concurrency and resource locks at the representative job time.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-1c2d8a5cbfe874400533",
+            "known": 4,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "rank": 2,
+            "representative": {
+              "attempt_id": 101,
+              "duration_seconds": 5,
+              "evidence_id": null,
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/101",
+              "lines": null
+            },
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 103,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 102,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 101,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              }
+            ]
+          }
+        ],
+        "eligible_successful_n": 4,
+        "id": "finding-f2bb3852ad15436f7e8b",
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        },
+        "priority_codes": [
+          "runner_phase",
+          "queue"
+        ],
+        "queue_spike": {
+          "absolute_threshold_seconds": 30,
+          "known_n": 4,
+          "latest_seconds": 5,
+          "median_seconds": 5.0,
+          "relative_multiplier": 2,
+          "state": "normal"
+        },
+        "scope": {
+          "attempt_ids": [
+            104,
+            103,
+            102,
+            101
+          ],
+          "from": "2026-09-01T01:00:00+00:00",
+          "to": "2026-09-01T04:00:00+00:00",
+          "type_id": "jobtype-b9d2346c8d14d06f8eea",
+          "window_id": "window-3a759595eee2a70e7c831e95"
+        },
+        "trace_known_n": 4,
+        "trace_missing_n": 0
+      },
+      "from": "2026-09-01T01:00:00+00:00",
+      "has_newer": false,
+      "has_older": false,
+      "id": "window-3a759595eee2a70e7c831e95",
+      "inferential": {
+        "attempt_ids": [
+          104,
+          103,
+          102,
+          101
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        }
+      },
+      "newer_window_id": null,
+      "older_window_id": null,
+      "page": 0,
+      "refs": [
+        "main"
+      ],
+      "size": 32,
+      "to": "2026-09-01T04:00:00+00:00",
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "anchor_attempt_id": 104,
+      "attempt_ids": [
+        104,
+        103,
+        102,
+        101
+      ],
+      "comparison_mode": "same_ref",
+      "descriptive": {
+        "attempt_ids": [
+          104,
+          103,
+          102,
+          101
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        }
+      },
+      "display_unit": "seconds",
+      "findings": {
+        "categories": [
+          {
+            "code": "export_local_unpack",
+            "finding": {
+              "applicability": "Applies to recognized image export or local unpack intervals; push coverage must be checked separately.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure layer bytes, export and local unpack intervals on another comparable successful run.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Compare image size, exported layers and local unpack time; inspect the configured image output and push coverage.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-215e9c7bbfa7e7726443",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "context_application_copy",
+            "finding": {
+              "applicability": "Applies to recognized build context transfer or application COPY intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure context bytes, COPY intervals and cache hits with the same input revision.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect build context size, ignore rules and COPY ordering; compare transferred files and cache reuse.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-cf0f152f9ed23aee3591",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "base_image",
+            "finding": {
+              "applicability": "Applies to recognized base image metadata resolution, pull or extraction intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare registry resolution and base image transfer times on warm and cold runner caches.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect base image size, registry latency and image cache availability on the selected runner.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-d88f1afc6c4bfd65ae69",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "dependencies_builder_setup",
+            "finding": {
+              "applicability": "Applies to recognized dependency or builder setup operations with usable timing.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure dependency fetch, installation and builder preparation separately for equivalent inputs.",
+              "observed_fact": "no_usable_category_timing",
+              "proposed_action": "Inspect dependency installation and builder setup; compare lockfiles and configured reusable caches.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-837249b99f6d71885120",
+            "known": 0,
+            "median_seconds": null,
+            "missing": 4,
+            "rank": null,
+            "representative": null,
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 103,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 102,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              },
+              {
+                "attempt_id": 101,
+                "complete": false,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": null
+              }
+            ]
+          },
+          {
+            "code": "runner_phase",
+            "finding": {
+              "applicability": "Applies to allowlisted runner section intervals; phase and nested build costs are not additive.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Record runner section times and transfer volumes for another successful attempt on the same runner configuration.",
+              "observed_fact": "runner_phase_interval_union_cost",
+              "proposed_action": "Inspect the representative runner phase and compare checkout, cache and artifact transfer behavior.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-8c01de9589d4efd0be95",
+            "known": 4,
+            "median_seconds": 34.0,
+            "missing": 0,
+            "rank": 1,
+            "representative": {
+              "attempt_id": 101,
+              "duration_seconds": 30.0,
+              "evidence_id": "j101-phase-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/101",
+              "lines": {
+                "end": 6,
+                "start": 3
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": true,
+                "interval_ids": [
+                  "j104-phase-1",
+                  "j104-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 103,
+                "complete": true,
+                "interval_ids": [
+                  "j103-phase-1",
+                  "j103-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 102,
+                "complete": true,
+                "interval_ids": [
+                  "j102-phase-1",
+                  "j102-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              },
+              {
+                "attempt_id": 101,
+                "complete": true,
+                "interval_ids": [
+                  "j101-phase-1",
+                  "j101-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    35.0
+                  ]
+                ],
+                "value_seconds": 34.0
+              }
+            ]
+          },
+          {
+            "code": "queue",
+            "finding": {
+              "applicability": "Applies to GitLab API queued duration; queue delay does not establish an execution bottleneck.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare queue timing with runner utilization, active jobs and resource lock waits at matching timestamps.",
+              "observed_fact": "api_queue_cost",
+              "proposed_action": "Inspect runner availability, matching tags, concurrency and resource locks at the representative job time.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-5f8b3ee516babbfad4e9",
+            "known": 4,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "rank": 2,
+            "representative": {
+              "attempt_id": 101,
+              "duration_seconds": 5,
+              "evidence_id": null,
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/101",
+              "lines": null
+            },
+            "samples": [
+              {
+                "attempt_id": 104,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 103,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 102,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 101,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              }
+            ]
+          }
+        ],
+        "eligible_successful_n": 4,
+        "id": "finding-16e54f746b49eabfa17f",
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        },
+        "priority_codes": [
+          "runner_phase",
+          "queue"
+        ],
+        "queue_spike": {
+          "absolute_threshold_seconds": 30,
+          "known_n": 4,
+          "latest_seconds": 5,
+          "median_seconds": 5.0,
+          "relative_multiplier": 2,
+          "state": "normal"
+        },
+        "scope": {
+          "attempt_ids": [
+            104,
+            103,
+            102,
+            101
+          ],
+          "from": "2026-09-01T01:00:00+00:00",
+          "to": "2026-09-01T04:00:00+00:00",
+          "type_id": "jobtype-b9d2346c8d14d06f8eea",
+          "window_id": "window-419ee4f67021ec706ebdac6d"
+        },
+        "trace_known_n": 4,
+        "trace_missing_n": 0
+      },
+      "from": "2026-09-01T01:00:00+00:00",
+      "has_newer": false,
+      "has_older": false,
+      "id": "window-419ee4f67021ec706ebdac6d",
+      "inferential": {
+        "attempt_ids": [
+          104,
+          103,
+          102,
+          101
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 35,
+            "median_seconds": 35.0,
+            "missing": 0,
+            "p95_seconds": 35.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 40,
+            "median_seconds": 40.0,
+            "missing": 0,
+            "p95_seconds": 40.0
+          }
+        }
+      },
+      "newer_window_id": null,
+      "older_window_id": null,
+      "page": 0,
+      "refs": [
+        "main"
+      ],
+      "size": 64,
+      "to": "2026-09-01T04:00:00+00:00",
+      "type_id": "jobtype-b9d2346c8d14d06f8eea"
+    },
+    {
+      "anchor_attempt_id": 4,
+      "attempt_ids": [
+        4,
+        3,
+        2,
+        1
+      ],
+      "comparison_mode": "same_ref",
+      "descriptive": {
+        "attempt_ids": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        }
+      },
+      "display_unit": "minutes",
+      "findings": {
+        "categories": [
+          {
+            "code": "export_local_unpack",
+            "finding": {
+              "applicability": "Applies to recognized image export or local unpack intervals; push coverage must be checked separately.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure layer bytes, export and local unpack intervals on another comparable successful run.",
+              "observed_fact": "export_local_unpack_interval_union_cost",
+              "proposed_action": "Compare image size, exported layers and local unpack time; inspect the configured image output and push coverage.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-e1eb9c66809eb699a4b7",
+            "known": 4,
+            "median_seconds": 10.0,
+            "missing": 0,
+            "rank": 2,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 10.0,
+              "evidence_id": "j1-image-1-op-4",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 13,
+                "start": 10
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              }
+            ]
+          },
+          {
+            "code": "context_application_copy",
+            "finding": {
+              "applicability": "Applies to recognized build context transfer or application COPY intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure context bytes, COPY intervals and cache hits with the same input revision.",
+              "observed_fact": "context_application_copy_interval_union_cost",
+              "proposed_action": "Inspect build context size, ignore rules and COPY ordering; compare transferred files and cache reuse.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-04949aa5ac82974e304c",
+            "known": 4,
+            "median_seconds": 6.0,
+            "missing": 0,
+            "rank": 4,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 6.0,
+              "evidence_id": "j1-image-1-op-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 7,
+                "start": 6
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              }
+            ]
+          },
+          {
+            "code": "base_image",
+            "finding": {
+              "applicability": "Applies to recognized base image metadata resolution, pull or extraction intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare registry resolution and base image transfer times on warm and cold runner caches.",
+              "observed_fact": "base_image_interval_union_cost",
+              "proposed_action": "Inspect base image size, registry latency and image cache availability on the selected runner.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-0118643c9a05cdd8c124",
+            "known": 4,
+            "median_seconds": 3.0,
+            "missing": 0,
+            "rank": 6,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 3.0,
+              "evidence_id": "j1-image-1-op-1",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 5,
+                "start": 4
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              }
+            ]
+          },
+          {
+            "code": "dependencies_builder_setup",
+            "finding": {
+              "applicability": "Applies to recognized dependency or builder setup operations with usable timing.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure dependency fetch, installation and builder preparation separately for equivalent inputs.",
+              "observed_fact": "dependencies_builder_setup_interval_union_cost",
+              "proposed_action": "Inspect dependency installation and builder setup; compare lockfiles and configured reusable caches.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-37892a69cda0d8cfa7b5",
+            "known": 4,
+            "median_seconds": 8.0,
+            "missing": 0,
+            "rank": 3,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 8.0,
+              "evidence_id": "j1-image-1-op-3",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 9,
+                "start": 8
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              }
+            ]
+          },
+          {
+            "code": "runner_phase",
+            "finding": {
+              "applicability": "Applies to allowlisted runner section intervals; phase and nested build costs are not additive.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Record runner section times and transfer volumes for another successful attempt on the same runner configuration.",
+              "observed_fact": "runner_phase_interval_union_cost",
+              "proposed_action": "Inspect the representative runner phase and compare checkout, cache and artifact transfer behavior.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-2b6bb63fa677eac26d0f",
+            "known": 4,
+            "median_seconds": 329.0,
+            "missing": 0,
+            "rank": 1,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 325.0,
+              "evidence_id": "j1-phase-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 14,
+                "start": 3
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-phase-1",
+                  "j4-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-phase-1",
+                  "j3-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-phase-1",
+                  "j2-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-phase-1",
+                  "j1-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              }
+            ]
+          },
+          {
+            "code": "queue",
+            "finding": {
+              "applicability": "Applies to GitLab API queued duration; queue delay does not establish an execution bottleneck.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare queue timing with runner utilization, active jobs and resource lock waits at matching timestamps.",
+              "observed_fact": "api_queue_cost",
+              "proposed_action": "Inspect runner availability, matching tags, concurrency and resource locks at the representative job time.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-989212a6773d6c748733",
+            "known": 4,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "rank": 5,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 5,
+              "evidence_id": null,
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": null
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              }
+            ]
+          }
+        ],
+        "eligible_successful_n": 4,
+        "id": "finding-a9384c915fb13eea8442",
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        },
+        "priority_codes": [
+          "runner_phase",
+          "export_local_unpack",
+          "dependencies_builder_setup"
+        ],
+        "queue_spike": {
+          "absolute_threshold_seconds": 30,
+          "known_n": 4,
+          "latest_seconds": 5,
+          "median_seconds": 5.0,
+          "relative_multiplier": 2,
+          "state": "normal"
+        },
+        "scope": {
+          "attempt_ids": [
+            4,
+            3,
+            2,
+            1
+          ],
+          "from": "2026-09-01T01:00:00+00:00",
+          "to": "2026-09-01T04:00:00+00:00",
+          "type_id": "jobtype-ed596d8361aeb47303e9",
+          "window_id": "window-edbe40a02133fd13b5be604f"
+        },
+        "trace_known_n": 4,
+        "trace_missing_n": 0
+      },
+      "from": "2026-09-01T01:00:00+00:00",
+      "has_newer": false,
+      "has_older": false,
+      "id": "window-edbe40a02133fd13b5be604f",
+      "inferential": {
+        "attempt_ids": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        }
+      },
+      "newer_window_id": null,
+      "older_window_id": null,
+      "page": 0,
+      "refs": [
+        "main"
+      ],
+      "size": 32,
+      "to": "2026-09-01T04:00:00+00:00",
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    },
+    {
+      "anchor_attempt_id": 4,
+      "attempt_ids": [
+        4,
+        3,
+        2,
+        1
+      ],
+      "comparison_mode": "same_ref",
+      "descriptive": {
+        "attempt_ids": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        }
+      },
+      "display_unit": "minutes",
+      "findings": {
+        "categories": [
+          {
+            "code": "export_local_unpack",
+            "finding": {
+              "applicability": "Applies to recognized image export or local unpack intervals; push coverage must be checked separately.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure layer bytes, export and local unpack intervals on another comparable successful run.",
+              "observed_fact": "export_local_unpack_interval_union_cost",
+              "proposed_action": "Compare image size, exported layers and local unpack time; inspect the configured image output and push coverage.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-11cc48bb0375b94fa202",
+            "known": 4,
+            "median_seconds": 10.0,
+            "missing": 0,
+            "rank": 2,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 10.0,
+              "evidence_id": "j1-image-1-op-4",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 13,
+                "start": 10
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-4"
+                ],
+                "intervals": [
+                  [
+                    30.0,
+                    40.0
+                  ]
+                ],
+                "value_seconds": 10.0
+              }
+            ]
+          },
+          {
+            "code": "context_application_copy",
+            "finding": {
+              "applicability": "Applies to recognized build context transfer or application COPY intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure context bytes, COPY intervals and cache hits with the same input revision.",
+              "observed_fact": "context_application_copy_interval_union_cost",
+              "proposed_action": "Inspect build context size, ignore rules and COPY ordering; compare transferred files and cache reuse.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-dbd5fb8d6450656d29d8",
+            "known": 4,
+            "median_seconds": 6.0,
+            "missing": 0,
+            "rank": 4,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 6.0,
+              "evidence_id": "j1-image-1-op-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 7,
+                "start": 6
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-2"
+                ],
+                "intervals": [
+                  [
+                    14.0,
+                    20.0
+                  ]
+                ],
+                "value_seconds": 6.0
+              }
+            ]
+          },
+          {
+            "code": "base_image",
+            "finding": {
+              "applicability": "Applies to recognized base image metadata resolution, pull or extraction intervals.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare registry resolution and base image transfer times on warm and cold runner caches.",
+              "observed_fact": "base_image_interval_union_cost",
+              "proposed_action": "Inspect base image size, registry latency and image cache availability on the selected runner.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-5fd687089ed88ddc4ad2",
+            "known": 4,
+            "median_seconds": 3.0,
+            "missing": 0,
+            "rank": 6,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 3.0,
+              "evidence_id": "j1-image-1-op-1",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 5,
+                "start": 4
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-1"
+                ],
+                "intervals": [
+                  [
+                    10.0,
+                    13.0
+                  ]
+                ],
+                "value_seconds": 3.0
+              }
+            ]
+          },
+          {
+            "code": "dependencies_builder_setup",
+            "finding": {
+              "applicability": "Applies to recognized dependency or builder setup operations with usable timing.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Measure dependency fetch, installation and builder preparation separately for equivalent inputs.",
+              "observed_fact": "dependencies_builder_setup_interval_union_cost",
+              "proposed_action": "Inspect dependency installation and builder setup; compare lockfiles and configured reusable caches.",
+              "uncertainty": "coverage_limited;inferred_position;guidance_unavailable"
+            },
+            "id": "finding-2cff427defd076153e64",
+            "known": 4,
+            "median_seconds": 8.0,
+            "missing": 0,
+            "rank": 3,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 8.0,
+              "evidence_id": "j1-image-1-op-3",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 9,
+                "start": 8
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-image-1-op-3"
+                ],
+                "intervals": [
+                  [
+                    21.0,
+                    29.0
+                  ]
+                ],
+                "value_seconds": 8.0
+              }
+            ]
+          },
+          {
+            "code": "runner_phase",
+            "finding": {
+              "applicability": "Applies to allowlisted runner section intervals; phase and nested build costs are not additive.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Record runner section times and transfer volumes for another successful attempt on the same runner configuration.",
+              "observed_fact": "runner_phase_interval_union_cost",
+              "proposed_action": "Inspect the representative runner phase and compare checkout, cache and artifact transfer behavior.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-988a01ecf4f05044b536",
+            "known": 4,
+            "median_seconds": 329.0,
+            "missing": 0,
+            "rank": 1,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 325.0,
+              "evidence_id": "j1-phase-2",
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": {
+                "end": 14,
+                "start": 3
+              }
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [
+                  "j4-phase-1",
+                  "j4-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [
+                  "j3-phase-1",
+                  "j3-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [
+                  "j2-phase-1",
+                  "j2-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [
+                  "j1-phase-1",
+                  "j1-phase-2"
+                ],
+                "intervals": [
+                  [
+                    0.0,
+                    4.0
+                  ],
+                  [
+                    5.0,
+                    330.0
+                  ]
+                ],
+                "value_seconds": 329.0
+              }
+            ]
+          },
+          {
+            "code": "queue",
+            "finding": {
+              "applicability": "Applies to GitLab API queued duration; queue delay does not establish an execution bottleneck.",
+              "causal_hypothesis": "cause_unknown",
+              "estimated_savings_seconds": null,
+              "guidance": [],
+              "next_measurement": "Compare queue timing with runner utilization, active jobs and resource lock waits at matching timestamps.",
+              "observed_fact": "api_queue_cost",
+              "proposed_action": "Inspect runner availability, matching tags, concurrency and resource locks at the representative job time.",
+              "uncertainty": "coverage_limited;guidance_unavailable"
+            },
+            "id": "finding-41e9932008c3a6e5a7af",
+            "known": 4,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "rank": 5,
+            "representative": {
+              "attempt_id": 1,
+              "duration_seconds": 5,
+              "evidence_id": null,
+              "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
+              "lines": null
+            },
+            "samples": [
+              {
+                "attempt_id": 4,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 3,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 2,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              },
+              {
+                "attempt_id": 1,
+                "complete": true,
+                "interval_ids": [],
+                "intervals": [],
+                "value_seconds": 5
+              }
+            ]
+          }
+        ],
+        "eligible_successful_n": 4,
+        "id": "finding-eee296784a0e6925ac62",
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        },
+        "priority_codes": [
+          "runner_phase",
+          "export_local_unpack",
+          "dependencies_builder_setup"
+        ],
+        "queue_spike": {
+          "absolute_threshold_seconds": 30,
+          "known_n": 4,
+          "latest_seconds": 5,
+          "median_seconds": 5.0,
+          "relative_multiplier": 2,
+          "state": "normal"
+        },
+        "scope": {
+          "attempt_ids": [
+            4,
+            3,
+            2,
+            1
+          ],
+          "from": "2026-09-01T01:00:00+00:00",
+          "to": "2026-09-01T04:00:00+00:00",
+          "type_id": "jobtype-ed596d8361aeb47303e9",
+          "window_id": "window-24aa4fd42742fd9266d9b6bb"
+        },
+        "trace_known_n": 4,
+        "trace_missing_n": 0
+      },
+      "from": "2026-09-01T01:00:00+00:00",
+      "has_newer": false,
+      "has_older": false,
+      "id": "window-24aa4fd42742fd9266d9b6bb",
+      "inferential": {
+        "attempt_ids": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "metrics": {
+          "execution": {
+            "known": 4,
+            "max_seconds": 330,
+            "median_seconds": 330.0,
+            "missing": 0,
+            "p95_seconds": 330.0
+          },
+          "queue": {
+            "known": 4,
+            "max_seconds": 5,
+            "median_seconds": 5.0,
+            "missing": 0,
+            "p95_seconds": 5.0
+          },
+          "total": {
+            "known": 4,
+            "max_seconds": 335,
+            "median_seconds": 335.0,
+            "missing": 0,
+            "p95_seconds": 335.0
+          }
+        }
+      },
+      "newer_window_id": null,
+      "older_window_id": null,
+      "page": 0,
+      "refs": [
+        "main"
+      ],
+      "size": 64,
+      "to": "2026-09-01T04:00:00+00:00",
+      "type_id": "jobtype-ed596d8361aeb47303e9"
+    }
+  ]
+}

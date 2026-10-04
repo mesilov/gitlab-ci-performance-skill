@@ -51,7 +51,7 @@ def validate(value, kind):
         from jsonschema import Draft202012Validator, FormatChecker
     except ImportError:
         raise ValueError("Установите requirements.txt в локальную venv проекта") from None
-    schema = load(ROOT / "schemas" / f"{kind}.schema.json")
+    schema = load(ROOT / "schemas" / "legacy" / f"{kind}.schema.json")
     Draft202012Validator.check_schema(schema)
     errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(value))
     if errors:
@@ -378,7 +378,8 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        from report_cli import main as maintained_main
+        maintained_main()
     except (ValueError, OSError, subprocess.TimeoutExpired) as error:
         print(f"Ошибка: {error}", file=sys.stderr)
         sys.exit(1)

@@ -2,31 +2,26 @@
 
 # Анализатор производительности GitLab CI
 
-Скилл для агента, который анализирует длительность джоб GitLab CI, очереди
-раннеров и ухудшение времени выполнения через `glab`. Сохраняйте JSON-снимки
-с версиями, сравнивайте запуски и открывайте автономный HTML-отчёт прямо в браузере.
+Скилл собирает ограниченную историю метаданных jobs и безопасные данные о времени
+из traces, рассчитывает версионированные findings, экспортирует JSON для LLM и
+создаёт один автономный HTML. Контракт v2 подготовлен как кандидат на релиз по
+[issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4).
 
-![Синтетический отчёт о производительности GitLab CI](docs/report.png)
+- Сохраняет последние 64 попытки на тип job, включая reruns и разные исходы; окна 32/64.
+- Разделяет ожидание раннера, выполнение, полное время и lifecycle создания→завершения.
+- Сохраняет same-ref baseline; cross-ref требует явного списка refs.
+- Анализирует ограниченные traces через allowlist фаз/BuildKit/интервалов команд, без экспорта raw logs.
+- Один слой Python рассчитывает baseline/delta и union интервалов категорий для JSON и HTML.
+- Сохраняет даты исходного сбора/анализа, хеши, версии, N и фактическое покрытие.
 
-Скриншот и [пример отчёта](examples/report.html) используют **синтетические данные**.
-Скачайте HTML и откройте его локально; сервер и внешние ресурсы не нужны.
+Полная приёмка UI, перевод ru/en и workflow исследования официальной документации
+остаются в #3/#2/#5. Сейчас `--language en|ru` задаёт метаданные, заголовок и оболочку
+представления; имена jobs/refs, machine codes и секунды сохраняются. Измеренная
+стоимость категории не равна гарантированной экономии.
 
-## Возможности
+## Установка
 
-- Отделяет время выполнения джоб от ожидания в очереди раннера.
-- Сравнивает последний успешный pipeline или окно pipelines с базовой выборкой.
-- Выделяет ухудшение P50 и показывает P95, размеры выборок, повторные попытки и историю джоб.
-- Сохраняет JSON-снимки со строгими схемами и хешами источников для последующих сравнений.
-- Показывает стековый график pipelines и описания джоб из необязательного проверенного каталога.
-
-Сбор выполняет только запросы чтения к GitLab API через существующую авторизацию
-`glab`. Логи и переменные джоб не запрашиваются. При этом отчёты могут содержать
-названия проектов и джоб, описания раннеров и URL: выбирайте, где хранить свои
-отчёты и кому их передавать.
-
-## Установка скилла в проект
-
-Клонируйте этот репозиторий. Из проекта, в котором хотите использовать скилл:
+Клонируйте репозиторий. Из проекта, в котором нужен скилл:
 
 ```bash
 mkdir -p .agents/skills .codex/skills .claude/skills
@@ -35,18 +30,15 @@ ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-perform
 ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
 ```
 
-Вызовите `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude
-Code. Попросите проанализировать URL проекта или сравнить два сохранённых снимка.
-Следуйте инструкциям проекта для агента и используйте учётную запись с разрешённым
-доступом к GitLab.
+Вызовите `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude Code.
+При обновлении замените установленный каталог скилла версией upstream, сохранив
+каталоги reports; установите её закреплённые Python-зависимости и проверьте установленный
+helper через `--help` и offline smoke. Копия локальной установки проверяется тестами;
+публикация v2.0.0 остаётся отдельным условием доставки.
 
-Интерфейс отчёта, инструкции скилла для агента и методика написаны на английском.
-Английская документация доступна в [README.md](README.md).
+## CLI
 
-## Запуск CLI напрямую
-
-Требования: Python 3.10+, `glab` и существующая авторизация для вашего GitLab-хоста.
-Из этого репозитория:
+Нужны Python 3.10+, `glab` и разрешённая авторизация GitLab. Из репозитория:
 
 ```bash
 python3 -m venv .venv
@@ -54,52 +46,63 @@ python3 -m venv .venv
 glab auth login --hostname gitlab.example.com
 
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
-  --host gitlab.example.com --project group/project \
-  --timezone UTC --output reports/run-001/jobs.json
+  --host gitlab.example.com --project group/project --timezone UTC \
+  --output reports/run-001/jobs.json
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot reports/run-001/jobs.json --output reports/run-001/report.json
+  --snapshot reports/run-001/jobs.json --language ru --output reports/run-001/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export \
+  --report reports/run-001/report.json --scope overview --output reports/run-001/overview.json
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
   --report reports/run-001/report.json --output reports/run-001/report.html
 ```
 
-Откройте `reports/run-001/report.html` прямо в браузере. Для каждого запуска нужен
-новый путь вывода; существующие артефакты не перезаписываются. По умолчанию
-используется UTC; `--timezone` принимает часовой пояс IANA.
+Открывайте HTML через file://. Вывод не перезаписывается: используйте новый каталог.
+Сеть использует только collect. Метаданные могут содержать названия проекта/jobs/refs,
+описания раннеров и URL; выбирайте место хранения и круг получателей своих отчётов.
 
-Для сохранённой базовой выборки добавьте `--baseline reports/run-000/jobs.json`
-к `report`. Перекрывающиеся выборки pipelines явно отмечаются и не дают оснований
-утверждать ухудшение.
+Лимиты по умолчанию: 10 страниц метаданных × 100,16 типов, 64 попытки/тип, concurrency 4,
+traces 4 MiB/50 000 строк. Ошибки и неполное покрытие остаются явными. `--job stage/name`
+ограничивает типы; для имён с `/` используйте JSON-массив `{stage,name}` через
+`--job-config`. `--resume` / `--cache` принимают валидированные sources v2; raw traces
+и variables не сохраняются. Cross-ref: одинаковые `--comparison-mode cross_ref`
+и повторяемые `--ref REF` для collect/report. При необходимости добавьте
+`--baseline older-jobs.json` и проверенный `--catalog catalog.json`.
 
-Попробуйте синтетический пример без учётной записи GitLab:
+Выберите ID из canonical JSON для компактного анализа:
 
 ```bash
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
-  --snapshot examples/jobs.json --catalog examples/catalog.json \
-  --output reports/demo/report.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
-  --report reports/demo/report.json --output reports/demo/report.html
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export \
+  --report reports/run-001/report.json --job-type JOB_TYPE_ID --window-id WINDOW_ID \
+  --output reports/run-001/window.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export \
+  --report reports/run-001/report.json --attempt-ids 123 124 \
+  --output reports/run-001/attempts.json
 ```
 
-## Артефакты и интерпретация
+## Синтетический пример и контракты
 
-- [`jobs.schema.json`](skills/gitlab-ci-performance/schemas/jobs.schema.json): исходная проекция попыток выполнения джоб и метаданных pipelines.
-- [`report.schema.json`](skills/gitlab-ci-performance/schemas/report.schema.json): производные метрики, политика сравнения, выборки и хеши входных данных.
-- `report.html`: автономный отчёт со встроенными данными. Работает и после переноса без отдельных JSON-файлов.
+Без GitLab-аккаунта:
 
-По умолчанию для ухудшения требуется рост P50 **не менее чем на 20% и 30 секунд**
-при как минимум трёх наблюдениях в базовой выборке. Пороги настраиваются;
-один текущий запуск — это наблюдение, а не установленный тренд. Для сравнения
-времени используются успешные попытки выполнения джоб в успешных pipelines одной ref.
+```bash
+.venv/bin/python examples/generate_v2.py --output-dir reports/v2-demo
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py validate reports/v2-demo/report.json
+```
 
-Время в очереди pipeline — это ожидание до первого старта; очереди отдельных
-джоб показаны отдельно. Стековый график не измеряет полный жизненный цикл.
-Отсутствующие значения времени остаются отсутствующими и не превращаются в нули.
-Сбор через API не является атомарной транзакцией и не может восстановить удалённые
-джобы или bridge/trigger jobs. Автоматического расписания и профилирования
-на уровне ресурсов нет.
+Генератор включает два типа jobs по 64 сохранённые попытки, разные исходы,
+empty/erased/unavailable/partial traces и findings из реального parser. Приватных
+данных в примере нет. [Контракт v2](skills/gitlab-ci-performance/references/contract-v2.md)
+описывает схемы, обязательные/nullable поля, бюджеты запросов/payload, uncertainty,
+provenance рекомендаций, ссылки compact export и воспроизводимость.
 
-Подробности — в [методике](skills/gitlab-ci-performance/references/methodology.md)
-и [примере необязательного каталога](examples/catalog.json).
+Исходный [пример HTML](examples/report.html) и screenshot показывают frozen v1.
+V1 продолжает валидироваться и отображаться. Для явного старого расчёта:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report --legacy \
+  --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/legacy/report.json
+```
+
+V2 требует source v2: отсутствующие trace/freshness данные v1 не выдумываются.
 
 ## Разработка
 
@@ -107,16 +110,11 @@ glab auth login --hostname gitlab.example.com
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-Создайте другой синтетический пример командой `examples/generate_demo.py --output-dir
-reports/new-demo` в том же Python-окружении, указав новый путь вывода.
-`tests/browser_check.cjs` — необязательная проверка Playwright/Chrome для просмотра
-локального файла при отключённой сети. Установите Playwright в среде разработки
-и передайте URL файла и каталог для скриншотов.
+Тесты проверяют copied-install offline round trip, схемы/семантику, bounded mock API,
+реальный parser→calculation и compact parity. `tests/browser_v2.cjs FILE_URL
+OUTPUT_DIRECTORY` запускает Playwright/Chrome offline: все jobs/windows/attempts,
+ссылки evidence, numeric parity, 320px/light/dark и перенос автономного файла.
+`tests/browser_check.cjs` сохранён для v1.
 
-## История изменений
-
-История изменений — в [CHANGELOG.md](CHANGELOG.md).
-
-## Лицензия
-
-MIT — см. [LICENSE](LICENSE).
+[История изменений](CHANGELOG.md) · [Методика](skills/gitlab-ci-performance/references/methodology.md)
+· MIT [Лицензия](LICENSE)
