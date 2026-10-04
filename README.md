@@ -110,6 +110,10 @@ reports/new-demo` using the same Python environment and a new output path. `test
 check of local-file viewing with the network disabled. Install Playwright in a
 development environment and pass a file URL and screenshot output directory.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the change history.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
