@@ -15,6 +15,7 @@ Download the HTML and open it locally; no server or external assets are required
 
 - Analyzes verified workflow chains and independent operations over 32/64 pipeline windows.
 - Separates job execution time from runner queue time.
+- Optionally shows per-job timing history across explicitly selected release refs/tags.
 - Compares the latest successful pipeline, or a window of pipelines, against a baseline.
 - Highlights P50 timing regressions and exposes P95, sample sizes, retries, and job history.
 - Preserves JSON snapshots with strict schemas and source hashes for later comparisons.
@@ -40,9 +41,26 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The job report UI, agent instructions, and methodology are in English.
-Workflow reports have English/Russian interface selection.
+The report UI supports English (default) and Russian. Agent skill instructions
+and the methodology reference are in English.
 Russian documentation is available in [README.ru.md](README.ru.md).
+
+Optimization recommendations follow the
+[official-source route](skills/gitlab-ci-performance/references/optimization-sources.md):
+the agent reads current documentation and records measured evidence, applicability,
+source verification and a before/after measurement plan for each proposal.
+
+For a reproducible install or update, check out the desired published release tag
+in the source clone and copy the **whole** `skills/gitlab-ci-performance` directory,
+including `references`, into `.agents/skills/gitlab-ci-performance`. Review any
+local customizations before updating. Do not copy only `SKILL.md`: its supporting
+reference is versioned with the skill. The existing Codex/Claude symlinks continue
+to point to that installed directory.
+
+After installing or updating, check that the Optimization recommendations link in
+the installed `SKILL.md` resolves to `references/optimization-sources.md`, and that
+both files match the chosen release. A local copy check does not establish that an
+upstream release was published.
 
 ## Run the CLI directly
 
@@ -67,9 +85,52 @@ Open `reports/run-001/report.html` directly in a browser. Each run needs a new
 output path; existing artifacts are not overwritten. UTC is the default;
 `--timezone` accepts an IANA timezone.
 
+Choose the HTML interface language with `render --language en|ru`:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/run-001/report.json --language ru \
+  --output reports/run-001/report-ru.html
+```
+
+Omitting `--language` keeps English; unsupported values are rejected. Headings,
+controls, chart labels, tooltips, status explanations, dates, numbers and time
+units follow the selected language. The timezone still comes from the saved
+snapshot. Job names, stages, refs, URLs and verified catalog descriptions stay
+as supplied. The report JSON and embedded source data are unchanged, so the
+same JSON can be rendered in both languages without collecting again.
+New reports record `purpose_from_catalog` so generated unknown-purpose messages
+can be localized without translating catalog text. Legacy reports without this
+optional field keep every saved description verbatim.
+
 For a saved baseline, add `--baseline reports/run-000/jobs.json` to `report`.
 Overlapping pipeline cohorts are explicitly marked and do not produce a
 regression claim.
+
+For unique release tags, explicitly select the refs to inspect:
+
+```bash
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/run-001/jobs.json --release-refs v1.0 v1.1 v1.2 v1.3 \
+  --output reports/releases/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/releases/report.json --output reports/releases/report.html
+```
+
+Open **Release history across selected refs / tags** in the HTML. Select a job,
+then an attempt to inspect execution, runner queue, original ref and context.
+Cross-ref changes are exploratory observations with explicit N and sample IDs;
+same-ref comparison remains the default. The 32/64 attempt controls affect the
+visible chart, not collection or baseline selection. See the
+[release-history methodology](skills/gitlab-ci-performance/references/release-history.md).
+Reports now use schema/calculation 1.1.0; snapshots stay 1.0.0, and legacy 1.0.0
+reports remain renderable with the updated skill.
+
+Generate a fictional multi-tag report without GitLab access:
+
+```bash
+.venv/bin/python examples/generate_release_demo.py --output-dir reports/release-demo
+```
 
 Try the synthetic sample without a GitLab account:
 
@@ -159,7 +220,11 @@ and [optional catalog example](examples/catalog.json) for details.
 Generate another synthetic demo with `examples/generate_demo.py --output-dir
 reports/new-demo` using the same Python environment and a new output path. `tests/browser_check.cjs` is an optional Playwright/Chrome
 check of local-file viewing with the network disabled. Install Playwright in a
-development environment and pass a file URL and screenshot output directory.
+development environment and pass a file URL, screenshot output directory and
+optional expected language (`en` by default, or `ru`). Run it for both HTML
+variants; the checks use the synthetic demo's job and pipeline IDs.
+`tests/browser_release_check.cjs` accepts the same arguments for the release
+demo and checks both language variants of the release-history panel.
 
 `tests/workflow_browser_check.cjs` checks workflow parity, windows, selection,
 attempts, language, mobile layout and the 300-second boundary with offline Playwright.
@@ -170,6 +235,9 @@ CI also builds/extracts the 2.0.0 skill package and runs its CLI from a clean in
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the change history.
+
+Offline release-history browser QA: run `tests/browser_release_check.cjs` with a file URL
+and an output directory, using Playwright and Chrome as for the existing browser check.
 
 ## License
 

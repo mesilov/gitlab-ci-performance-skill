@@ -166,7 +166,9 @@ All use schema 2.0.0; derived calculations are 2.0.0. Validate with
 `ci_report.py validate <artifact>`. Hash serialization: UTF-8, sorted keys, indent
 2, final newline. Same saved report renders byte-identically. HTML embeds canonical
 JSON, with no browser timing/baseline aggregation. Coordinates, formatting and
-selection are presentation only. Language changes interface copy, not source names
+selection are presentation only. `render --language en|ru` chooses the initial
+interface language; the HTML also provides an in-report language selector.
+Language changes interface copy, not source names
 or verified purposes. Schema/reference links require no remote schema downloads.
 
 Unit scope: **selected series and metric over the selected pipeline window**.
@@ -176,7 +178,7 @@ queue scope. JSON/`data-seconds` always remain seconds. Unknown values get expli
 markers instead of measured zero. Selection is shared across charts, pipeline
 selector and job/attempt drill-down. Failed outcomes keep separate styling.
 
-The release preserves v1 `jobs`/`report` contracts and job-only CLI. v1 snapshots
+The release preserves v1 `jobs`/`report` contracts (including report 1.1.0 release history) and job-only CLI. v1 snapshots
 lack proof of all-attempt bounded pipeline coverage and cannot silently convert to
 workflow snapshots: recollect. Unknown/future versions are rejected. Offline HTML
 works after moving without sidecars or a server.

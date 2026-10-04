@@ -188,6 +188,18 @@ class WorkflowTimingTests(unittest.TestCase):
             for i,data in enumerate([s,d,compact]):
                 with self.assertRaises(ValueError):ci.render(data,Path(tmp)/f'{i}.html')
 
+    def test_workflow_renderer_honors_shared_cli_language_without_mutating_data(self):
+        import re
+        s,d=fixture();s['jobs'][0]['name']='__LANGUAGE__</script>'
+        report=build(s,d)
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/'ru.html';ci.render(report,output,'ru')
+            html=output.read_text()
+            self.assertIn('<html lang="ru">',html)
+            payload=re.search(r'<script id="report-data" type="application/json">(.*?)</script>',html,re.S)[1]
+            self.assertEqual(json.loads(payload),report)
+            with self.assertRaises(ValueError):ci.render(report,Path(tmp)/'unsupported.html','fr')
+
     def test_changed_definition_version_is_not_a_baseline_and_queue_partial_is_explicit(self):
         s,d=fixture();v=copy.deepcopy(d['workflows'][0]['versions'][0]);v['version']='2'
         v['evidence_ids']=['new'];d['workflows'][0]['versions'].append(v)

@@ -74,8 +74,14 @@ if(!url||!output)throw Error('Usage: workflow_browser_check.cjs FILE_URL OUTPUT_
       await page.goto(pathToFileURL(path.join(path.dirname(fileURLToPath(url)),name,'report.html')).href);
       assert.match(await page.locator('#elapsed-heading').innerText(),pattern);
     }
+    await page.goto(pathToFileURL(path.join(path.dirname(fileURLToPath(url)),'report-ru.html')).href);
+    assert.equal(await page.locator('html').getAttribute('lang'),'ru');
+    assert.equal(await page.locator('#language').inputValue(),'ru');
+    assert.match(await page.locator('h1').innerText(),/Производительность/);
+    assert.match(await page.locator('#elapsed-heading').innerText(),/мин/);
+    assert.deepEqual(JSON.parse(await page.locator('#report-data').textContent()),data);
     assert.deepEqual(errors,[]);assert.equal(requests.some(u=>!u.startsWith('file:')),false);
-    const result={offline:true,checks:['canonical metric and chart parity','32/64 pipeline windows','shared keyboard/pipeline selection','job and attempt drill-down','independent operation series','failed baseline exclusion','unknown not zero','language selection','desktop/mobile/dark rendering','300-second boundary','standalone rendering','no network or console errors']};
+    const result={offline:true,checks:['canonical metric and chart parity','32/64 pipeline windows','shared keyboard/pipeline selection','job and attempt drill-down','independent operation series','failed baseline exclusion','unknown not zero','CLI and in-report language selection','desktop/mobile/dark rendering','300-second boundary','standalone rendering','no network or console errors']};
     fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
   }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

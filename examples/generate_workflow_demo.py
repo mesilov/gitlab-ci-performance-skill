@@ -100,6 +100,7 @@ def write_report(out,snapshot,definitions):
     ci.save(out/'report.json',report,'workflow-report')
     ci.save(out/'llm.json',ci.workflow_export(report),'workflow-llm')
     ci.render(report,out/'report.html')
+    ci.render(report,out/'report-ru.html','ru')
 
 
 def main():

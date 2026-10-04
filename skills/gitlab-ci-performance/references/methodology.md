@@ -1,6 +1,6 @@
-# Methodology version 1.0.0
+# Methodology version 1.1.0
 
-JSON Schema 2020-12; schema_version/calculation_version 1.0.0. Sources:
+JSON Schema 2020-12; report schema_version/calculation_version 1.1.0; jobs 1.0.0. Sources:
 [Jobs API](https://docs.gitlab.com/api/jobs/),
 [Pipelines API](https://docs.gitlab.com/api/pipelines/),
 [glab api](https://docs.gitlab.com/cli/api/),
@@ -79,3 +79,9 @@ Open report.html directly through file://; no server is needed.
 Separate JSON files are needed for recalculation, not for loading the page.
 The skill does not create a schedule itself; a future scheduled run must operate
 independently of the CI queue being monitored and report stale collection.
+
+## History across refs
+
+The optional `--release-refs` mode is documented in [release-history.md](release-history.md).
+Same-ref comparison remains the default; changes across selected releases are
+exploratory observations. Legacy 1.0.0 reports remain renderable.

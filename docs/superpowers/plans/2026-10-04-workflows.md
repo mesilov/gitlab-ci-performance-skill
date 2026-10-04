@@ -23,6 +23,12 @@ Playwright with offline Chrome. Execute in the existing isolated worktree.
   using `tests/workflow_browser_check.cjs`.
 - [x] Publish generic examples, `references/workflows.md`, CLI guidance in the
   skill and both READMEs, release metadata and CI installed-package smoke checks.
-- [ ] Run all tests, schema validation, demo/installation smoke, legacy and
+- [x] Run all tests, schema validation, demo/installation smoke, legacy and
   workflow browser QA, inspect screenshots, request independent code review,
   fix findings, commit, push and create/attach the PR linked to issue #6.
+
+PR: https://github.com/mesilov/gitlab-ci-performance-skill/pull/12
+
+Integration check: merged current main, preserving report localization, release
+history 1.1.0 and optimization guidance. All 60 merged Python tests and offline
+workflow/job/release browser checks for English/Russian pass.
