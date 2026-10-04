@@ -242,7 +242,10 @@ source/evidence and recorded calculation policy, never HTML scraping/browser exe
 Breaking fields/semantics need a major schema bump. Calculation/parser changes need
 independent version bumps; unknown versions/fields reject with actionable help. No
 silent reinterpretation of v1. Frozen schemas/templates validate/render existing v1
-artifacts; v1 generation is explicit `report --legacy`. New v2 report generation from
+artifacts (1.0 and 1.1); legacy generation is explicit `report --legacy` and
+retains the 1.1 release-history extension. Rendering keeps legacy full en/ru
+localization, accepts `--language en|ru` for either path, and preserves embedded JSON.
+For v2 the override affects HTML only; saved language metadata remains unchanged. New v2 report generation from
 v1 source fails with recollection/legacy instructions because freshness/trace evidence
 cannot be invented. The original v1 demo remains a legacy fixture.
 

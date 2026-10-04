@@ -39,8 +39,9 @@ No full historical trace archive is downloaded or raw-trace cache created.
 Same-ref comparison is default. For explicitly requested cross-ref history, supply
 `--comparison-mode cross_ref --ref REF` repeatedly to both collection and report.
 Cross-ref changes are exploratory observations. Retain original names/refs/seconds.
-`--language ru|en` selects language metadata/title/presentation shell; complete
-interface translation is tracked separately. Unsupported languages are rejected.
+`report --language ru|en` selects saved language metadata/title/presentation shell;
+`render --language ru|en` overrides only HTML language. Complete v2 translation is
+tracked separately; legacy reports retain full ru/en localization. Unsupported languages are rejected.
 
 Add `--catalog catalog.json` for job purposes verified against CI configuration,
 recording source URL and verification time; unknown purposes remain unknown. Catalog
@@ -66,8 +67,9 @@ cause from timings alone.
 Recommendations need observed evidence, an applicable official source and a next
 measurement. Accept verified guidance through `--guidance`; preserve URL/title/date/
 version/configuration constraints. Without retrieved documentation, mark guidance
-unavailable/unverified; never invent verification or estimated savings. The detailed
-current-official-documentation investigation workflow is tracked separately in #5.
+unavailable/unverified; never invent verification or estimated savings. Read [optimization-sources.md](references/optimization-sources.md) for the maintained
+current-official-documentation investigation workflow from #5. Stored source URLs
+are starting points, not verification of a particular recommendation.
 Changes to CI/runner/cache settings and scheduling require a separate request.
 
 ## Finish and checks
@@ -77,8 +79,9 @@ finding: observed cost, queue vs execution, job purpose and insufficient coverag
 Open the HTML directly through file://; no server/CDN/sidecars are needed. Rendering
 embeds canonical calculations and does not alter original collection dates.
 
-Validate artifacts with `ci_report.py validate <path>`. V1 artifacts keep explicit
-legacy validation/rendering; use `report --legacy` to reproduce their frozen method,
+Validate artifacts with `ci_report.py validate <path>`. Reports 1.0/1.1 keep explicit legacy validation/rendering; use `report --legacy`
+to reproduce their method and optional `--release-refs` exploratory history
+([release-history.md](references/release-history.md)),
 or recollect v2. Do not label v1 as freshly analyzed v2. When changing the skill,
 run unit/CLI/copied-install smoke and offline desktop/mobile parity checks. Release
 publication is separate from a local successful generation.

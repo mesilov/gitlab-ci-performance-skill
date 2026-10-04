@@ -52,6 +52,41 @@ class CLIV2Tests(unittest.TestCase):
             self.run_cli('render','--report',d/'old.json','--output',d/'old.html')
             self.run_cli('validate',ROOT/'examples/report.json')
 
+class MainCompatibilityTests(unittest.TestCase):
+    run_cli=CLIV2Tests.run_cli
+    def test_standalone_release_demo_resolves_installed_helpers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result=subprocess.run([sys.executable,str(ROOT/'examples/generate_release_demo.py'),'--output-dir',directory],
+                                  cwd=directory,capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.run_cli('validate',Path(directory)/'report.json')
+            self.assertTrue((Path(directory)/'report.html').is_file())
+
+    def test_language_override_keeps_canonical_json_and_installed_legacy(self):
+        import re
+        with tempfile.TemporaryDirectory() as root:
+            root=Path(root);installed=root/'installed';shutil.copytree(SKILL,installed)
+            installed_cli=installed/'scripts/ci_report.py'
+            source=root/'source.json';source.write_text(json.dumps(sample()))
+            self.run_cli('report','--snapshot',source,'--language','ru','--generated-at',AT,'--output',root/'v2.json')
+            saved=json.loads((root/'v2.json').read_text())
+            self.run_cli('render','--report',root/'v2.json','--language','en','--output',root/'v2.html',path=installed_cli)
+            rendered=(root/'v2.html').read_text();self.assertIn('lang="en"',rendered)
+            self.assertEqual(json.loads(re.search(r'<script id="report-data" type="application/json">(.*?)</script>',rendered,re.S)[1]),saved)
+            self.run_cli('report','--legacy','--snapshot',ROOT/'examples/jobs.json','--release-refs','main',
+                         '--windows','1','--baseline-window','4','--growth-percent','40','--growth-seconds','60',
+                         '--min-baseline','2','--min-current','1','--output',root/'old.json',path=installed_cli)
+            old=json.loads((root/'old.json').read_text());self.assertEqual(old['schema_version'],'1.1.0')
+            self.assertEqual(old['release_history']['baseline_window'],4)
+            self.assertEqual(old['method']['policy']['relative_growth_percent'],40)
+            self.run_cli('render','--report',root/'old.json','--language','ru','--output',root/'old.html',path=installed_cli)
+            self.assertIn('lang="ru"',(root/'old.html').read_text())
+            for version in ['old.json','v2.json']:
+                self.run_cli('validate',root/version,path=installed_cli)
+            self.run_cli('validate',ROOT/'examples/report.json',path=installed_cli)
+            self.run_cli('report','--snapshot',source,'--windows','32','--output',root/'invalid.json',ok=False)
+            self.assertFalse((root/'invalid.json').exists())
+
 class AtomicHTMLTests(unittest.TestCase):
     def test_link_failure_does_not_leave_partial_destination(self):
         from report_calculate import build_report

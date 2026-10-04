@@ -13,7 +13,7 @@
 <details class="panel"><summary id="method-heading"></summary><p id="method"></p><code id="provenance"></code></details><footer id="footer"></footer>
 </main><script id="report-data" type="application/json">__REPORT_DATA__</script><script>
 'use strict';
-const R=JSON.parse(document.getElementById('report-data').textContent),$=id=>document.getElementById(id),ru=R.language==='ru',L=(en,r)=>ru?r:en;
+const R=JSON.parse(document.getElementById('report-data').textContent),$=id=>document.getElementById(id),ru=document.documentElement.lang==='ru',L=(en,r)=>ru?r:en;
 const labels={export_local_unpack:L('Image export / local unpack','Экспорт образа / локальная распаковка'),context_application_copy:L('Context / application copies','Контекст / копирование приложения'),base_image:L('Base-image work','Базовый образ'),dependencies_builder_setup:L('Dependencies / builder setup','Зависимости / подготовка builder'),runner_phase:L('Runner phases','Фазы раннера'),queue:L('Runner wait','Ожидание раннера')};
 let type=R.selection.job_type_id,windowId=null,attemptId=null;
 function el(tag,text,cls){const e=document.createElement(tag);if(text!=null)e.textContent=text;if(cls)e.className=cls;return e;}

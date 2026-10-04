@@ -3,7 +3,10 @@
 The maintained v2 workflow uses schema/calculation 2.0.0, parser 1.0.0 and skill
 2.0.0. Read [contract-v2.md](contract-v2.md) for bounded collection, window/baseline
 policies, interval-union findings, LLM exports and provenance. The section below
-documents the frozen v1 method used only by explicit legacy calculations/rendering.
+documents the legacy 1.x method used only by explicit legacy calculations/rendering.
+The 1.1 [release-history extension](release-history.md) and full en/ru renderer
+remain supported; source jobs stay 1.0. Read [optimization-sources.md](optimization-sources.md)
+when preparing an evidence-backed recommendation.
 It does not describe v2 collection or authorize silent migration.
 
 # Legacy methodology version 1.0.0

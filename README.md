@@ -13,10 +13,13 @@ The v2 contract is a release candidate for [issue #4](https://github.com/mesilov
 - Calculates baseline/delta and overlap-safe improvement costs once in Python for JSON and HTML.
 - Records original collection/analysis times, source hashes, versions, sample sizes and actual coverage.
 
-Complete reviewed UI acceptance, full ru/en translation and the official-documentation
-investigation workflow remain tracked in issues #3, #2 and #5 respectively. `--language
-en|ru` currently selects metadata, title and presentation shell; raw names/codes/data stay
-unchanged. Measured cost is not guaranteed savings.
+Complete reviewed v2 UI acceptance and full v2 ru/en translation remain tracked in
+issues #3 and #2. V2 `report --language en|ru` selects saved language metadata;
+`render --language en|ru` optionally selects the HTML shell without changing saved JSON.
+The legacy renderer retains full localization from #2. Raw names/codes/data stay
+unchanged. Measured cost is not guaranteed savings. Read the maintained
+[official optimization sources](skills/gitlab-ci-performance/references/optimization-sources.md)
+from #5 when investigating a finding; guidance in JSON still records its own verification.
 
 ## Install
 
@@ -60,8 +63,8 @@ Open the HTML directly through file://. Outputs reject overwrites; use a new run
 Only collect performs network requests. Reports can contain project/job/ref names,
 runner descriptions and URLs; choose where to store/share your own metadata.
 
-Defaults: 10 metadata pages × 100,16 types, 64 attempts/type, concurrency 4, traces
-4 MiB/50,000lines. Metadata/trace failures remain explicit. `--job stage/name` narrows
+Defaults: 10 metadata pages × 100, 16 types, 64 attempts/type, concurrency 4, traces
+4 MiB/50,000 lines. Metadata/trace failures remain explicit. `--job stage/name` narrows
 collection; structured `--job-config` handles names containing `/`. `--resume` and
 `--cache` accept validated v2 safe sources. Raw traces/variables are not persisted.
 For cross-ref, repeat `--ref REF` with `--comparison-mode cross_ref` for both collect
@@ -99,12 +102,19 @@ guidance provenance, compact reference closure and reproducibility. Entry schema
 [compact](skills/gitlab-ci-performance/schemas/compact.schema.json).
 
 The original [example report](examples/report.html) / screenshot demonstrate frozen
-v1. Existing v1 artifacts still validate/render. To recalculate that example explicitly:
+legacy 1.0. Existing 1.0/1.1 artifacts still validate/render in English or Russian.
+Explicit legacy generation retains the 1.1 release-history extension from #1:
+[method and limits](skills/gitlab-ci-performance/references/release-history.md).
+To recalculate that example explicitly:
 
 ```bash
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report --legacy \
   --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/legacy/report.json
 ```
+
+Add `--release-refs REF [REF ...]` to `report --legacy` for the existing exploratory
+release view, or run `examples/generate_release_demo.py` for its synthetic demo.
+V2 cross-ref history uses `--comparison-mode cross_ref --ref REF` instead.
 
 New v2 calculations require v2 sources; missing v1 trace/freshness evidence is never invented.
 

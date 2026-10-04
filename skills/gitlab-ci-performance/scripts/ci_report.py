@@ -5,6 +5,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
+import html
 import json
 import math
 import os
@@ -18,6 +19,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "1.0.0"
+REPORT_VERSION = "1.1.0"
 POLICY = {"relative_growth_percent": 20.0, "absolute_growth_seconds": 30.0,
           "minimum_baseline_observations": 3, "minimum_current_observations": 1}
 ACTIVE = {"created", "pending", "preparing", "running", "waiting_for_resource"}
@@ -43,7 +45,7 @@ def digest(value):
 def load(path):
     def reject(value):
         raise ValueError("Non-finite JSON value")
-    return json.loads(Path(path).read_text(), parse_constant=reject)
+    return json.loads(Path(path).read_text(encoding="utf-8"), parse_constant=reject)
 
 
 def validate(value, kind):
@@ -75,6 +77,18 @@ def validate(value, kind):
     for job in jobs:
         if job["pipeline_id"] not in pmap or pmap[job["pipeline_id"]]["ref"] != job["ref"]:
             raise ValueError("Job/pipeline relation mismatch")
+    history = value.get("release_history")
+    if history is not None:
+        descriptions = {g["name"]: g["purpose"] for g in history["groups"]
+                        if g.get("purpose_from_catalog") is not False}
+        expected = build_release_history(value, history["refs"], history["baseline_window"],
+                                         value["method"]["policy"], descriptions)
+        for original, calculated in zip(history["groups"], expected["groups"]):
+            if "purpose_from_catalog" not in original:
+                calculated.pop("purpose_from_catalog", None)
+        if history != expected:
+            raise ValueError("Release history does not match source attempts, samples or calculations")
+
 
 
 def save(path, value, kind=None):
@@ -249,7 +263,75 @@ def period(pipelines, jobs):
             "to": max(times, key=timestamp) if times else None, "attempts": len(jobs)}
 
 
-def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, policy=None, catalog=None):
+
+def release_context(pipelines, jobs):
+    successful = [j for j in jobs if j["status"] == "success"]
+    return {"refs": sorted({p["ref"] for p in pipelines}),
+            "pipeline_sources": sorted({p["source"] for p in pipelines}),
+            "shas": sorted({p["sha"] for p in pipelines}),
+            "runner_ids": sorted({j["runner"]["id"] for j in successful if j["runner"]}),
+            "missing_runner_attempts": sum(j["runner"] is None for j in successful)}
+
+
+def build_release_history(snapshot, refs, baseline_window, policy, descriptions):
+    if not refs or len(set(refs)) != len(refs):
+        raise ValueError("Release refs must be a nonempty list of distinct exact refs")
+    available = {p["ref"] for p in snapshot["pipelines"]}
+    if any(ref not in available for ref in refs):
+        raise ValueError("Release ref is absent from the snapshot; use exact refs, not patterns")
+    refs = sorted(refs)
+    pipelines = sorted([p for p in snapshot["pipelines"] if p["ref"] in refs],
+                       key=lambda p: (timestamp(p["created_at"]), p["id"]))
+    pmap = {p["id"]: p for p in pipelines}
+    jobs = [j for j in snapshot["jobs"] if j["pipeline_id"] in pmap]
+    groups = []
+    for stage, name in sorted({(j["stage"], j["name"]) for j in jobs}):
+        attempts = sorted([j for j in jobs if (j["stage"], j["name"]) == (stage, name)],
+                          key=lambda j: (timestamp(pmap[j["pipeline_id"]]["created_at"]),
+                                         j["pipeline_id"], j["id"]))
+        eligible_ids = {j["pipeline_id"] for j in attempts if j["status"] == "success"}
+        eligible = [p for p in reversed(pipelines) if p["status"] == "success" and p["id"] in eligible_ids]
+        current_p, baseline_p = eligible[:1], eligible[1:1 + baseline_window]
+        current_ids, baseline_ids = {p["id"] for p in current_p}, {p["id"] for p in baseline_p}
+        cj = [j for j in attempts if j["pipeline_id"] in current_ids]
+        bj = [j for j in attempts if j["pipeline_id"] in baseline_ids]
+        current, baseline = cohort(cj), cohort(bj)
+        changes = {}
+        for key in ("execution", "queue"):
+            change = compare(current[key], baseline[key], policy)
+            field = "duration_seconds" if key == "execution" else "queued_seconds"
+            # Reruns are attempts, not additional independent pipeline observations.
+            known_pipelines = {j["pipeline_id"] for j in bj if j["status"] == "success" and j[field] is not None}
+            if len(known_pipelines) < policy["minimum_baseline_observations"]:
+                change["status"] = "insufficient_data"
+            change["status"] = {"regressed": "observed_increase", "improved": "observed_decrease",
+                                "stable": "no_observed_change"}.get(change["status"], change["status"])
+            changes[key + "_change"] = change
+        contexts = {"current": release_context(current_p, cj), "baseline": release_context(baseline_p, bj)}
+        differences = []
+        for field, label in (("refs", "different_refs"), ("pipeline_sources", "different_pipeline_sources"),
+                             ("runner_ids", "different_runners")):
+            values = set(contexts["current"][field]) | set(contexts["baseline"][field])
+            if len(values) > 1:
+                differences.append(label)
+        limitations = ["configuration_not_verified", "duration_change_does_not_establish_cause"]
+        if contexts["current"]["missing_runner_attempts"] or contexts["baseline"]["missing_runner_attempts"]:
+            limitations.append("runner_context_incomplete")
+        groups.append({"name": name, "stage": stage,
+                       "purpose_from_catalog": name in descriptions,
+                       "purpose": descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
+                                                           "source_url": None, "verified_at": None}),
+                       "attempt_ids": [j["id"] for j in attempts],
+                       "current_attempt_ids": [j["id"] for j in cj], "baseline_attempt_ids": [j["id"] for j in bj],
+                       "current_period": period(current_p, cj), "baseline_period": period(baseline_p, bj),
+                       "current": current, "baseline": baseline, **changes,
+                       "context": {**contexts, "differences": differences, "limitations": limitations}})
+    return {"refs": refs, "source": "current_snapshot", "comparison": "exploratory_cross_ref",
+            "order": "pipeline_created_at_then_pipeline_id_then_attempt_id",
+            "baseline_window": baseline_window, "groups": groups}
+
+
+def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, policy=None, catalog=None, release_refs=None):
     validate(snapshot, "jobs")
     if baseline:
         validate(baseline, "jobs")
@@ -293,6 +375,7 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
                 purpose = descriptions.get(name, {"description": "Purpose is not documented in the verified catalog.",
                                                    "source_url": None, "verified_at": None})
                 groups.append({"name": name, "stage": stage, "ref": ref_name, "purpose": purpose,
+                               "purpose_from_catalog": name in descriptions,
                                "current": c, "baseline": b, "execution_change": execution, "queue_change": queue,
                                "drivers": [key for key, result in [("execution", execution), ("queue", queue)] if result["status"] == "regressed"],
                                "latest_attempt_id": max((j["id"] for j in cj), default=None)})
@@ -304,7 +387,7 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
                           "overlap_pipeline_ids": overlap, "latest_pipeline": all_p[0] if all_p else None,
                           "groups": groups, "regression_count": regressions, "insufficient_count": insufficient,
                           "situation": "attention" if regressions else "insufficient_data" if insufficient or not groups else "no_regression"})
-    result = {"schema_version": VERSION, "calculation_version": VERSION, "kind": "report", "generated_at": now(),
+    result = {"schema_version": REPORT_VERSION, "calculation_version": REPORT_VERSION, "kind": "report", "generated_at": now(),
               "timezone": snapshot["timezone"], "project": snapshot["project"],
               "inputs": {"snapshot_sha256": digest(snapshot), "baseline_sha256": digest(baseline) if baseline else None,
                          "snapshot_collected_at": snapshot["collected_at"], "baseline_collected_at": baseline["collected_at"] if baseline else None,
@@ -314,22 +397,29 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
               "snapshot_summary": {"attempts": len(snapshot["jobs"]), "pipelines": len(snapshot["pipelines"]),
                                    "status_counts": dict(Counter(j["status"] for j in snapshot["jobs"])),
                                    "active_attempts": sum(j["status"] in ACTIVE for j in snapshot["jobs"])},
-              "views": views, "jobs": snapshot["jobs"], "pipelines": snapshot["pipelines"]}
+              "views": views, "jobs": snapshot["jobs"], "pipelines": snapshot["pipelines"],
+              "release_history": build_release_history(snapshot, release_refs, baseline_window, policy, descriptions)
+              if release_refs is not None else None}
     validate(result, "report")
     return result
 
 
-def render(report, output):
+def render(report, output, language="en"):
+    if language not in {"en", "ru"}:
+        raise ValueError("Unsupported report language: choose en or ru")
     validate(report, "report")
-    payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    template = (ROOT / "assets" / "report.html").read_text()
-    html = template.replace("__REPORT_DATA__", payload)
-    output = Path(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    if output.exists():
-        raise ValueError("HTML output уже существует")
-    with output.open("x") as f:
-        f.write(html)
+
+    def script_json(value):
+        return json.dumps(value, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+    messages = load(ROOT / "locales" / f"{language}.json")
+    template = (ROOT / "assets" / "report.html").read_text(encoding="utf-8")
+    # Resolve template tokens before inserting source data, which may itself contain tokens.
+    template = re.sub(r"__TEXT:([a-z0-9_]+)__", lambda m: html.escape(messages[m[1]], quote=True), template)
+    template = template.replace("__LANGUAGE__", language)
+    rendered = template.replace("__REPORT_I18N__", script_json(messages)).replace("__REPORT_DATA__", script_json(report))
+    from report_contract import write_bytes
+    write_bytes(output, rendered.encode('utf-8'))
 
 
 def main():
@@ -351,10 +441,14 @@ def main():
     report_p.add_argument("--min-baseline", type=int, default=POLICY["minimum_baseline_observations"])
     report_p.add_argument("--min-current", type=int, default=POLICY["minimum_current_observations"])
     report_p.add_argument("--catalog", type=Path)
+    report_p.add_argument("--release-refs", nargs="+", metavar="REF",
+                          help="Optional exploratory job history across these exact refs/tags")
     report_p.add_argument("--output", type=Path, required=True)
     render_p = commands.add_parser("render")
     render_p.add_argument("--report", type=Path, required=True)
     render_p.add_argument("--output", type=Path, required=True)
+    render_p.add_argument("--language", choices=("en", "ru"), default="en",
+                          help="HTML interface language and time/number locale (default: en); source data is preserved")
     validate_p = commands.add_parser("validate")
     validate_p.add_argument("path", type=Path)
     args = parser.parse_args()
@@ -364,10 +458,10 @@ def main():
         policy = {"relative_growth_percent": args.growth_percent, "absolute_growth_seconds": args.growth_seconds,
                   "minimum_baseline_observations": args.min_baseline, "minimum_current_observations": args.min_current}
         result = build_report(load(args.snapshot), load(args.baseline) if args.baseline else None,
-                              args.windows, args.baseline_window, policy, load(args.catalog) if args.catalog else None)
+                              args.windows, args.baseline_window, policy, load(args.catalog) if args.catalog else None, args.release_refs)
         save(args.output, result, "report")
     elif args.command == "render":
-        render(load(args.report), args.output)
+        render(load(args.report), args.output, args.language)
     else:
         data = load(args.path)
         if data.get("kind") not in {"jobs", "report"}:

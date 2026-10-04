@@ -14,10 +14,13 @@
 - Один слой Python рассчитывает baseline/delta и union интервалов категорий для JSON и HTML.
 - Сохраняет даты исходного сбора/анализа, хеши, версии, N и фактическое покрытие.
 
-Полная приёмка UI, перевод ru/en и workflow исследования официальной документации
-остаются в #3/#2/#5. Сейчас `--language en|ru` задаёт метаданные, заголовок и оболочку
-представления; имена jobs/refs, machine codes и секунды сохраняются. Измеренная
-стоимость категории не равна гарантированной экономии.
+Полная приёмка UI v2 и перевод v2 ru/en остаются в #3/#2. `report --language en|ru`
+задаёт сохранённый язык; `render --language en|ru` позволяет выбрать язык HTML-оболочки
+без изменения JSON. Legacy renderer сохраняет полную локализацию из #2. Имена
+jobs/refs, machine codes и секунды сохраняются. Измеренная стоимость категории
+не равна гарантированной экономии. Для исследования findings используйте
+[официальные источники оптимизации](skills/gitlab-ci-performance/references/optimization-sources.md)
+из #5; конкретные рекомендации в JSON имеют собственную дату проверки.
 
 ## Установка
 
@@ -60,7 +63,7 @@ glab auth login --hostname gitlab.example.com
 Сеть использует только collect. Метаданные могут содержать названия проекта/jobs/refs,
 описания раннеров и URL; выбирайте место хранения и круг получателей своих отчётов.
 
-Лимиты по умолчанию: 10 страниц метаданных × 100,16 типов, 64 попытки/тип, concurrency 4,
+Лимиты по умолчанию: 10 страниц метаданных × 100, 16 типов, 64 попытки/тип, concurrency 4,
 traces 4 MiB/50 000 строк. Ошибки и неполное покрытие остаются явными. `--job stage/name`
 ограничивает типы; для имён с `/` используйте JSON-массив `{stage,name}` через
 `--job-config`. `--resume` / `--cache` принимают валидированные sources v2; raw traces
@@ -95,12 +98,19 @@ empty/erased/unavailable/partial traces и findings из реального pars
 provenance рекомендаций, ссылки compact export и воспроизводимость.
 
 Исходный [пример HTML](examples/report.html) и screenshot показывают frozen v1.
-V1 продолжает валидироваться и отображаться. Для явного старого расчёта:
+Отчёты 1.0/1.1 продолжают валидироваться и отображаться на русском и английском.
+Legacy-генерация сохраняет расширение 1.1 для истории релизов из #1:
+[методика и ограничения](skills/gitlab-ci-performance/references/release-history.md).
+Для явного старого расчёта:
 
 ```bash
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report --legacy \
   --snapshot examples/jobs.json --catalog examples/catalog.json --output reports/legacy/report.json
 ```
+
+Добавьте `--release-refs REF [REF ...]` к `report --legacy` для прежней истории релизов;
+`examples/generate_release_demo.py` генерирует её синтетический пример. Cross-ref
+история v2 использует `--comparison-mode cross_ref --ref REF`.
 
 V2 требует source v2: отсутствующие trace/freshness данные v1 не выдумываются.
 
