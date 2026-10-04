@@ -198,6 +198,10 @@ overview, selected-window and selected-attempt JSON use the same measurements as
 the offline HTML. Read [contract-v2.md](skills/gitlab-ci-performance/references/contract-v2.md)
 for selectors, budgets, sample/interval policies, unavailable guidance and legacy
 handling. Generate its public synthetic example with `examples/generate_v2.py`.
+The canonical HTML now follows the reviewed report layout: compact job cards with
+baseline/outcome context, three-column priorities, collapsed history and latest-attempt
+evidence. See the [synthetic preview](examples/v2/report.html). Calculation and
+queue-spike policies remain specific to each contract.
 Its `gitlab_job_performance_*` kinds distinguish it from the published workflow;
 entrypoints reject incompatible artifacts rather than silently converting them.
 The extension is in main pending a future release; it does not replace published v2.0.1.

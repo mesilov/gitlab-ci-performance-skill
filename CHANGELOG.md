@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Fixed
+
+- Align canonical `report-v2.html` with the reviewed report presentation (#16):
+  localized concise heading, white/dark palette, thin dividers, three-column
+  priorities, baseline/outcome cards, collapsed history and latest-attempt details.
+- Present nested trace evidence, intervals and readable status/coverage labels
+  without changing canonical JSON, calculations or legacy/reviewed renderers.
+- Keep chart text readable on mobile with responsive SVG geometry; Inspect run
+  moves focus and viewport to the selected evidence.
+- Extend offline browser regression checks for layout, numeric baseline parity,
+  evidence hierarchy, keyboard selection and 320/375/1280px light/dark views.
+
 ### Added
 
 - Canonical namespaced source/trace/findings/compact contracts for #4 through the

@@ -18,7 +18,9 @@ additional installed [scripts/report_cli.py](scripts/report_cli.py) workflow and
 read [contract-v2.md](references/contract-v2.md). It performs bounded collection
 (default 10 pages, 16 job types, 64 attempts/type, 4 MiB/50,000 trace lines), safe
 allowlisted summaries, offline calculation, overview/window/attempt exports and
-canonical JSON/HTML parity. Existing outputs are never overwritten.
+canonical JSON/HTML parity. Its HTML follows the reviewed report layout with
+baseline/outcome cards, collapsed history and selected-attempt evidence, while
+keeping its own saved calculation semantics. Existing outputs are never overwritten.
 
 The contract has distinct `gitlab_job_performance_*` kinds and its own schemas.
 Use the same entrypoint throughout its collect → report → export → render chain.

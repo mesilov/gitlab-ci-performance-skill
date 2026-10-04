@@ -7,8 +7,13 @@ It coexists with the published `scripts/ci_report.py` reviewed-report workflow
 interchangeable. Each entrypoint validates its own schemas and rejects the other
 format. No saved artifact is silently migrated or reinterpreted.
 
-The #4 renderer embeds canonical findings for LLM parity; the reviewed renderer
-and its full UI/localization from #3/#2 stay available through `ci_report.py`.
+The #4 renderer embeds canonical findings for LLM parity and follows the reviewed
+report's visual hierarchy: localized heading, compact baseline/outcome cards,
+three-column priorities, collapsed history and a selected latest attempt with
+nested timing evidence. The reviewed renderer stays available through
+`ci_report.py`. Shared presentation does not imply shared calculation semantics:
+queue-spike rules, baseline eligibility and evidence policies remain in each saved
+contract. No report values are copied between formats.
 `report --language en|ru` selects saved language metadata and the localized shell;
 `render --language en|ru` overrides only presentation. Raw names, evidence codes,
 calculation keys and seconds remain unchanged. The official research route from
