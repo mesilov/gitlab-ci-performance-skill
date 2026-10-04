@@ -1,5 +1,6 @@
 """Generate public, synthetic v2 examples through the maintained workflow."""
 import argparse
+from copy import deepcopy
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
 import sys
@@ -13,7 +14,7 @@ from report_cli import render
 
 AT='2026-10-04T00:00:00+00:00'
 
-def synthetic_source(count=70):
+def synthetic_source(count=70,root_operations=False):
     project={'id':42,'path':'example/demo-service','host':'gitlab.example.com','web_url':'https://gitlab.example.com/example/demo-service','default_branch':'main'}
     jobs,pipelines,traces,retained,counts=[],[],[],[],[]
     for offset,stage,name in [(0,'build','image_build'),(100,'release','release')]:
@@ -42,13 +43,23 @@ def synthetic_source(count=70):
                 lines += [f'section_end:{epoch+execution}:step_script\r']
                 if i==61:lines.pop()  # supported partial trace
                 t=parse_trace(jid,('\n'.join(lines)+'\n').encode(),fetched_at=AT,analyzed_at=AT)
+            if root_operations and offset==0 and any(n['kind']=='image' for n in t['evidence']):
+                # Authored safe evidence exercises valid saved operation trees
+                # beyond the parser's usual image-session shape.
+                base=deepcopy(next(n for n in t['evidence'] if n['kind']=='operation' and n['code']=='base_image'))
+                export=deepcopy(next(n for n in t['evidence'] if n['kind']=='operation' and n['code']=='export_local_unpack'))
+                nested,leaf=[deepcopy(n) for n in t['evidence'] if n['parent_id']==export['id']]
+                base['parent_id']=export['parent_id']=None;nested['kind']='operation'
+                leaf['kind']='operation';leaf['parent_id']=nested['id'];leaf['timing'].update(start_seconds=32.0,end_seconds=36.0,duration_seconds=4.0)
+                part=deepcopy(leaf);part.update(id=leaf['id']+'-nested-part',kind='part',parent_id=leaf['id']);part['timing'].update(start_seconds=33.0,end_seconds=34.0,duration_seconds=1.0)
+                t['evidence']=[base,export,nested,leaf,part]
             traces.append(t)
         counts.append({'type_id':type_id(project,stage,name),'stage':stage,'name':name,'available_count':count,'count_kind':'exact'})
     return {'schema_version':'2.0.0','skill_version':SKILL_VERSION,'kind':'gitlab_job_performance_source','collection_started_at':AT,'collected_at':AT,'timezone':'UTC','project':project,'source':{'transport':'glab','glab_version':'synthetic','gitlab_version':'synthetic','anchor_max_job_id':100+count,'pages':2,'cursor':None,'complete_available_history':True,'stop_reason':'eof','resumed_from_sha256':None,'requests':{'project':0,'version':0,'pages':0,'metadata':0,'pipelines':0,'traces':0},'budgets':{'max_pages':10,'max_job_types':16,'retained_per_type':64,'baseline_per_type':10,'concurrency':4,'trace_bytes':4194304,'trace_lines':50000,'timeout_seconds':60},'observed_counts':counts,'selection_policy':{'comparison_mode':'same_ref','refs':[],'job_selectors':[],'cache_max_age_seconds':86400},'limitations':['Synthetic sources; no GitLab requests were made']},'jobs':sorted(jobs,key=lambda x:x['id'],reverse=True),'pipelines':sorted(pipelines,key=lambda x:x['id'],reverse=True),'retained_job_ids':sorted(retained,reverse=True),'baseline_job_ids':[],'traces':sorted(traces,key=lambda x:x['job_id'],reverse=True)}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--attempts-per-type',type=int,default=70,choices=range(1,71));args=parser.parse_args();out=args.output_dir
-    source=synthetic_source(args.attempts_per_type);save(out/'jobs.json',source)
+    parser=argparse.ArgumentParser();parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--attempts-per-type',type=int,default=70,choices=range(1,71));parser.add_argument('--root-operations',action='store_true',help='Author synthetic root and nested operation evidence for browser regression checks');args=parser.parse_args();out=args.output_dir
+    source=synthetic_source(args.attempts_per_type,args.root_operations);save(out/'jobs.json',source)
     report=build_report(source,generated_at=AT);save(out/'report.json',report)
     save(out/'overview.json',export_report(report,scope='overview'));render(report,out/'report.html')
 

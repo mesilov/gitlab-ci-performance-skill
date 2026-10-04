@@ -60,6 +60,7 @@ jobs:
       - run: |
           python examples/generate_v2.py --output-dir reports/browser-contract-demo
           python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-contract-demo/report.json --language ru --output reports/browser-contract-demo/report-ru.html
+          python examples/generate_v2.py --output-dir reports/browser-root-demo --attempts-per-type 4 --root-operations
       - run: |
           python examples/generate_demo.py --output-dir reports/jobs
           python examples/generate_workflow_demo.py --output-dir reports/workflows
@@ -78,5 +79,8 @@ jobs:
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
           node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/browser-contract-en
           node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/browser-contract-ru
+          node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/drilldown-contract-en
+          node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/drilldown-contract-ru
+          node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-root-demo/report.html" reports/drilldown-root
         env:
           CI_REPORT_BROWSER_CHANNEL: chromium

@@ -143,11 +143,12 @@ def next_page(headers, host, project_id):
     if not match:
         return None
     target = urlsplit(match.group(1))
-    query = parse_qs(target.query)
-    allowed = {'per_page', 'pagination', 'order_by', 'sort', 'id_before', 'id_after', 'page', 'cursor'}
+    query = parse_qs(target.query, keep_blank_values=True)
+    allowed = {'per_page', 'pagination', 'order_by', 'sort', 'id_before', 'id_after', 'page', 'cursor', 'id'}
     if (target.scheme != 'https' or target.netloc != host or target.username or target.password or
             target.path != f'/api/v4/projects/{project_id}/jobs' or target.fragment or
             not set(query) <= allowed or any(len(v) != 1 for v in query.values()) or
+            ('id' in query and query['id'] != [str(project_id)]) or
             ('per_page' in query and (not query['per_page'][0].isdigit() or int(query['per_page'][0]) > 100))):
         raise ValueError('Unsafe pagination target')
     return target.path.removeprefix('/api/v4/') + ('?' + target.query if target.query else '')

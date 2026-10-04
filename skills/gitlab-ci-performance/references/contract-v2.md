@@ -7,8 +7,26 @@ It coexists with the published `scripts/ci_report.py` reviewed-report workflow
 interchangeable. Each entrypoint validates its own schemas and rejects the other
 format. No saved artifact is silently migrated or reinterpreted.
 
-The #4 renderer embeds canonical findings for LLM parity; the reviewed renderer
-and its full UI/localization from #3/#2 stay available through `ci_report.py`.
+The #4 renderer embeds canonical findings for LLM parity and follows the reviewed
+report's visual hierarchy: localized heading, compact baseline/outcome cards,
+a framed vertical action-priority list, collapsed history and a selected latest attempt with
+two-level timing timelines. The selected attempt shows compact queue/execution/
+total/runner/outcome context, collapsed runner phases and technical metadata,
+saved build fragments on a shared execution-length axis, and only the selected fragment's
+operations on a relative axis. Selected evidence shows source lines, quality,
+push coverage and nested substeps; the selected fragment's own source lines,
+quality, completeness and push coverage remain visible beside the operation view.
+Other command intervals remain accessible. Stored offsets use the first log
+timestamp/marker as origin; its alignment with API job start is not known. The
+shared scale must not claim that its zero is the API start.
+Unknown positions receive no invented bar; CACHED is labeled without a numeric
+zero. Fragment labels and operation ordinals are display labels, not image names
+or original BuildKit step IDs. The canonical closed evidence vocabulary does not
+store those fields, and ambiguous parser sessions must not be merged by HTML.
+The reviewed renderer stays available through
+`ci_report.py`. Shared presentation does not imply shared calculation semantics:
+queue-spike rules, baseline eligibility and evidence policies remain in each saved
+contract. No report values are copied between formats.
 `report --language en|ru` selects saved language metadata and the localized shell;
 `render --language en|ru` overrides only presentation. Raw names, evidence codes,
 calculation keys and seconds remain unchanged. The official research route from
