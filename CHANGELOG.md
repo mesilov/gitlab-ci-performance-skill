@@ -20,6 +20,12 @@ Changes awaiting release are recorded under Unreleased.
 
 ### Changed
 
+- Documented report language selection, defaults, source-data preservation and
+  legacy-report compatibility in CLI help, skill instructions and both README
+  versions.
+- CI smoke generation now renders both English and Russian reports. Offline
+  browser checks cover both languages, including desktop/mobile layouts,
+  accessibility labels, tooltips, time formatting and preserved source data.
 - Translated the agent skill instructions, including the skill description, and
   the required methodology reference into English. Commands, paths, schema and
   calculation versions, regression thresholds, and operational safeguards are
