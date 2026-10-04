@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 — Unreleased
+
+The initial milestone is in development. The changes below are grouped by
+capability and do not represent separate published releases. Artifact
+schema/calculation/parser versions are independent of the skill release version.
 
 ### Fixed
 
@@ -14,113 +18,88 @@
 - Extend offline browser regression checks for layout, numeric baseline parity,
   evidence hierarchy, keyboard selection and 320/375/1280px light/dark views.
 
-### Added
 
-- Canonical namespaced source/trace/findings/compact contracts for #4 through the
-  installed `report_cli.py` entrypoint, with strict semantic validation, bounded
-  safe collection, independent baselines and interval-union costs, reproducible
-  LLM projections and JSON/HTML parity.
-- Preserve the published `ci_report.py` 2.0.1 workflow, its schemas, reviewed UI,
-  localization and installed upgrade behavior. Numeric versions are scoped by
-  artifact kind; incompatible inputs are rejected rather than silently migrated.
-- Add combined installed-entrypoint and offline browser CI coverage. Canonical
-  provenance records the actual installed skill `VERSION` independently of its
-  schema/calculation/parser versions. This extension awaits a future release;
-  published 2.0.0/2.0.1 releases are unchanged.
+### Job performance reports
 
+- Selected-job reports with 32/64 attempt windows, runner queue above
+  outcome-colored execution, adaptive time units and keyboard navigation.
+- Bounded fresh metadata and safe trace parsing for every retained attempt,
+  explicit private cache reuse, log availability/partial states and provenance.
+- Runner, command and BuildKit evidence with overlap-safe successful cost
+  priorities and independent representative evidence. Cached, failed and missing
+  costs are excluded.
+- Baseline validation against compact source projections, including samples
+  older than the retained 64-attempt history. Changed pipeline/ref/type/timing
+  values and incomplete source coverage are rejected before rendering.
+- Optional job execution and queue history across explicitly selected refs/tags
+  (`report --release-refs`), with original refs, sample IDs, counts and context.
+  Cross-ref changes remain exploratory observations.
+- Optional `purpose_from_catalog` provenance distinguishes catalog descriptions
+  from generated fallback text. Supported legacy reports retain their saved
+  descriptions and rendering semantics; re-analysis creates new outputs.
 
-### Workflow contracts 2.0.0
+Tracked in [issue #1](https://github.com/mesilov/gitlab-ci-performance-skill/issues/1)
+and [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
 
-- Added versioned agent-verified workflow definitions, configuration evidence,
-  explicit historical coverage, required/manual policies and validated dependency DAGs.
-- Added bounded 32/64 pipeline-first collection with all retained retries,
-  pagination anchors/limits and partial metadata/job coverage; no trace requests.
-- Deduplicate overlapping job pages after concurrent retries and mark affected
-  pipelines partial instead of aborting collection.
-- Added deterministic elapsed, interval-union active, known queue sums and gaps,
-  latest-attempt outcomes, independent operation series and comparable medians with
-  exact sample IDs, eligibility and zero-baseline null percentages.
-- Added v2 workflow snapshot/report/LLM schemas and offline bilingual workflow HTML
-  with synchronized pipeline/job/attempt drill-down, responsive charts and strict
-  300-second display-unit scope. v1 job-only artifacts keep their original semantics.
-- Included a generic model in the installable skill, synthetic demo/boundary
-  generators, workflow methodology, CLI examples, installed-package smoke checks
-  and offline browser QA.
+### Workflow analysis
+
+- Agent-verified workflow definitions, configuration evidence, explicit
+  historical coverage, required/manual policies and validated dependency DAGs.
+- Bounded 32/64 pipeline-first collection with all retained retries, pagination
+  anchors/limits and partial metadata/job coverage; no trace requests.
+- Deduplication of overlapping job pages after concurrent retries, marking
+  affected pipelines partial instead of aborting collection.
+- Deterministic elapsed time, interval-union active time, known queue sums and
+  gaps, latest-attempt outcomes, independent operation series and comparable
+  medians with exact sample IDs, eligibility and null zero-baseline percentages.
+- Workflow snapshot/report/LLM contracts and offline bilingual HTML with
+  synchronized pipeline/job/attempt drill-down, responsive charts and a strict
+  300-second display-unit boundary.
+- Generic workflow model in the installable skill, synthetic demo and boundary
+  generators, methodology and CLI examples.
 
 Tracked in [issue #6](https://github.com/mesilov/gitlab-ci-performance-skill/issues/6).
 
-## 2.0.1 — 2026-10-04
+### Canonical reports and LLM exports
 
-- Validates every baseline observation against a compact source projection,
-  including samples older than the retained 64-attempt history. Rejects changed
-  pipeline/ref/type/timing values and incomplete source coverage before rendering.
-- Bumps report/calculation contracts to 2.0.1; metadata/timings/parser stay 2.0.0.
-  Existing 1.0/1.1/2.0.0 reports keep their rendering; stricter source checks require
-  explicit re-analysis into new outputs. No extra trace GETs are introduced.
-- Adds outside-history corruption and old-2.0 compatibility regressions.
+- Namespaced source/trace/findings/compact contracts through the installed
+  `report_cli.py` entrypoint, with strict semantic validation, bounded safe
+  collection, independent baselines and interval-union costs.
+- Reproducible LLM projections and JSON/HTML parity for full reports, overview,
+  selected windows and selected attempts.
+- Separate artifact kinds for the `report_cli.py` and `ci_report.py` workflows;
+  incompatible inputs are rejected rather than silently migrated.
+- Canonical provenance records the installed skill `VERSION` independently of
+  schema/calculation/parser versions.
 
-## 2.0.0 — 2026-10-04
+Tracked in [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4).
 
-- Ships the reviewed selected-job report with 32/64 attempt windows, gray queue
-  above outcome-colored execution, adaptive units, keyboard navigation and en/ru.
-- Adds bounded fresh metadata and safe trace parsing for every retained attempt,
-  private explicit cache reuse, availability/partial states and source provenance.
-- Adds runner/command/BuildKit evidence, overlap-safe successful cost priorities
-  and independent representative evidence; excludes cached/failed/missing costs.
-- Introduces schema/calculation/parser 2.0 contracts, deterministic offline render
-  and preserved 1.0/1.1 compatibility, integrating history #1 and language #2.
-- Adds synthetic parser/transport/calculation/browser and clean installed-skill
-  update coverage; no private source data is distributed.
+### Localization and documentation
 
-Tracked in [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
+- English and Russian HTML generation through `render --language en|ru`, with
+  English as the default. Controls, charts, tooltips, statuses, dates, numbers and
+  time units are localized while source data and catalog descriptions are preserved.
+- English skill instructions and methodology, plus English and Russian README
+  files with reciprocal language links and installation/update guidance.
+- Official GitLab and Docker/BuildKit optimization documentation, organized by
+  measured symptoms. Recommendations require current source reads, applicable
+  versions/configuration, evidence and a validation plan; uncertainty stays explicit.
+- README and changelog aligned with the unreleased 0.1.0 milestone.
 
-
-### Integrated prior changes
-
-- English and Russian HTML report generation through `render --language en|ru`,
-  retaining English as the default, including the optional release-history panel.
-  Includes localized controls, charts,
-  tooltips, status explanations, dates, numbers and time units while preserving
-  source data and catalog descriptions. Unsupported languages are rejected.
-- Optional `purpose_from_catalog` provenance in comparison and release-history groups to distinguish
-  generated fallback text from catalog descriptions. Legacy reports remain
-  renderable and preserve saved descriptions verbatim.
-- Official optimization documentation route in the skill, with measured-symptom
-  starting points for GitLab and Docker/BuildKit. Recommendations require current
-  source reads, version/configuration applicability, evidence, and a validation
-  plan; unavailable sources and uncertain causes remain explicit. Tracked in
-  [issue #5](https://github.com/mesilov/gitlab-ci-performance-skill/issues/5).
-- Installation/update guidance for retaining the versioned optimization reference.
-- Optional per-job execution and runner queue history across explicitly selected
-  refs/tags (`report --release-refs`). Original refs, sample IDs, counts and context
-  remain visible; cross-ref changes are exploratory observations. Includes an
-  offline interactive chart, 32/64 visible attempt windows and a generic demo.
-  Tracked in [issue #1](https://github.com/mesilov/gitlab-ci-performance-skill/issues/1).
-
-- Russian documentation in `README.ru.md`, with reciprocal English / Русский
-  links at the top of both README files. `README.md` remains the default English
-  documentation.
-- This changelog, linked from both README versions.
-
-### Changed
-
-- Documented report language selection, defaults, source-data preservation and
-  legacy-report compatibility in CLI help, skill instructions and both README
-  versions.
-- CI smoke generation now renders both English and Russian reports. Offline
-  browser checks cover both languages, including desktop/mobile layouts,
-  accessibility labels, tooltips, time formatting, release history and preserved source data.
-- Preserved report/calculation version 1.1.0 with a validated optional release-history
-  payload; jobs stay 1.0.0. The updated renderer accepts legacy 1.0.0 reports.
-
-- Translated the agent skill instructions, including the skill description, and
-  the required methodology reference into English. Commands, paths, schema and
-  calculation versions, regression thresholds, and operational safeguards are
-  preserved.
-
-Tracked in [issue #7](https://github.com/mesilov/gitlab-ci-performance-skill/issues/7)
-and [PR #8](https://github.com/mesilov/gitlab-ci-performance-skill/pull/8).
-
-Report localization is tracked in
-[issue #2](https://github.com/mesilov/gitlab-ci-performance-skill/issues/2) and
+Tracked in [issue #2](https://github.com/mesilov/gitlab-ci-performance-skill/issues/2),
+[issue #5](https://github.com/mesilov/gitlab-ci-performance-skill/issues/5) and
+[issue #7](https://github.com/mesilov/gitlab-ci-performance-skill/issues/7).
+Related documentation/localization changes:
+[PR #8](https://github.com/mesilov/gitlab-ci-performance-skill/pull/8) and
 [PR #9](https://github.com/mesilov/gitlab-ci-performance-skill/pull/9).
+
+### Validation
+
+- Synthetic parser, transport, calculation and baseline-corruption checks,
+  including samples outside the retained history and supported legacy artifacts.
+- Clean skill-only installation/update checks, request/payload limits and privacy
+  sentinels; no private source data is distributed.
+- Combined installed-entrypoint and offline browser CI coverage for both languages,
+  32/64 windows, retained retries/outcomes, evidence, desktop/mobile layouts,
+  light/dark themes, keyboard/focus, safe links, moved HTML and denied network.
+- Workflow browser checks for pipeline/job/attempt parity and display-unit boundaries.
