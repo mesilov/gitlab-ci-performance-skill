@@ -238,12 +238,15 @@ def collect(host, project_path, display_timezone='UTC', window=32, max_pages=10,
                 if raw_job['id'] > state['anchor_job_id']:
                     state.update(jobs_complete=False, error='attempt_created_after_anchor')
                     continue
-                if raw_job['id'] in job_ids:
-                    raise ValueError('Duplicate attempt ID')
-                job_ids.add(raw_job['id'])
                 job = ci.project_job(raw_job)
                 if job['pipeline_id'] != pid:
                     raise ValueError('Job belongs to unrelated pipeline')
+                if raw_job['id'] in job_ids:
+                    # Offset pages can overlap when retries are created during
+                    # collection. Keep the first observation, with partial coverage.
+                    state.update(jobs_complete=False, error='job_pagination_duplicate_id')
+                    continue
+                job_ids.add(raw_job['id'])
                 jobs.append(job)
             endpoint = next_endpoint(headers, host, job_path, {'include_retried':'true'})
         coverage[str(pid)] = state

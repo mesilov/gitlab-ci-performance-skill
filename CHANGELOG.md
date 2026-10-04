@@ -10,6 +10,8 @@ Changes awaiting release are recorded under Unreleased.
   explicit historical coverage, required/manual policies and validated dependency DAGs.
 - Added bounded 32/64 pipeline-first collection with all retained retries,
   pagination anchors/limits and partial metadata/job coverage; no trace requests.
+- Deduplicate overlapping job pages after concurrent retries and mark affected
+  pipelines partial instead of aborting collection.
 - Added deterministic elapsed, interval-union active, known queue sums and gaps,
   latest-attempt outcomes, independent operation series and comparable medians with
   exact sample IDs, eligibility and zero-baseline null percentages.

@@ -302,6 +302,56 @@ class WorkflowCollectionTests(unittest.TestCase):
             self.assertTrue(s['source']['pipeline_history_exhausted'])
             self.assertEqual(len(s['jobs']),3 if late_attempt else 4)
 
+    def overlapping_api(self, calls, unrelated_duplicate=False):
+        s,_=fixture(2)
+        base=self.fake_api(2,calls)
+        template=s['jobs'][0]
+        attempts=[dict(template,id=i,pipeline={'id':1},duration=20,queued_duration=2)
+                  for i in range(100,0,-1)]
+        attempts=[dict(j,pipeline={'id':1},duration=j['duration_seconds'],
+                       queued_duration=j['queued_seconds']) for j in reversed(s['jobs'][:3])]+attempts
+        def request(host,endpoint):
+            if '/pipelines/1/jobs?' not in endpoint:return base(host,endpoint)
+            calls.append(endpoint)
+            if 'page=2' in endpoint:
+                # ID 104 is inserted after page 1: offset 100 repeats ID 4,
+                # even though the new attempt itself never appears on page 2.
+                repeated=dict(attempts[99],status='failed')
+                if unrelated_duplicate:repeated['pipeline']={'id':2}
+                return '',[repeated]+attempts[100:]
+            link='<https://gitlab.example.com/api/v4/projects/42/pipelines/1/jobs?include_retried=true&page=2>; rel="next"'
+            return link,attempts[:100]
+        return request
+
+    def test_offset_overlap_keeps_unique_attempts_and_marks_only_affected_pipeline_partial(self):
+        calls=[]
+        with patch.object(ci,'request',side_effect=self.overlapping_api(calls)):
+            s=ci.workflow_collect('gitlab.example.com','example/service','UTC',32,2)
+        self.assertEqual(len(calls),9)
+        self.assertEqual(len(s['jobs']),107)
+        self.assertEqual(len({j['id'] for j in s['jobs']}),107)
+        self.assertEqual(next(j for j in s['jobs'] if j['id']==4)['status'],'success')
+        coverage=s['source']['pipelines']['1']
+        self.assertEqual(coverage['anchor_job_id'],103)
+        self.assertEqual(coverage['pages'],2)
+        self.assertFalse(coverage['jobs_complete'])
+        self.assertEqual(coverage['error'],'job_pagination_duplicate_id')
+        self.assertTrue(s['source']['pipelines']['2']['jobs_complete'])
+        _,d=fixture(2)
+        series=build(s,d)['views'][0]['series'][0]
+        runs=series['runs']
+        partial=next(r for r in runs if r['pipeline_id']==1)
+        self.assertFalse(partial['eligible_success'])
+        self.assertIsNone(partial['metrics']['elapsed_seconds'])
+        self.assertFalse(partial['coverage']['active_exact'])
+        self.assertTrue(next(r for r in runs if r['pipeline_id']==2)['eligible_success'])
+        self.assertNotIn(1,series['comparisons']['elapsed_seconds']['sample_pipeline_ids'])
+
+    def test_duplicate_does_not_hide_unrelated_pipeline_identity(self):
+        with patch.object(ci,'request',side_effect=self.overlapping_api([],True)):
+            with self.assertRaisesRegex(ValueError,'Job belongs to unrelated pipeline'):
+                ci.workflow_collect('gitlab.example.com','example/service','UTC',32,2)
+
     def test_pagination_cannot_change_scope_or_leak_transport_urls(self):
         from workflow_report import next_endpoint
         path='projects/42/pipelines/1/jobs'

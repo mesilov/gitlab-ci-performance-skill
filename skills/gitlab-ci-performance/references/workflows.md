@@ -90,7 +90,10 @@ jobs. Upper request bound is `2 + max_pages + W * (1 + max_pages)` for project,
 version, pipeline pages, details and job pages, where W is 32 or 64. Read-only
 requests use existing `glab` authentication. No traces, artifacts or variables
 are requested. Limits/cycles/per-pipeline API failures preserve partial results
-with sanitized coverage reasons; unsafe pagination or contradictory IDs fail.
+with sanitized coverage reasons. Overlapping job pages are deduplicated by attempt
+ID, retaining the first observation and marking that pipeline's job coverage
+partial; this can happen when a retry shifts offset pagination during collection.
+Unsafe pagination and jobs belonging to an unrelated pipeline still fail.
 A pipeline list failure marks the window incomplete. Source records include
 requested size, actual IDs/date bounds, anchors, page counts, limits, metadata/job
 coverage and listing exhaustion. Missing metadata is not proof of job absence.
