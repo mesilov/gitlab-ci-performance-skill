@@ -44,6 +44,23 @@ The report UI supports English (default) and Russian. Agent skill instructions
 and the methodology reference are in English.
 Russian documentation is available in [README.ru.md](README.ru.md).
 
+Optimization recommendations follow the
+[official-source route](skills/gitlab-ci-performance/references/optimization-sources.md):
+the agent reads current documentation and records measured evidence, applicability,
+source verification and a before/after measurement plan for each proposal.
+
+For a reproducible install or update, check out the desired published release tag
+in the source clone and copy the **whole** `skills/gitlab-ci-performance` directory,
+including `references`, into `.agents/skills/gitlab-ci-performance`. Review any
+local customizations before updating. Do not copy only `SKILL.md`: its supporting
+reference is versioned with the skill. The existing Codex/Claude symlinks continue
+to point to that installed directory.
+
+After installing or updating, check that the Optimization recommendations link in
+the installed `SKILL.md` resolves to `references/optimization-sources.md`, and that
+both files match the chosen release. A local copy check does not establish that an
+upstream release was published.
+
 ## Run the CLI directly
 
 Requirements: Python 3.10+, `glab`, and its existing authentication for your GitLab host.

@@ -1,7 +1,7 @@
 ---
 name: gitlab-ci-performance
 license: MIT
-description: "Use when analyzing GitLab CI execution or runner queue regressions with glab, understanding job purposes, inspecting timing history across selected release refs, or regenerating an HTML report from saved JSON snapshots."
+description: "Use when preparing GitLab CI performance improvement recommendations, analyzing execution or runner queue regressions with glab, understanding job purposes, inspecting timing history across selected release refs, or regenerating an HTML report from saved JSON snapshots."
 ---
 
 # GitLab CI Performance Analysis
@@ -102,6 +102,18 @@ alongside it; the HTML remains functional when moved on its own. The top stacked
 chart shows pipeline execution and the queue before its first start. Check individual
 job queues in the table. Collection does not read job logs/variables or change CI.
 Scheduling, notifications, and runner changes require a separate request.
+
+## Optimization recommendations
+
+When preparing CI performance improvements, read
+[official optimization sources](references/optimization-sources.md). Start from
+the measured cost, read the relevant current official documentation, and check
+version/configuration applicability before proposing an action. Associate each
+proposal with its evidence, official URL and section, source verification date,
+applicability conditions, and a plan to measure the effect in comparable runs.
+Keep facts, causal hypotheses, and proposals separate; disclose unavailable
+sources and unknown configuration. Observed cost is not guaranteed savings.
+This workflow does not authorize CI, runner, or cache changes.
 
 ## Contracts and checks
 

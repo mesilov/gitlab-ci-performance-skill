@@ -14,6 +14,12 @@ Changes awaiting release are recorded under Unreleased.
 - Optional `purpose_from_catalog` provenance in comparison and release-history groups to distinguish
   generated fallback text from catalog descriptions. Legacy reports remain
   renderable and preserve saved descriptions verbatim.
+- Official optimization documentation route in the skill, with measured-symptom
+  starting points for GitLab and Docker/BuildKit. Recommendations require current
+  source reads, version/configuration applicability, evidence, and a validation
+  plan; unavailable sources and uncertain causes remain explicit. Tracked in
+  [issue #5](https://github.com/mesilov/gitlab-ci-performance-skill/issues/5).
+- Installation/update guidance for retaining the versioned optimization reference.
 - Optional per-job execution and runner queue history across explicitly selected
   refs/tags (`report --release-refs`). Original refs, sample IDs, counts and context
   remain visible; cross-ref changes are exploratory observations. Includes an
