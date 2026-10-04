@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'skills/gitlab-ci-performance/scripts'))
-from report_contract import save,type_id
+from report_contract import save,type_id,SKILL_VERSION
 from report_trace import parse_trace,empty_trace
 from report_calculate import build_report
 from report_export import export_report
@@ -44,7 +44,7 @@ def synthetic_source(count=70):
                 t=parse_trace(jid,('\n'.join(lines)+'\n').encode(),fetched_at=AT,analyzed_at=AT)
             traces.append(t)
         counts.append({'type_id':type_id(project,stage,name),'stage':stage,'name':name,'available_count':count,'count_kind':'exact'})
-    return {'schema_version':'2.0.0','skill_version':'2.0.0','kind':'gitlab_job_performance_source','collection_started_at':AT,'collected_at':AT,'timezone':'UTC','project':project,'source':{'transport':'glab','glab_version':'synthetic','gitlab_version':'synthetic','anchor_max_job_id':100+count,'pages':2,'cursor':None,'complete_available_history':True,'stop_reason':'eof','resumed_from_sha256':None,'requests':{'project':0,'version':0,'pages':0,'metadata':0,'pipelines':0,'traces':0},'budgets':{'max_pages':10,'max_job_types':16,'retained_per_type':64,'baseline_per_type':10,'concurrency':4,'trace_bytes':4194304,'trace_lines':50000,'timeout_seconds':60},'observed_counts':counts,'selection_policy':{'comparison_mode':'same_ref','refs':[],'job_selectors':[],'cache_max_age_seconds':86400},'limitations':['Synthetic sources; no GitLab requests were made']},'jobs':sorted(jobs,key=lambda x:x['id'],reverse=True),'pipelines':sorted(pipelines,key=lambda x:x['id'],reverse=True),'retained_job_ids':sorted(retained,reverse=True),'baseline_job_ids':[],'traces':sorted(traces,key=lambda x:x['job_id'],reverse=True)}
+    return {'schema_version':'2.0.0','skill_version':SKILL_VERSION,'kind':'gitlab_job_performance_source','collection_started_at':AT,'collected_at':AT,'timezone':'UTC','project':project,'source':{'transport':'glab','glab_version':'synthetic','gitlab_version':'synthetic','anchor_max_job_id':100+count,'pages':2,'cursor':None,'complete_available_history':True,'stop_reason':'eof','resumed_from_sha256':None,'requests':{'project':0,'version':0,'pages':0,'metadata':0,'pipelines':0,'traces':0},'budgets':{'max_pages':10,'max_job_types':16,'retained_per_type':64,'baseline_per_type':10,'concurrency':4,'trace_bytes':4194304,'trace_lines':50000,'timeout_seconds':60},'observed_counts':counts,'selection_policy':{'comparison_mode':'same_ref','refs':[],'job_selectors':[],'cache_max_age_seconds':86400},'limitations':['Synthetic sources; no GitLab requests were made']},'jobs':sorted(jobs,key=lambda x:x['id'],reverse=True),'pipelines':sorted(pipelines,key=lambda x:x['id'],reverse=True),'retained_job_ids':sorted(retained,reverse=True),'baseline_job_ids':[],'traces':sorted(traces,key=lambda x:x['job_id'],reverse=True)}
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--attempts-per-type',type=int,default=70,choices=range(1,71));args=parser.parse_args();out=args.output_dir

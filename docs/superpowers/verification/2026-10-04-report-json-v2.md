@@ -4,7 +4,7 @@ Issue: [#4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4).
 Approved [design](../specs/2026-10-04-report-json-v2-design.md) and
 [implementation plan](../plans/2026-10-04-report-json-v2.md).
 
-## Local automated evidence
+## Original PR implementation evidence (before PR #13 integration)
 
 - `.venv/bin/python -m unittest discover -s tests -q`: **120 tests, OK**
   (18.519 seconds, Python 3.14.7). Includes schema/semantic rejection,
@@ -71,3 +71,31 @@ validation/generation and localized rendering, bounded v2 demo generation,
 canonical/compact validation and Russian v2 generation/rendering.
 This delivery record changes documentation only; final head CI is checked before
 handoff. The issue remains open pending authorized integration and publication.
+
+## Integration verification after published PR #13
+
+Before merging #14, main advanced to `3a1ab9f` with the released reviewed 2.0.1
+workflow. Preserve that entrypoint, schemas, localization and renderer unchanged.
+The canonical namespaced contract is exposed separately through installed
+`report_cli.py`, with dedicated source/report schema paths. Wrong-entrypoint
+artifacts fail before writing HTML; no version-only implicit migration occurs.
+Canonical skill provenance now comes from installed `VERSION` (2.0.1), independently
+of the 2.0.0 schema/calculation and 1.0.0 parser versions.
+
+- Full suite: **186 tests, OK**, 25.813 seconds on local Python 3.14.7.
+- Copied-install regression executes both entrypoints, verifies reviewed 2.0.1 and
+  canonical artifact kinds and rejects crossed inputs without creating output.
+- Both en/ru canonical browsers pass all 128 attempts and 6 windows, numeric/evidence
+  parity, 320px/light/dark, moved HTML and no external requests/JS errors.
+- Both en/ru reviewed browsers pass 32/64, all retained attempts/reruns, evidence,
+  keyboard/focus, 320/375/1280 widths, light/dark, safe links and offline transfer.
+- An extracted skill archive outside the checkout passed **14 installed CLI commands**,
+  canonical byte parity, reviewed 2.0.1 and legacy generation/Russian rendering.
+  Archive: `gitlab-ci-performance-main-issue4.tar.gz`, **138,033 bytes**, SHA-256
+  `91f2efd5f3d897f47629c65341ef9d508e52941c399929d26c96c059f0226506`.
+  This is a local integration package, not a published release.
+
+The prior candidate-size/hash evidence above describes the original PR build.
+Combined CLI/browser CI is checked on the final integration revision before merge.
+The owner authorized merge into main; the #4 extension's future release remains
+separate from the existing published v2.0.0/2.0.1 releases.

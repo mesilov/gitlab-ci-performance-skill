@@ -1,0 +1,417 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "2.0.0"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "timings"
+      ]
+    },
+    "parser_version": {
+      "enum": [
+        "2.0.0"
+      ]
+    },
+    "analyzed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "metadata_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "snapshot_sha256",
+        "metadata_sha256"
+      ]
+    },
+    "details": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/detail"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "parser_version",
+    "analyzed_at",
+    "timezone",
+    "project",
+    "source",
+    "details"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/gitlab-ci-performance/timings-v2.schema.json",
+  "$defs": {
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "image_build"
+          ]
+        },
+        "start_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "span_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "push_coverage": {
+          "enum": [
+            "unknown",
+            "outside",
+            "recorded"
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "start_seconds",
+        "end_seconds",
+        "span_seconds",
+        "push_coverage",
+        "operations"
+      ]
+    },
+    "detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "trace_status": {
+          "enum": [
+            "available",
+            "partial",
+            "not_run",
+            "empty",
+            "erased",
+            "unavailable",
+            "disabled"
+          ]
+        },
+        "trace_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processed_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trace_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timestamp_lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "analyzed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "parser_version": {
+          "enum": [
+            "2.0.0"
+          ]
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "builds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/build"
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "missing_job_start",
+              "truncated_trace",
+              "incomplete_sections",
+              "invalid_section_timing",
+              "unmatched_section_end",
+              "incomplete_commands",
+              "estimated_command_intervals",
+              "ambiguous_build_boundary",
+              "duplicate_frames",
+              "incomplete_operations",
+              "incomplete_substeps",
+              "missing_operation_durations",
+              "partial_build_span",
+              "inferred_operation_positions",
+              "missing_operation_positions",
+              "unknown_push_coverage",
+              "missing_timestamps",
+              "trace_disabled",
+              "job_not_run",
+              "trace_erased",
+              "trace_forbidden",
+              "trace_unavailable",
+              "trace_timeout",
+              "trace_request_failed",
+              "trace_byte_limit",
+              "active_trace",
+              "trace_cache_write_failed",
+              "details_not_collected",
+              "collection_not_atomic",
+              "details_retained_64_per_type",
+              "traces_may_be_unavailable",
+              "runner_log_truncated"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "job_id",
+        "trace_status",
+        "trace_sha256",
+        "trace_bytes",
+        "processed_bytes",
+        "trace_lines",
+        "timestamp_lines",
+        "analyzed_at",
+        "parser_version",
+        "phases",
+        "builds",
+        "commands",
+        "limitations"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "enum": [
+            "export_unpack",
+            "context_copy",
+            "base_image",
+            "dependencies",
+            "builder_startup",
+            "runner_prepare",
+            "runner_checkout",
+            "runner_artifacts",
+            "runner_cleanup",
+            "queue",
+            "other",
+            "prepare_executor",
+            "prepare_environment",
+            "checkout_sources",
+            "execute_script",
+            "download_artifacts",
+            "upload_artifacts",
+            "cleanup",
+            "runner_phase",
+            "unknown_operation",
+            "command",
+            "export_layers",
+            "export_manifest",
+            "export_manifest_list",
+            "export_config",
+            "unpack_local",
+            "export_tarball",
+            "push_layers",
+            "push_manifest"
+          ]
+        },
+        "category": {
+          "enum": [
+            "export_unpack",
+            "context_copy",
+            "base_image",
+            "dependencies",
+            "builder_startup",
+            "runner_prepare",
+            "runner_checkout",
+            "runner_artifacts",
+            "runner_cleanup",
+            "queue",
+            "other"
+          ]
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "start_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "first_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "last_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timing_source": {
+          "enum": [
+            "runner_section",
+            "buildkit_reported",
+            "logged_interval"
+          ]
+        },
+        "position_source": {
+          "enum": [
+            "section_markers",
+            "log_timestamps",
+            "unknown"
+          ]
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "substeps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "category",
+        "duration_seconds",
+        "start_seconds",
+        "end_seconds",
+        "first_line",
+        "last_line",
+        "timing_source",
+        "position_source",
+        "cached",
+        "complete",
+        "substeps"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "host",
+        "web_url",
+        "default_branch"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9.-]+(?::[0-9]+)?$"
+        },
+        "web_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "default_branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,8 @@
 import argparse
 import html
 import json
+import subprocess
+import sys
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import ci_report as legacy
@@ -99,3 +101,11 @@ def main():
         if value.get('schema_version') in {'1.0.0','1.1.0'}:legacy.validate(value,value['kind'])
         else:validate(value)
         print('JSON Schema and semantic checks: OK')
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (ValueError, OSError, subprocess.TimeoutExpired) as error:
+        print(f'Error: {error}', file=sys.stderr)
+        sys.exit(1)

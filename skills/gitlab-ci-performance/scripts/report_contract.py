@@ -11,6 +11,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = '2.0.0'
+SKILL_VERSION = (ROOT/'VERSION').read_text(encoding='utf-8').strip()
 PARSER_VERSION = '1.0.0'
 MAX_PAYLOAD_BYTES = 16 * 1024 * 1024
 KINDS = {'gitlab_job_performance_source':'jobs','gitlab_job_performance_report':'report',
@@ -339,7 +340,8 @@ def validate(value, kind=None):
     if kind=='trace':artifact='trace'
     require(artifact is not None,'Unknown artifact kind')
     data=encoded(value);require(len(data)<=MAX_PAYLOAD_BYTES,'Payload exceeds 16 MiB; narrow job selection')
-    schema=load(ROOT/'schemas'/f'{artifact}.schema.json');common=load(ROOT/'schemas/common.schema.json')
+    schema_name={'jobs':'source-contract-v2','report':'report-contract-v2'}.get(artifact,artifact)
+    schema=load(ROOT/'schemas'/f'{schema_name}.schema.json');common=load(ROOT/'schemas/common.schema.json')
     Draft202012Validator.check_schema(common)
     registry=Registry().with_resource(common['$id'],Resource.from_contents(common))
     errors=Draft202012Validator(schema,registry=registry,format_checker=FormatChecker()).iter_errors(value)

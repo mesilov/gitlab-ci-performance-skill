@@ -1,32 +1,51 @@
 # Changelog
 
-Changes awaiting release are recorded under Unreleased.
-
 ## Unreleased
 
-### Report contract 2.0.0 (release candidate; not yet published)
-
-- Introduce strict reusable source, trace, full-report and compact schemas, semantic
-  source/cohort/aggregate checks and independent schema/calculation/parser/skill versions.
-- Bound history to 64 attempts/type and materialize 32/64 windows; refresh retained
-  all-outcome job/pipeline metadata, bounded baseline-only metadata, trace summaries,
-  safe cache/resume and actual source/request coverage.
-- Parse allowlisted phases, command intervals and session-scoped BuildKit operations/
-  nested parts without exporting raw logs; retain unknown/cache/partial and inferred
-  position uncertainty. Calculate category interval unions and priorities in Python.
-- Add canonical and compact LLM JSON exports and an offline renderer using the same
-  materialized measurements. Preserve original collection/analysis dates and seconds.
-- Preserve 1.0/1.1 validation/rendering, full legacy en/ru localization and
-  optional legacy release history; require explicit `report --legacy` generation.
-  New v2 report generation cannot silently upgrade missing v1 evidence.
-- Add language metadata/title/presentation shell, synthetic integration/browser checks
-  and copied-install smoke. Complete v2 visual/language acceptance remains #3/#2; retain the official
-  documentation investigation route from #5.
-
-Tracked in [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4).
-
-
 ### Added
+
+- Canonical namespaced source/trace/findings/compact contracts for #4 through the
+  installed `report_cli.py` entrypoint, with strict semantic validation, bounded
+  safe collection, independent baselines and interval-union costs, reproducible
+  LLM projections and JSON/HTML parity.
+- Preserve the published `ci_report.py` 2.0.1 workflow, its schemas, reviewed UI,
+  localization and installed upgrade behavior. Numeric versions are scoped by
+  artifact kind; incompatible inputs are rejected rather than silently migrated.
+- Add combined installed-entrypoint and offline browser CI coverage. Canonical
+  provenance records the actual installed skill `VERSION` independently of its
+  schema/calculation/parser versions. This extension awaits a future release;
+  published 2.0.0/2.0.1 releases are unchanged.
+
+
+Released changes are grouped by skill version.
+
+## 2.0.1 — 2026-10-04
+
+- Validates every baseline observation against a compact source projection,
+  including samples older than the retained 64-attempt history. Rejects changed
+  pipeline/ref/type/timing values and incomplete source coverage before rendering.
+- Bumps report/calculation contracts to 2.0.1; metadata/timings/parser stay 2.0.0.
+  Existing 1.0/1.1/2.0.0 reports keep their rendering; stricter source checks require
+  explicit re-analysis into new outputs. No extra trace GETs are introduced.
+- Adds outside-history corruption and old-2.0 compatibility regressions.
+
+## 2.0.0 — 2026-10-04
+
+- Ships the reviewed selected-job report with 32/64 attempt windows, gray queue
+  above outcome-colored execution, adaptive units, keyboard navigation and en/ru.
+- Adds bounded fresh metadata and safe trace parsing for every retained attempt,
+  private explicit cache reuse, availability/partial states and source provenance.
+- Adds runner/command/BuildKit evidence, overlap-safe successful cost priorities
+  and independent representative evidence; excludes cached/failed/missing costs.
+- Introduces schema/calculation/parser 2.0 contracts, deterministic offline render
+  and preserved 1.0/1.1 compatibility, integrating history #1 and language #2.
+- Adds synthetic parser/transport/calculation/browser and clean installed-skill
+  update coverage; no private source data is distributed.
+
+Tracked in [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
+
+
+### Integrated prior changes
 
 - English and Russian HTML report generation through `render --language en|ru`,
   retaining English as the default, including the optional release-history panel.
@@ -61,7 +80,7 @@ Tracked in [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/iss
 - CI smoke generation now renders both English and Russian reports. Offline
   browser checks cover both languages, including desktop/mobile layouts,
   accessibility labels, tooltips, time formatting, release history and preserved source data.
-- New report/calculation version 1.1.0 with a validated optional release-history
+- Preserved report/calculation version 1.1.0 with a validated optional release-history
   payload; jobs stay 1.0.0. The updated renderer accepts legacy 1.0.0 reports.
 
 - Translated the agent skill instructions, including the skill description, and

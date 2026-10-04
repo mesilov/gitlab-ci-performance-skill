@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path');
 const{pathToFileURL,fileURLToPath}=require('node:url');
 const url=process.argv[2],out=process.argv[3];
 if(!url||!out)throw Error('Usage: browser_v2.cjs FILE_URL OUTPUT_DIRECTORY');
-(async()=>{fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({channel:'chrome',headless:true});
+(async()=>{fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({channel:process.env.CI_REPORT_BROWSER_CHANNEL==='chromium'?undefined:(process.env.CI_REPORT_BROWSER_CHANNEL||'chrome'),headless:true});
 try{const context=await browser.newContext({offline:true,viewport:{width:1280,height:960}}),page=await context.newPage(),errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));await page.goto(url);
 const R=await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent));assert.equal(R.schema_version,'2.0.0');assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('#jobs button').count(),R.job_types.length);
 for(const jt of R.job_types){await page.locator(`[data-type="${jt.id}"]`).click();for(const size of ['32','64']){await page.locator('#size').selectOption(size);let w=R.windows.find(w=>w.type_id===jt.id&&w.size===Number(size)&&w.page===0);await verifyWindow(w);if(size==='32'&&w.has_older){await page.locator('#older').click();w=R.windows.find(v=>v.id===w.older_window_id);await verifyWindow(w);await page.locator('#latest').click();}}

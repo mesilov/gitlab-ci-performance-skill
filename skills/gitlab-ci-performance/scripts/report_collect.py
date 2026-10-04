@@ -1,4 +1,5 @@
 """Bounded, read-only GitLab metadata and safe trace-summary collection."""
+from report_contract import SKILL_VERSION
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -383,7 +384,7 @@ def collect(host, project_path, display_timezone='UTC', *, max_pages=10, max_job
     requests['traces'] += sum(requested for _, requested in trace_results)
     type_limited = selectors_set is None and len(groups) > max_job_types
     stop_reason = 'page_budget' if not complete else 'type_budget' if type_limited else 'eof'
-    result = {'schema_version': VERSION, 'kind': 'gitlab_job_performance_source', 'skill_version': VERSION,
+    result = {'schema_version': VERSION, 'kind': 'gitlab_job_performance_source', 'skill_version': SKILL_VERSION,
               'collection_started_at': started, 'collected_at': now(), 'timezone': display_timezone,
               'project': project, 'source': {'transport': 'glab', 'glab_version': transport.version(),
               'gitlab_version': str(version['version']), 'anchor_max_job_id': anchor,

@@ -43,7 +43,7 @@ Files: `scripts/report_calculate.py`, `scripts/report_export.py`, `tests/test_ca
 
 ## 5. CLI and offline rendering
 
-Files: `scripts/report_cli.py`, `scripts/ci_report.py`, `assets/report-v2.html`, `tests/test_cli_v2.py`, `tests/browser_v2.cjs`.
+Files: `scripts/report_cli.py`, `scripts/report_cli.py`, `assets/report-v2.html`, `tests/test_cli_v2.py`, `tests/browser_v2.cjs`.
 
 - [x] Test collect/report/export/validate/render round trips through the actual entrypoint, legacy rejection/help and copied installed skill without checkout imports. Verify failures.
 - [x] Dispatch v2 CLI, retaining explicit `--legacy` generation and automatic validated v1 rendering. Embed unchanged canonical JSON and select precomputed views in HTML.
@@ -57,7 +57,8 @@ Files: `SKILL.md`, `references/methodology.md`, `references/contract-v2.md`, bot
 - [x] Document exact schemas, required/nullable values, parser/aggregation exclusions, bounded requests/cache, compact selectors and legacy path. Keep #2/#3/#5 ownership clear.
 - [x] Generate synthetic canonical/compact/HTML examples through maintained CLI. Run unit tests and copied-install smoke, verify size/secret boundaries and staged diff.
 - [x] Open and attach a reviewable PR linking #4; verify remote CI and report checks. [Draft PR #14](https://github.com/mesilov/gitlab-ci-performance-skill/pull/14) is mergeable; Python 3.10/3.12 checks passed.
-- [ ] Merge and publish v2.0.0 after integration/release approval. The local release candidate has been packaged and smoke-tested from an extracted installation.
+- [ ] Merge PR #14 into main after current CI passes; owner explicitly authorized merge in this chat.
+- [ ] Publish the canonical extension in a future release only with release authorization. Published v2.0.0/2.0.1 from #13 are preserved; no existing tag/release is replaced.
 
 ## Coverage checks
 
@@ -66,3 +67,20 @@ All eight acceptance checklist items in #4 map to tasks 1–6: schemas/semantic 
 ## Execution notes
 
 Implementation was committed as one tested integration change (`74eeca4`) after focused module checks and review, rather than separate commits per module. The latest `main` (`ec247f7`) was merged before delivery; existing 1.0/1.1 report localization and release history remain supported under the explicit legacy path. See [verification evidence](../verification/2026-10-04-report-json-v2.md).
+
+## Integration with published main
+
+Main advanced to `3a1ab9f` (PR #13, released reviewed 2.0.1) after the initial
+PR delivery. Preserve `ci_report.py`, reviewed schema files, UI/localization and
+its installed workflow unchanged. Ship the namespaced canonical contract through
+`scripts/report_cli.py`; use dedicated `source-contract-v2.schema.json` and
+`report-contract-v2.schema.json` instead of replacing published legacy schema paths.
+Both entrypoints are bundled in the installed skill. Each rejects incompatible
+artifact kinds. Schema/calculation/parser versions stay independent; skill
+provenance is read from the installed `VERSION`. The earlier proposed single
+entrypoint release gate is superseded by this compatibility requirement and the
+owner's explicit authorization to merge; publication remains a separate action.
+
+Verification after integration: 186 unit/CLI tests; en/ru offline browser checks
+for both renderers; an extracted package passed 14 installed commands and canonical
+byte parity. Combined browser/CLI CI is required before the authorized merge.

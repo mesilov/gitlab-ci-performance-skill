@@ -1,4 +1,5 @@
 """Offline v2 calculation; every supported view is materialized here."""
+from report_contract import SKILL_VERSION
 from collections import Counter
 from copy import deepcopy
 from statistics import median
@@ -411,7 +412,7 @@ def build_report(snapshot, baseline=None, *, catalog=None, guidance=None, langua
     metadata_times = [a['metadata']['metadata_checked_at'] for a in attempts if a['metadata']['metadata_checked_at']]
     metadata_times.extend(a['pipeline']['metadata_checked_at'] for a in attempts if a['pipeline']['metadata_checked_at'])
     trace_times = [a['trace']['analyzed_at'] for a in attempts if a['trace'] is not None and a['trace']['analyzed_at']]
-    report = {'schema_version':VERSION,'calculation_version':VERSION,'trace_parser_version':PARSER_VERSION,'skill_version':VERSION,
+    report = {'schema_version':VERSION,'calculation_version':VERSION,'trace_parser_version':PARSER_VERSION,'skill_version':SKILL_VERSION,
               'kind':'gitlab_job_performance_report','report_id':digest({'provenance':provenance,'policies':policies,
                      'calculation_version':VERSION,'trace_parser_version':PARSER_VERSION}),
               'generated_at':generated_at or now(),'collected_at':snapshot['collected_at'],

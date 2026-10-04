@@ -1,19 +1,41 @@
 # Report contract 2.0.0
 
-This contract implements issue #4. Full reviewed visual acceptance (#3), complete
-interface translation (#2), and the current-official-documentation investigation
-workflow (#5) remain separate. `--language en|ru` sets report language metadata and
-localized shell/title; raw names, evidence codes, calculation keys and seconds do
-not change. English is the default. Some explanatory evidence codes remain machine
-codes pending the complete interface translation.
+This contract implements issue #4 through the installed `scripts/report_cli.py`.
+It coexists with the published `scripts/ci_report.py` reviewed-report workflow
+(2.0.1). The artifact kinds below are distinct from that workflow's `jobs`,
+`metadata`, `timings` and `report`; a shared numeric version does not make them
+interchangeable. Each entrypoint validates its own schemas and rejects the other
+format. No saved artifact is silently migrated or reinterpreted.
+
+The #4 renderer embeds canonical findings for LLM parity; the reviewed renderer
+and its full UI/localization from #3/#2 stay available through `ci_report.py`.
+`report --language en|ru` selects saved language metadata and the localized shell;
+`render --language en|ru` overrides only presentation. Raw names, evidence codes,
+calculation keys and seconds remain unchanged. The official research route from
+#5 remains shared; each JSON guidance entry retains its own verification status.
+
+## Installed workflow
+
+Use paths relative to the actual installed skill directory:
+
+```sh
+python scripts/report_cli.py collect --host gitlab.example.com --project group/service --timezone UTC --output <new-run>/jobs.json
+python scripts/report_cli.py report --snapshot <new-run>/jobs.json --output <new-run>/report.json
+python scripts/report_cli.py export --report <new-run>/report.json --scope overview --output <new-run>/overview.json
+python scripts/report_cli.py render --report <new-run>/report.json --language ru --output <new-run>/report.html
+```
+
+Only collection performs transport requests. A v1 source cannot be silently
+upgraded to this contract: recollect it, use explicit `report_cli.py report --legacy`
+or use the published `ci_report.py` reviewed workflow with its own evidence policy.
 
 ## Artifacts and validation
 
 | Artifact | Kind | Schema |
 |---|---|---|
-| Safe metadata and compact trace summaries | `gitlab_job_performance_source` | `jobs.schema.json` |
+| Safe metadata and compact trace summaries | `gitlab_job_performance_source` | `source-contract-v2.schema.json` |
 | Individual trace summary | parser `1.0.0` | `trace.schema.json` |
-| Canonical report | `gitlab_job_performance_report` | `report.schema.json` |
+| Canonical report | `gitlab_job_performance_report` | `report-contract-v2.schema.json` |
 | LLM selection | `gitlab_job_performance_compact` | `compact.schema.json` |
 
 Entry schemas reference `common.schema.json` using reusable Draft 2020-12
@@ -26,13 +48,14 @@ Nullable fields contain JSON null when unknown; omitted timing is not supported.
 relations, source counts and anchors, per-type retention, timestamps/HTTPS URLs,
 trace availability, cache/partial semantics, parent acyclicity/containment, timing
 origins and eligibility, window reference closure, source hashes, source equality,
-and recomputed sample aggregates/category unions/ranks. Run `ci_report.py validate
+and recomputed sample aggregates/category unions/ranks. Run `report_cli.py validate
 <artifact.json>` before consuming untrusted artifacts. `report`, `export` and
 `render` also validate their inputs and outputs; writes reject existing paths.
 
 ## Envelope and source provenance
 
-The report stores schema/calculation/skill versions `2.0.0`, parser `1.0.0`, and a
+The report stores schema/calculation versions `2.0.0`, parser `1.0.0`, the actual
+installed skill version read from `VERSION`, and a
 stable report kind. These versions are independent; the local prototype's version
 is unrelated. `report_id` hashes input provenance and policies, excluding generated
 presentation time and language. UTF-8 canonical serialization uses sorted keys,
@@ -215,9 +238,9 @@ must actually verify applicability; offline generation cannot claim it checked a
 ## LLM exports and offline parity
 
 ```bash
-python scripts/ci_report.py export --report report.json --scope overview --output overview.json
-python scripts/ci_report.py export --report report.json --job-type JOB_TYPE_ID --window-id WINDOW_ID --output window.json
-python scripts/ci_report.py export --report report.json --attempt-ids 123 124 --output attempts.json
+python scripts/report_cli.py export --report report.json --scope overview --output overview.json
+python scripts/report_cli.py export --report report.json --job-type JOB_TYPE_ID --window-id WINDOW_ID --output window.json
+python scripts/report_cli.py export --report report.json --attempt-ids 123 124 --output attempts.json
 ```
 
 Overview contains all overviews/materialized findings and safe timing metadata, omitting

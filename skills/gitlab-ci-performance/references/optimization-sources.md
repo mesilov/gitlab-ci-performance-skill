@@ -27,9 +27,9 @@ the route. Add tool-specific official sources only when the evidence requires th
 
 1. Identify the observed queue, execution, phase, or operation cost. Cite the
    snapshot, cohort/sample size, or supplied trace and its timing boundaries.
-   If evidence is insufficient, state what must be measured next. The v2 collector fetches bounded retained-job traces and exports allowlisted
-   evidence with coverage and origin; legacy 1.x metadata collection does not
-   fetch logs. Use measured evidence, not invented phase durations.
+   If evidence is insufficient, state what must be measured next. Source `collect` reads metadata only; `collect-details` reads bounded retained
+   traces and exports safe timing evidence. Use recorded phases/operations for
+   phase-level analysis rather than pretending job metadata contains it.
 2. Read the relevant current official pages and the sections supporting the
    proposed mechanism. A stored URL or remembered recommendation is not live
    verification. Follow official links to more specific guidance as needed.
