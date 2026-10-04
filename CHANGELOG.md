@@ -6,6 +6,12 @@ Changes awaiting release are recorded under Unreleased.
 
 ### Added
 
+- Official optimization documentation route in the skill, with measured-symptom
+  starting points for GitLab and Docker/BuildKit. Recommendations require current
+  source reads, version/configuration applicability, evidence, and a validation
+  plan; unavailable sources and uncertain causes remain explicit. Tracked in
+  [issue #5](https://github.com/mesilov/gitlab-ci-performance-skill/issues/5).
+- Installation/update guidance for retaining the versioned optimization reference.
 - Russian documentation in `README.ru.md`, with reciprocal English / Русский
   links at the top of both README files. `README.md` remains the default English
   documentation.
