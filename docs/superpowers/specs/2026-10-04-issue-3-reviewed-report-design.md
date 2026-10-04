@@ -1,6 +1,6 @@
 # Issue #3: reviewed report and versioned skill delivery
 
-Status: approved, implemented and released as v2.0.0. Published-asset installation/update verified; see [release evidence](../../releases/v2.0.0-verification.md).
+Status: approved, implemented and released as v2.0.1. Published-asset installation/update verified; see [release evidence](../../releases/v2.0.1-verification.md).
 Date: 2026-10-04. Target: skill release `v2.0.0`.
 Source of requirements: [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
 
