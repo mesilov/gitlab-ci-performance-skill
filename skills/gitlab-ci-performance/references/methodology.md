@@ -1,87 +1,110 @@
-# Methodology version 1.1.0
+# Methodology 2.0.1
 
-JSON Schema 2020-12; report schema_version/calculation_version 1.1.0; jobs 1.0.0. Sources:
-[Jobs API](https://docs.gitlab.com/api/jobs/),
-[Pipelines API](https://docs.gitlab.com/api/pipelines/),
-[glab api](https://docs.gitlab.com/cli/api/),
-[JSON Schema](https://json-schema.org/draft/2020-12).
+Source metadata remains schema 1.0.0. The reviewed report is schema/calculation
+2.0.1; bounded metadata/timings/parser remain 2.0.0. Historical
+1.0/1.1/2.0.0 report rendering and same-ref calculations remain available. See
+[methodology-v1.md](methodology-v1.md) for the original same-ref method.
 
-## History and filters
+## Retention, cohorts and coverage
 
-Collection preserves the available project Jobs API history, unique job IDs,
-and pipeline details. Keyset pagination is limited to 100 pages by default;
-reaching the limit causes an error rather than a successful but incomplete report.
-An anchor maximum ID excludes newer jobs that appear during collection. Statuses
-may change during collection: this is not an atomic transaction. Deleted jobs and
-bridge/trigger jobs cannot be recovered. There is no incremental cache in v1:
-a repeated GET run refreshes current statuses and creates a new snapshot.
+Source collection preserves the available Jobs API history and pipeline metadata
+with anchored keyset pagination. Deleted/bridge jobs cannot be recovered and API
+collection is not atomic. Detail collection selects newest 64 job IDs per
+(stage, name), across refs/outcomes, before individual metadata/trace GETs.
+Explicit job/stage filters apply before those requests. At most R metadata and R
+trace requests are made for R retained attempts; workers default 4, bounded 1–8.
+Requests do not silently remove unavailable attempts.
 
-Timing comparisons use only SUCCESS jobs within SUCCESS pipelines of the same
-ref. All attempts/statuses within a pipeline are preserved, including additional
-attempts of the same job. An additional attempt is not proof of an automatic retry
-or a flaky test. All snapshot statuses and the latest pipeline are shown separately.
-Job grouping: host/project/ref/stage/name.
+32/64 visible windows count attempts, default 32. Pages are newest-first groups
+of 32 within retained history (an older page may have fewer attempts); chart
+presentation is chronological. Display/retained/source counts and dates differ.
+Outcome counts on cards cover retained attempts. Source coverage and fresh/stale
+metadata and trace availability are visible separately. A rerun has a different
+job ID even inside one pipeline.
 
-Mode 1: the latest successful pipeline versus up to 10 previous successful
-pipelines. Mode 10: up to 10 latest pipelines versus up to 10 previous ones.
-With an external baseline, its latest successful pipelines are selected independently:
-intersecting IDs mark the comparison as overlap and prohibit a regression conclusion.
-Host/project and schema version must match. Windows are determined by pipeline IDs
-in descending order; the report preserves actual IDs, from/to, and N.
+The independent exploratory overview baseline uses up to 10 preceding complete
+successful jobs in successful pipelines, selecting the latest successful attempt
+per pipeline/type and excluding the current attempt's pipeline. Missing totals
+are excluded, counted, and not substituted from an older rerun in that pipeline.
+Baseline can extend beyond visible/retained history without fetching those logs.
+Export exact IDs, observation values and known/missing N. Report 2.0.1 also
+preserves `baseline_jobs`: compact source projections for every exported
+comparison sample, bounded to at most 20 per type and deduplicated by job ID.
+Validation ties all sample identities, types and values to those records, including
+observations older than retained history; retained projections must also match
+the refreshed job records. This adds no trace requests. Latest attempt may have
+any outcome; it requires an executed complete total for a numerical comparison.
 
-## Timings
+Auto-select the largest positive absolute total delta with baseline N≥3. Break
+ties by stage/name. Otherwise select the longest known latest total and make no
+increase claim. This attention rule is distinct from the legacy same-ref
+regression threshold (P 50 ≥20% and ≥30 s, baseline N≥3). Cross-ref observations
+cannot prove comparable regression or cause. Context/CI/runner changes need a
+separate investigation. An external same-ref baseline retains overlap checks.
 
-- execution = API job duration; queue = API queued_duration.
-- lifecycle = job finished_at - created_at, only when finish is known.
-- execution+queue does not necessarily equal lifecycle.
-- started_at-created_at-queued_duration is the remaining delay before start;
-  its causes (stages/needs/manual/resource locks/other) cannot be established from metadata.
-- Pipeline duration is the pipeline's own API field, not the sum of job durations.
-- The top stacked chart shows pipeline duration + pipeline queued_duration for
-  the latest 20 successful pipelines of the selected ref. Null is not plotted as a known
-  zero; a label indicates missing components. This is not the full lifecycle.
-  Pipeline queued_duration is the wait before the first start, not the sum of
-  individual job queues. These semantics were checked against the
-  [GitLab pipeline model](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/ci/pipeline.rb)
-  and [duration calculation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/pipeline/duration.rb);
-  GitLab versions may differ, and original API fields are preserved without substitution.
+## Timing and units
 
-Null is excluded from aggregates while retaining missing N. When no values are known,
-sum/P50/P95/max = null. Sum reflects job time consumed, not the developer's elapsed
-wait. P50/P95 use sorted values with linear interpolation at index `(n-1)*p`.
-Multiple attempts are counted separately; N attempt counts and pipeline counts may differ.
+Queue is API queued_duration; execution is API job duration. Known total requires
+both and actual execution. A skipped/manual/unstarted job is not a measured zero
+execution even if an API field is zero. Known zero on an executed job stays zero.
+Lifecycle is finished-created; remaining pre-start delay is started-created-queue,
+with unknown cause. Queue is not every delay since job creation. Whole-job
+execution is not a particular build command's duration. Original seconds remain
+in JSON, including fractional precision.
 
-## Regressions and uncertainty
+In each visible window, complete successful job totals supply total median and
+explicit sample IDs. Execution/queue medians have their own known/missing counts.
+P 50/P 95 interpolate at (n-1)*p. Null is excluded; no known values means null,
+not zero. Active/failed/canceled/not-run outcomes do not enter successful medians.
 
-By default, a P50 regression requires both growth >=20% and >=30 seconds,
-baseline known N>=3, and current known N>=1. Thresholds are controlled through the
-CLI and recorded in the report; this is an initial configurable policy, not an
-accepted SLO. With a zero baseline, percent=null; positive growth is checked against
-the absolute threshold. Improved uses a symmetric check, but the UI does not color
-improvements. P95 is shown for checking tails; policy v1 classifies P50.
+Largest complete displayed stack >300 s selects minutes; exactly 300 s uses seconds.
+This unit applies to selected charts, summaries, tooltips, history, attempt and
+all drill timings; overview cards show explicit units independently. A stack
+shows wait above execution; gray wait is independent of individual job outcome.
+The current pipeline's status does not color the job.
 
-With N=1, this is an observation of a specific pipeline, not an established trend.
-Sparse samples, new/missing jobs, and overlap remain explicit. Long queues show a
-symptom but do not prove insufficient CPU/RAM or a specific runner cause.
-Changes to pipeline source, job script/image/cache/runner may affect the comparison;
-causal attribution requires a separate investigation. Ref matches automatically;
-other contexts are preserved in the snapshot and available for analysis.
+Queue spike: newest displayed executed attempt wait >max(30 s,3× median previous
+successful known waits in that window), with at least 3 previous observations.
+Export the rule, sample IDs, N, threshold and values. This detects a symptom,
+not runner capacity or hardware causes.
 
-## Storage and viewing
+## Evidence and priorities
 
-`jobs.json` is a safe source projection; `report.json` contains derived metrics and
-differences with source hashes. Each run uses a new directory. JSON serialization
-for hashes: UTF-8, ensure_ascii=false, sort_keys=true, indent=2, newline.
-Reports are recalculated with a helper of the same calculation_version; a methodology
-change requires a version bump and recalculation of both snapshots. The HTML embeds
-JSON, CSS/JS/SVG, works offline, and contains no token/CDN/analytics.
-Open report.html directly through file://; no server is needed.
-Separate JSON files are needed for recalculation, not for loading the page.
-The skill does not create a schedule itself; a future scheduled run must operate
-independently of the CI queue being monitored and report stale collection.
+See [trace-analysis.md](trace-analysis.md) for precision and availability.
+Priorities use successful executed attempts only. For each category/run, union
+complete known noncached intervals; overlapping ranges count once. Exclude
+missing positions/durations and retain partial coverage counts per run. Parent
+BuildKit operations are costs; children explain them and are never added again.
+Runner script wall time is not ranked as an additional specific build category.
 
-## History across refs
+Rank up to 3 categories by median recorded elapsed cost, with measured/missing N.
+Choose representative run closest to the category median, deterministically;
+store its evidence IDs and duration separately from category median. A selected
+20 s step must not replace a 100 s category cost. Different categories can overlap,
+so their costs are not additive savings. Links/directions propose investigations;
+no optimizer, causal proof or promised saving is inferred from a duration.
 
-The optional `--release-refs` mode is documented in [release-history.md](release-history.md).
-Same-ref comparison remains the default; changes across selected releases are
-exploratory observations. Legacy 1.0.0 reports remain renderable.
+## Storage, validation and compatibility
+
+Immutable jobs.json, metadata.json and timings.json reference source hashes and
+project/timezone. Safe refreshed metadata is separate from parsed timing details.
+A report validates their identities/full retained scope before filtering. Strict
+schemas reject unknown fields, invalid versions, nonfinite/negative times and
+broken IDs. Rendering verifies window/statistic/priority calculations and
+baseline/latest values; JSON is escaped and source strings are rendered as text.
+
+Hashes use UTF-8 JSON, ensure_ascii=false, sort_keys=true, indent 2 and newline.
+Rendering from saved inputs/language is deterministic and makes no API requests.
+Standalone HTML works through file:// when moved without sidecars, with no CDN,
+server, analytics or token. JSON sidecars are needed for recalculation only.
+
+1.0/1.1 reports use their preserved renderer; `report --legacy` retains 1.1
+calculation. `--release-refs` selects the legacy exact-ref history route. Default
+report generation makes explicit 2.0.1 results from schema 1 sources without changing
+those sources. Unsupported calculation/parser versions require a compatible skill
+or explicit re-analysis into new outputs, never silent semantic replacement.
+
+Sources checked 2026-10-04: [Jobs API](https://docs.gitlab.com/api/jobs/),
+[job logs](https://docs.gitlab.com/ci/jobs/job_logs/),
+[BuildKit](https://docs.docker.com/build/buildkit/),
+[cache guidance](https://docs.docker.com/build/cache/optimize/).

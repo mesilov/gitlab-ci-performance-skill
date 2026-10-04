@@ -1,10 +1,34 @@
 # Changelog
 
-Changes awaiting release are recorded under Unreleased.
+Released changes are grouped by skill version.
 
-## Unreleased
+## 2.0.1 — 2026-10-04
 
-### Added
+- Validates every baseline observation against a compact source projection,
+  including samples older than the retained 64-attempt history. Rejects changed
+  pipeline/ref/type/timing values and incomplete source coverage before rendering.
+- Bumps report/calculation contracts to 2.0.1; metadata/timings/parser stay 2.0.0.
+  Existing 1.0/1.1/2.0.0 reports keep their rendering; stricter source checks require
+  explicit re-analysis into new outputs. No extra trace GETs are introduced.
+- Adds outside-history corruption and old-2.0 compatibility regressions.
+
+## 2.0.0 — 2026-10-04
+
+- Ships the reviewed selected-job report with 32/64 attempt windows, gray queue
+  above outcome-colored execution, adaptive units, keyboard navigation and en/ru.
+- Adds bounded fresh metadata and safe trace parsing for every retained attempt,
+  private explicit cache reuse, availability/partial states and source provenance.
+- Adds runner/command/BuildKit evidence, overlap-safe successful cost priorities
+  and independent representative evidence; excludes cached/failed/missing costs.
+- Introduces schema/calculation/parser 2.0 contracts, deterministic offline render
+  and preserved 1.0/1.1 compatibility, integrating history #1 and language #2.
+- Adds synthetic parser/transport/calculation/browser and clean installed-skill
+  update coverage; no private source data is distributed.
+
+Tracked in [issue #3](https://github.com/mesilov/gitlab-ci-performance-skill/issues/3).
+
+
+### Integrated prior changes
 
 - English and Russian HTML report generation through `render --language en|ru`,
   retaining English as the default, including the optional release-history panel.
@@ -39,7 +63,7 @@ Changes awaiting release are recorded under Unreleased.
 - CI smoke generation now renders both English and Russian reports. Offline
   browser checks cover both languages, including desktop/mobile layouts,
   accessibility labels, tooltips, time formatting, release history and preserved source data.
-- New report/calculation version 1.1.0 with a validated optional release-history
+- Preserved report/calculation version 1.1.0 with a validated optional release-history
   payload; jobs stay 1.0.0. The updated renderer accepts legacy 1.0.0 reports.
 
 - Translated the agent skill instructions, including the skill description, and
