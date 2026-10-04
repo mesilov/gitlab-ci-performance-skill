@@ -56,7 +56,7 @@ Files: `SKILL.md`, `references/methodology.md`, `references/contract-v2.md`, bot
 
 - [x] Document exact schemas, required/nullable values, parser/aggregation exclusions, bounded requests/cache, compact selectors and legacy path. Keep #2/#3/#5 ownership clear.
 - [x] Generate synthetic canonical/compact/HTML examples through maintained CLI. Run unit tests and copied-install smoke, verify size/secret boundaries and staged diff.
-- [ ] Open and attach a reviewable PR linking #4; verify remote CI and report checks.
+- [x] Open and attach a reviewable PR linking #4; verify remote CI and report checks. [Draft PR #14](https://github.com/mesilov/gitlab-ci-performance-skill/pull/14) is mergeable; Python 3.10/3.12 checks passed.
 - [ ] Merge and publish v2.0.0 after integration/release approval. The local release candidate has been packaged and smoke-tested from an extracted installation.
 
 ## Coverage checks

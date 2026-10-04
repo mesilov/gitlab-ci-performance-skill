@@ -58,3 +58,16 @@ Local reports/package/status artifacts remain in ignored `reports/`.
 The archive is a **local candidate**, not a published release. Publishing v2.0.0
 and merging follow the approval gate in the design. Remote PR/CI results are
 recorded at delivery; neither a local smoke nor this document closes that gate.
+
+## Remote delivery
+
+[Draft PR #14](https://github.com/mesilov/gitlab-ci-performance-skill/pull/14)
+was created and attached to the Codex chat. GitHub reports it as mergeable.
+For implementation commit `643a634109d989fe3ab10feb56dc7a272af4b1b9`, both
+[push CI](https://github.com/mesilov/gitlab-ci-performance-skill/actions/runs/37214110241)
+and [PR CI](https://github.com/mesilov/gitlab-ci-performance-skill/actions/runs/37214129444)
+passed on Python 3.10 and 3.12. The matrix includes the full unit suite, legacy
+validation/generation and localized rendering, bounded v2 demo generation,
+canonical/compact validation and Russian v2 generation/rendering.
+This delivery record changes documentation only; final head CI is checked before
+handoff. The issue remains open pending authorized integration and publication.
