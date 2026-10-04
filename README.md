@@ -13,6 +13,7 @@ Download the HTML and open it locally; no server or external assets are required
 
 ## What it does
 
+- Analyzes verified workflow chains and independent operations over 32/64 pipeline windows.
 - Separates job execution time from runner queue time.
 - Compares the latest successful pipeline, or a window of pipelines, against a baseline.
 - Highlights P50 timing regressions and exposes P95, sample sizes, retries, and job history.
@@ -39,7 +40,8 @@ Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Ask it to analyze a project URL or compare two saved snapshots. Follow
 your agent's project instructions and use an authorized GitLab account.
 
-The report UI, agent skill instructions, and methodology reference are in English.
+The job report UI, agent instructions, and methodology are in English.
+Workflow reports have English/Russian interface selection.
 Russian documentation is available in [README.ru.md](README.ru.md).
 
 ## Run the CLI directly
@@ -81,6 +83,55 @@ Try the synthetic sample without a GitLab account:
 
 ## Artifacts and interpretation
 
+![Synthetic workflow performance report](docs/workflow-report.png)
+
+Workflow mode is available in skill release **2.0.0**, alongside original v1
+job-only artifacts. Read the [workflow methodology and CLI examples](skills/gitlab-ci-performance/references/workflows.md)
+and use the installed [generic model](skills/gitlab-ci-performance/assets/workflow-model.json).
+The agent verifies resolved CI configuration, records explicit historical coverage
+and stamps it with `define-workflows`. `--workflow-window` defaults to 32 pipeline
+runs; `--workflow-window 64` requests 64. Every retained attempt in those pipelines
+stays in the selected job view.
+
+```bash
+# After creating verified workflows.json as documented in references/workflows.md:
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
+  --host gitlab.example.com --project group/project --workflow-window 64 \
+  --output reports/workflow-run/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/workflow-run/jobs.json --workflows workflows.json \
+  --output reports/workflow-run/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/workflow-run/report.json --output reports/workflow-run/report.html
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export-llm \
+  --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
+```
+
+Workflow schema/calculation 2.0.0 exports nullable elapsed/active/gap/queue values,
+coverage, membership, evidence and exact baseline sample IDs. Parallel time is an
+interval union. Latest attempts determine outcomes; all retained attempts contribute
+timing. Independent operations keep separate histories. Missing historical
+configuration is explicit; cross-pipeline chains are unsupported. Baselines need
+at least three preceding comparable complete successes, up to ten. Failed/partial
+measurements are excluded. Canonical JSON and compact LLM exports share seconds.
+HTML switches to minutes strictly above 300 seconds in the selected series/metric
+and offers English/Russian selection. v1 snapshots require recollection for workflows.
+
+Generate the offline synthetic workflow demo with unit-boundary fixtures:
+
+```bash
+.venv/bin/python examples/generate_workflow_demo.py --output-dir reports/workflow-demo
+```
+
+Additional contracts: [workflows](skills/gitlab-ci-performance/schemas/workflows.schema.json),
+[workflow-jobs](skills/gitlab-ci-performance/schemas/workflow-jobs.schema.json),
+[workflow-report](skills/gitlab-ci-performance/schemas/workflow-report.schema.json),
+[workflow-llm](skills/gitlab-ci-performance/schemas/workflow-llm.schema.json).
+A clean installed skill contains both modules, templates, schemas and the model;
+it does not depend on this repository's tests/examples.
+
+The following describes the original job-only mode:
+
 - [`jobs.schema.json`](skills/gitlab-ci-performance/schemas/jobs.schema.json): source projection of job attempts and pipeline metadata.
 - [`report.schema.json`](skills/gitlab-ci-performance/schemas/report.schema.json): derived metrics, comparison policy, cohorts, and input hashes.
 - `report.html`: self-contained report with embedded data. It also works if moved without the sidecar JSON files.
@@ -109,6 +160,12 @@ Generate another synthetic demo with `examples/generate_demo.py --output-dir
 reports/new-demo` using the same Python environment and a new output path. `tests/browser_check.cjs` is an optional Playwright/Chrome
 check of local-file viewing with the network disabled. Install Playwright in a
 development environment and pass a file URL and screenshot output directory.
+
+`tests/workflow_browser_check.cjs` checks workflow parity, windows, selection,
+attempts, language, mobile layout and the 300-second boundary with offline Playwright.
+Pass the workflow demo file URL and a QA output directory.
+`CI_REPORT_BROWSER_CHANNEL=chromium` selects bundled Chromium; Chrome is the default.
+CI also builds/extracts the 2.0.0 skill package and runs its CLI from a clean install.
 
 ## Changelog
 

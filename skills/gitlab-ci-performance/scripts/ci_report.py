@@ -47,6 +47,9 @@ def load(path):
 
 
 def validate(value, kind):
+    if kind in {"workflows", "workflow-jobs", "workflow-report", "workflow-llm"}:
+        from workflow_report import validate_artifact
+        return validate_artifact(value, kind)
     try:
         from jsonschema import Draft202012Validator, FormatChecker
     except ImportError:
@@ -320,9 +323,12 @@ def build_report(snapshot, baseline=None, windows=(1, 10), baseline_window=10, p
 
 
 def render(report, output):
-    validate(report, "report")
+    if report.get("kind") not in {"report", "workflow-report"}:
+        raise ValueError("Render requires a calculated report artifact")
+    validate(report, report["kind"])
     payload = json.dumps(report, ensure_ascii=False, allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    template = (ROOT / "assets" / "report.html").read_text()
+    template_name = "workflow-report.html" if report["kind"] == "workflow-report" else "report.html"
+    template = (ROOT / "assets" / template_name).read_text()
     html = template.replace("__REPORT_DATA__", payload)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -332,6 +338,21 @@ def render(report, output):
         f.write(html)
 
 
+def workflow_build(snapshot, definitions):
+    from workflow_report import build_report as build
+    return build(snapshot, definitions)
+
+
+def workflow_collect(host, project, display_timezone="UTC", window=32, max_pages=10):
+    from workflow_report import collect as collect_workflows
+    return collect_workflows(host, project, display_timezone, window, max_pages, api=request)
+
+
+def workflow_export(report):
+    from workflow_report import compact_export
+    return compact_export(report)
+
+
 def main():
     parser = argparse.ArgumentParser(description="GitLab CI: snapshots → comparison JSON → offline HTML")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -339,7 +360,9 @@ def main():
     collect_p.add_argument("--host", required=True)
     collect_p.add_argument("--project", required=True)
     collect_p.add_argument("--timezone", default="UTC")
-    collect_p.add_argument("--max-pages", type=int, default=100)
+    collect_p.add_argument("--max-pages", type=int)
+    collect_p.add_argument("--workflow-window", type=int, nargs="?", const=32, choices=[32, 64],
+                           help="Use workflow mode; defaults to 32 pipeline runs when the flag has no value")
     collect_p.add_argument("--output", type=Path, required=True)
     report_p = commands.add_parser("report")
     report_p.add_argument("--snapshot", type=Path, required=True)
@@ -351,16 +374,40 @@ def main():
     report_p.add_argument("--min-baseline", type=int, default=POLICY["minimum_baseline_observations"])
     report_p.add_argument("--min-current", type=int, default=POLICY["minimum_current_observations"])
     report_p.add_argument("--catalog", type=Path)
+    report_p.add_argument("--workflows", type=Path)
     report_p.add_argument("--output", type=Path, required=True)
     render_p = commands.add_parser("render")
     render_p.add_argument("--report", type=Path, required=True)
     render_p.add_argument("--output", type=Path, required=True)
     validate_p = commands.add_parser("validate")
     validate_p.add_argument("path", type=Path)
+    definitions_p = commands.add_parser("define-workflows", help="Stamp an agent-verified scenario model with resolved config evidence")
+    definitions_p.add_argument("--model", type=Path, required=True)
+    definitions_p.add_argument("--config", type=Path, required=True)
+    definitions_p.add_argument("--evidence-id", required=True)
+    definitions_p.add_argument("--source-url", required=True)
+    definitions_p.add_argument("--commit", required=True)
+    definitions_p.add_argument("--ref", required=True)
+    definitions_p.add_argument("--verified-at", required=True)
+    definitions_p.add_argument("--pipeline-ids", nargs="*", type=int, default=[])
+    definitions_p.add_argument("--pipeline-shas", nargs="*", default=[])
+    definitions_p.add_argument("--output", type=Path, required=True)
+    export_p = commands.add_parser("export-llm")
+    export_p.add_argument("--report", type=Path, required=True)
+    export_p.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "collect":
-        save(args.output, collect(args.host, args.project, args.timezone, args.max_pages), "jobs")
+        if args.workflow_window:
+            result = workflow_collect(args.host, args.project, args.timezone, args.workflow_window, args.max_pages if args.max_pages is not None else 10)
+            save(args.output, result, "workflow-jobs")
+        else:
+            save(args.output, collect(args.host, args.project, args.timezone, args.max_pages if args.max_pages is not None else 100), "jobs")
     elif args.command == "report":
+        if args.workflows:
+            if args.baseline or args.catalog:
+                raise ValueError("Workflow mode uses its definitions and retained pipeline window, without --baseline/--catalog")
+            save(args.output, workflow_build(load(args.snapshot), load(args.workflows)), "workflow-report")
+            return
         policy = {"relative_growth_percent": args.growth_percent, "absolute_growth_seconds": args.growth_seconds,
                   "minimum_baseline_observations": args.min_baseline, "minimum_current_observations": args.min_current}
         result = build_report(load(args.snapshot), load(args.baseline) if args.baseline else None,
@@ -368,9 +415,16 @@ def main():
         save(args.output, result, "report")
     elif args.command == "render":
         render(load(args.report), args.output)
+    elif args.command == "define-workflows":
+        from workflow_report import stamp_definitions
+        model = stamp_definitions(load(args.model), args.config, args.evidence_id, args.source_url,
+                                  args.commit, args.ref, args.verified_at, args.pipeline_ids, args.pipeline_shas)
+        save(args.output, model, "workflows")
+    elif args.command == "export-llm":
+        save(args.output, workflow_export(load(args.report)), "workflow-llm")
     else:
         data = load(args.path)
-        if data.get("kind") not in {"jobs", "report"}:
+        if data.get("kind") not in {"jobs", "report", "workflows", "workflow-jobs", "workflow-report", "workflow-llm"}:
             raise ValueError("Unknown artifact kind")
         validate(data, data["kind"])
         print("JSON Schema и связи IDs: OK")

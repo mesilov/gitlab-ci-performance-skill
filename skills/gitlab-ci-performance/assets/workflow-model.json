@@ -1,0 +1,126 @@
+{
+  "cross_pipeline_policy": "unsupported",
+  "evidence": [],
+  "project": {
+    "host": "gitlab.example.com",
+    "path": "example/service"
+  },
+  "unknowns": [
+    "Synthetic example; earliest four pipelines deliberately lack verified configuration"
+  ],
+  "workflows": [
+    {
+      "id": "delivery",
+      "purpose": "Build and verify a package",
+      "type": "chain",
+      "versions": [
+        {
+          "completion": "all_required_terminal",
+          "evidence_ids": [
+            "resolved"
+          ],
+          "jobs": [
+            {
+              "id": "compile",
+              "manual": false,
+              "name": "compile",
+              "needs": [],
+              "parallel_group": null,
+              "required": true,
+              "stage": "build"
+            },
+            {
+              "id": "test",
+              "manual": false,
+              "name": "test",
+              "needs": [
+                "compile"
+              ],
+              "parallel_group": "checks",
+              "required": true,
+              "stage": "test"
+            },
+            {
+              "id": "integration",
+              "manual": false,
+              "name": "integration",
+              "needs": [
+                "compile"
+              ],
+              "parallel_group": "checks",
+              "required": true,
+              "stage": "test"
+            },
+            {
+              "id": "publish",
+              "manual": true,
+              "name": "publish",
+              "needs": [
+                "test",
+                "integration"
+              ],
+              "parallel_group": null,
+              "required": false,
+              "stage": "publish"
+            }
+          ],
+          "selection": {
+            "refs": [
+              "main"
+            ],
+            "sources": [
+              "push"
+            ]
+          },
+          "success": "required_success",
+          "unknown_membership": [],
+          "version": "1"
+        }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "purpose": "Independent maintenance tools",
+      "type": "independent",
+      "versions": [
+        {
+          "completion": "all_required_terminal",
+          "evidence_ids": [
+            "resolved"
+          ],
+          "jobs": [
+            {
+              "id": "lint",
+              "manual": true,
+              "name": "lint",
+              "needs": [],
+              "parallel_group": null,
+              "required": true,
+              "stage": "tools"
+            },
+            {
+              "id": "audit",
+              "manual": true,
+              "name": "audit",
+              "needs": [],
+              "parallel_group": null,
+              "required": true,
+              "stage": "tools"
+            }
+          ],
+          "selection": {
+            "refs": [
+              "main"
+            ],
+            "sources": [
+              "push"
+            ]
+          },
+          "success": "required_success",
+          "unknown_membership": [],
+          "version": "1"
+        }
+      ]
+    }
+  ]
+}

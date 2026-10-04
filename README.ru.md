@@ -13,6 +13,7 @@
 
 ## Возможности
 
+- Анализирует проверенные цепочки workflow и независимые операции в окнах 32/64 pipeline.
 - Отделяет время выполнения джоб от ожидания в очереди раннера.
 - Сравнивает последний успешный pipeline или окно pipelines с базовой выборкой.
 - Выделяет ухудшение P50 и показывает P95, размеры выборок, повторные попытки и историю джоб.
@@ -40,7 +41,8 @@ Code. Попросите проанализировать URL проекта и�
 Следуйте инструкциям проекта для агента и используйте учётную запись с разрешённым
 доступом к GitLab.
 
-Интерфейс отчёта, инструкции скилла для агента и методика написаны на английском.
+Job-only интерфейс, инструкции агента и методика написаны на английском.
+Workflow-отчёт позволяет выбрать русский или английский интерфейс.
 Английская документация доступна в [README.md](README.md).
 
 ## Запуск CLI напрямую
@@ -81,6 +83,56 @@ glab auth login --hostname gitlab.example.com
 ```
 
 ## Артефакты и интерпретация
+
+![Синтетический workflow-отчёт](docs/workflow-report.png)
+
+В версии скилла **2.0.0** добавлен workflow-режим с сохранением исходных артефактов
+v1. Правила и CLI — в [методике workflow](skills/gitlab-ci-performance/references/workflows.md),
+структура модели — в [установленном примере](skills/gitlab-ci-performance/assets/workflow-model.json).
+Агент проверяет разрешённую CI-конфигурацию, явно указывает историческое покрытие
+и сохраняет подтверждения через `define-workflows`. `--workflow-window` выбирает
+32 pipeline по умолчанию; `--workflow-window 64` выбирает 64. Все сохранённые
+попытки jobs этих pipeline входят в то же выбранное окно.
+
+```bash
+# Сначала подготовьте проверенный workflows.json по references/workflows.md:
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
+  --host gitlab.example.com --project group/project --workflow-window 64 \
+  --output reports/workflow-run/jobs.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py report \
+  --snapshot reports/workflow-run/jobs.json --workflows workflows.json \
+  --output reports/workflow-run/report.json
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py render \
+  --report reports/workflow-run/report.json --output reports/workflow-run/report.html
+.venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py export-llm \
+  --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
+```
+
+Схема/расчёт workflow 2.0.0 экспортируют nullable elapsed/active/gap/queue,
+покрытие, членство попыток, подтверждения определения и точные ID baseline.
+Параллельное время считается объединением интервалов. Последняя попытка задаёт
+исход, а все сохранённые попытки входят во время. Независимые операции имеют
+отдельные истории. Отсутствие исторической конфигурации явно отмечается;
+цепочки между pipeline не поддерживаются. Baseline требует минимум три
+предшествующих сопоставимых успешных полных измерения, максимум десять.
+Ошибочные/частичные измерения исключены. JSON и LLM-export используют одинаковые
+секунды; HTML переходит к минутам строго выше 300 секунд в выбранной серии/метрике
+и позволяет выбрать русский/английский интерфейс. Для v1-снимков нужен новый сбор.
+
+Автономный синтетический пример, включая фикстуры границы единиц:
+
+```bash
+.venv/bin/python examples/generate_workflow_demo.py --output-dir reports/workflow-demo
+```
+
+Новые контракты: [workflows](skills/gitlab-ci-performance/schemas/workflows.schema.json),
+[workflow-jobs](skills/gitlab-ci-performance/schemas/workflow-jobs.schema.json),
+[workflow-report](skills/gitlab-ci-performance/schemas/workflow-report.schema.json),
+[workflow-llm](skills/gitlab-ci-performance/schemas/workflow-llm.schema.json).
+Установленная копия содержит оба модуля, шаблоны, схемы и модель; папки tests/examples
+исходного репозитория ей не нужны.
+
+Следующая интерпретация относится к исходному job-only режиму:
 
 - [`jobs.schema.json`](skills/gitlab-ci-performance/schemas/jobs.schema.json): исходная проекция попыток выполнения джоб и метаданных pipelines.
 - [`report.schema.json`](skills/gitlab-ci-performance/schemas/report.schema.json): производные метрики, политика сравнения, выборки и хеши входных данных.
