@@ -1,0 +1,15 @@
+{
+  "offline": true,
+  "checks": [
+    "synthetic pipeline stack",
+    "execution and queue regressions",
+    "keyboard selection",
+    "job history",
+    "sparse baseline",
+    "mobile overflow",
+    "dark mode",
+    "sidecar JSON",
+    "standalone HTML",
+    "no network or JS errors"
+  ]
+}

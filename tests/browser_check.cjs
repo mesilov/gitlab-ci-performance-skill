@@ -1,0 +1,48 @@
+const {chromium}=require(process.env.CI_REPORT_PLAYWRIGHT || 'playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {fileURLToPath,pathToFileURL}=require('node:url');
+const url=process.argv[2],output=process.argv[3];
+if(!url||!output)throw Error('Usage: browser_check.cjs FILE_URL OUTPUT_DIRECTORY');
+(async()=>{
+  fs.mkdirSync(output,{recursive:true});
+  const browser=await chromium.launch({channel:'chrome',headless:true});
+  try{
+    const context=await browser.newContext({viewport:{width:1280,height:1000},offline:true});
+    const page=await context.newPage(),errors=[],requests=[];
+    page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
+    await page.goto(url);await page.locator('#job-rows tr').first().waitFor();
+    assert.equal(new URL(url).protocol,'file:');
+    assert.equal(await page.locator('#job-rows tr').count(),5);
+    assert.equal(await page.locator('.driver').count(),2);
+    assert.equal(await page.locator('#ci-history .pipeline-bar').count(),8);
+    const data=JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(url)),'report.json'),'utf8'));
+    const pipeline=data.pipelines.find(p=>p.id===108),stack=page.locator('.pipeline-bar[data-id="108"]');
+    const run=stack.locator('[data-component="execution"]'),queue=stack.locator('[data-component="queue"]');
+    assert.equal(Number(await run.getAttribute('data-seconds')),pipeline.duration_seconds);
+    assert.equal(Number(await queue.getAttribute('data-seconds')),pipeline.queued_seconds);
+    assert.ok(Math.abs(Number(await run.getAttribute('height'))/Number(await queue.getAttribute('height'))-pipeline.duration_seconds/pipeline.queued_seconds)<.0001);
+    await page.screenshot({path:path.join(output,'report.png'),fullPage:true});
+    await page.locator('.pipeline-bar[data-id="107"]').focus();await page.keyboard.press('Enter');
+    assert.match(await page.locator('#ci-selected').innerText(),/#107/);
+    await page.getByRole('button',{name:'unit_tests',exact:true}).click();
+    assert.equal(await page.locator('#attempt-rows tr').count(),8);
+    assert.equal(await page.locator('#history svg').count(),1);
+    await page.getByRole('button',{name:'Закрыть'}).click();
+    await page.locator('#window-select').selectOption('10');
+    assert.match(await page.locator('#situation').innerText(),/недостаточно/);
+    await page.locator('#window-select').selectOption('1');
+    await page.setViewportSize({width:360,height:800});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.getByRole('button',{name:'unit_tests',exact:true}).click();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.emulateMedia({colorScheme:'dark'});
+    for(const href of await page.locator('footer a').evaluateAll(a=>a.map(x=>x.href)))assert.ok(['jobs','report'].includes(JSON.parse(fs.readFileSync(fileURLToPath(href),'utf8')).kind));
+    const detached=path.join(output,'standalone.html');fs.copyFileSync(fileURLToPath(url),detached);
+    await page.goto(pathToFileURL(detached).href);assert.equal(await page.locator('#job-rows tr').count(),5);fs.unlinkSync(detached);
+    assert.deepEqual(errors,[]);assert.equal(requests.some(u=>!u.startsWith('file:')),false);
+    const result={offline:true,checks:['synthetic pipeline stack','execution and queue regressions','keyboard selection','job history','sparse baseline','mobile overflow','dark mode','sidecar JSON','standalone HTML','no network or JS errors']};
+    fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+  }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exit(1)});

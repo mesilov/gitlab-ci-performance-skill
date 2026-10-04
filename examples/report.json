@@ -1,0 +1,1936 @@
+{
+  "calculation_version": "1.0.0",
+  "generated_at": "2026-10-04T05:38:17.353857+00:00",
+  "inputs": {
+    "baseline_collected_at": null,
+    "baseline_sha256": null,
+    "comparison_mode": "historical_windows",
+    "snapshot_collected_at": "2026-09-09T10:00:00+00:00",
+    "snapshot_sha256": "ce1fd83fb20ebe12c9784e453cfb3cfb5b8f15af0b47f8aec592dfc787c291ed"
+  },
+  "jobs": [
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 47,
+      "failure_reason": null,
+      "finished_at": "2026-09-08T10:05:57+00:00",
+      "id": 1084,
+      "name": "security_scan",
+      "pipeline_id": 108,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-08T10:05:10+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1084"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 324,
+      "failure_reason": null,
+      "finished_at": "2026-09-08T10:10:41+00:00",
+      "id": 1083,
+      "name": "integration_tests",
+      "pipeline_id": 108,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-08T10:05:17+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1083"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 32,
+      "failure_reason": null,
+      "finished_at": "2026-09-08T10:05:41+00:00",
+      "id": 1082,
+      "name": "lint",
+      "pipeline_id": 108,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-08T10:05:09+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1082"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 900,
+      "failure_reason": null,
+      "finished_at": "2026-09-08T10:20:19+00:00",
+      "id": 1081,
+      "name": "unit_tests",
+      "pipeline_id": 108,
+      "queued_seconds": 12,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-08T10:05:19+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1081"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 127,
+      "failure_reason": null,
+      "finished_at": "2026-09-08T10:05:07+00:00",
+      "id": 1080,
+      "name": "build",
+      "pipeline_id": 108,
+      "queued_seconds": 180,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-08T10:03:00+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1080"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 46,
+      "failure_reason": null,
+      "finished_at": "2026-09-07T10:03:06+00:00",
+      "id": 1074,
+      "name": "security_scan",
+      "pipeline_id": 107,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-07T10:02:20+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1074"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 322,
+      "failure_reason": null,
+      "finished_at": "2026-09-07T10:07:49+00:00",
+      "id": 1073,
+      "name": "integration_tests",
+      "pipeline_id": 107,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-07T10:02:27+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1073"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 31,
+      "failure_reason": null,
+      "finished_at": "2026-09-07T10:02:50+00:00",
+      "id": 1072,
+      "name": "lint",
+      "pipeline_id": 107,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-07T10:02:19+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1072"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 228,
+      "failure_reason": null,
+      "finished_at": "2026-09-07T10:06:16+00:00",
+      "id": 1071,
+      "name": "unit_tests",
+      "pipeline_id": 107,
+      "queued_seconds": 11,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-07T10:02:28+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1071"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 126,
+      "failure_reason": null,
+      "finished_at": "2026-09-07T10:02:17+00:00",
+      "id": 1070,
+      "name": "build",
+      "pipeline_id": 107,
+      "queued_seconds": 11,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-07T10:00:11+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1070"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 45,
+      "failure_reason": null,
+      "finished_at": "2026-09-06T10:03:03+00:00",
+      "id": 1064,
+      "name": "security_scan",
+      "pipeline_id": 106,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-06T10:02:18+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1064"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 320,
+      "failure_reason": null,
+      "finished_at": "2026-09-06T10:07:45+00:00",
+      "id": 1063,
+      "name": "integration_tests",
+      "pipeline_id": 106,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-06T10:02:25+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1063"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 30,
+      "failure_reason": null,
+      "finished_at": "2026-09-06T10:02:47+00:00",
+      "id": 1062,
+      "name": "lint",
+      "pipeline_id": 106,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-06T10:02:17+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1062"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 225,
+      "failure_reason": null,
+      "finished_at": "2026-09-06T10:06:10+00:00",
+      "id": 1061,
+      "name": "unit_tests",
+      "pipeline_id": 106,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-06T10:02:25+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1061"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 125,
+      "failure_reason": null,
+      "finished_at": "2026-09-06T10:02:15+00:00",
+      "id": 1060,
+      "name": "build",
+      "pipeline_id": 106,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-06T10:00:10+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1060"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 44,
+      "failure_reason": null,
+      "finished_at": "2026-09-05T10:03:00+00:00",
+      "id": 1054,
+      "name": "security_scan",
+      "pipeline_id": 105,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-05T10:02:16+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1054"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 318,
+      "failure_reason": null,
+      "finished_at": "2026-09-05T10:07:41+00:00",
+      "id": 1053,
+      "name": "integration_tests",
+      "pipeline_id": 105,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-05T10:02:23+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1053"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 29,
+      "failure_reason": null,
+      "finished_at": "2026-09-05T10:02:44+00:00",
+      "id": 1052,
+      "name": "lint",
+      "pipeline_id": 105,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-05T10:02:15+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1052"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 222,
+      "failure_reason": null,
+      "finished_at": "2026-09-05T10:06:04+00:00",
+      "id": 1051,
+      "name": "unit_tests",
+      "pipeline_id": 105,
+      "queued_seconds": 9,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-05T10:02:22+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1051"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 124,
+      "failure_reason": null,
+      "finished_at": "2026-09-05T10:02:13+00:00",
+      "id": 1050,
+      "name": "build",
+      "pipeline_id": 105,
+      "queued_seconds": 9,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-05T10:00:09+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1050"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 43,
+      "failure_reason": null,
+      "finished_at": "2026-09-04T10:02:57+00:00",
+      "id": 1044,
+      "name": "security_scan",
+      "pipeline_id": 104,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-04T10:02:14+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1044"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 316,
+      "failure_reason": null,
+      "finished_at": "2026-09-04T10:07:37+00:00",
+      "id": 1043,
+      "name": "integration_tests",
+      "pipeline_id": 104,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-04T10:02:21+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1043"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 28,
+      "failure_reason": null,
+      "finished_at": "2026-09-04T10:02:41+00:00",
+      "id": 1042,
+      "name": "lint",
+      "pipeline_id": 104,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-04T10:02:13+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1042"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 219,
+      "failure_reason": null,
+      "finished_at": "2026-09-04T10:05:58+00:00",
+      "id": 1041,
+      "name": "unit_tests",
+      "pipeline_id": 104,
+      "queued_seconds": 8,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-04T10:02:19+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1041"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 123,
+      "failure_reason": null,
+      "finished_at": "2026-09-04T10:02:11+00:00",
+      "id": 1040,
+      "name": "build",
+      "pipeline_id": 104,
+      "queued_seconds": 8,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-04T10:00:08+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1040"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 42,
+      "failure_reason": null,
+      "finished_at": "2026-09-03T10:02:54+00:00",
+      "id": 1034,
+      "name": "security_scan",
+      "pipeline_id": 103,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-03T10:02:12+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1034"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 314,
+      "failure_reason": null,
+      "finished_at": "2026-09-03T10:07:33+00:00",
+      "id": 1033,
+      "name": "integration_tests",
+      "pipeline_id": 103,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-03T10:02:19+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1033"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 27,
+      "failure_reason": null,
+      "finished_at": "2026-09-03T10:02:38+00:00",
+      "id": 1032,
+      "name": "lint",
+      "pipeline_id": 103,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-03T10:02:11+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1032"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 216,
+      "failure_reason": null,
+      "finished_at": "2026-09-03T10:05:52+00:00",
+      "id": 1031,
+      "name": "unit_tests",
+      "pipeline_id": 103,
+      "queued_seconds": 7,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-03T10:02:16+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1031"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 122,
+      "failure_reason": null,
+      "finished_at": "2026-09-03T10:02:09+00:00",
+      "id": 1030,
+      "name": "build",
+      "pipeline_id": 103,
+      "queued_seconds": 7,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-03T10:00:07+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1030"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 41,
+      "failure_reason": null,
+      "finished_at": "2026-09-02T10:02:51+00:00",
+      "id": 1024,
+      "name": "security_scan",
+      "pipeline_id": 102,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-02T10:02:10+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1024"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 312,
+      "failure_reason": null,
+      "finished_at": "2026-09-02T10:07:29+00:00",
+      "id": 1023,
+      "name": "integration_tests",
+      "pipeline_id": 102,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-02T10:02:17+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1023"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 26,
+      "failure_reason": null,
+      "finished_at": "2026-09-02T10:02:35+00:00",
+      "id": 1022,
+      "name": "lint",
+      "pipeline_id": 102,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-02T10:02:09+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1022"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 213,
+      "failure_reason": null,
+      "finished_at": "2026-09-02T10:05:46+00:00",
+      "id": 1021,
+      "name": "unit_tests",
+      "pipeline_id": 102,
+      "queued_seconds": 6,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-02T10:02:13+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1021"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 121,
+      "failure_reason": null,
+      "finished_at": "2026-09-02T10:02:07+00:00",
+      "id": 1020,
+      "name": "build",
+      "pipeline_id": 102,
+      "queued_seconds": 6,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-02T10:00:06+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1020"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 40,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T10:02:48+00:00",
+      "id": 1014,
+      "name": "security_scan",
+      "pipeline_id": 101,
+      "queued_seconds": 3,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-01T10:02:08+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1014"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 310,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T10:07:25+00:00",
+      "id": 1013,
+      "name": "integration_tests",
+      "pipeline_id": 101,
+      "queued_seconds": 10,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-01T10:02:15+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1013"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 25,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T10:02:32+00:00",
+      "id": 1012,
+      "name": "lint",
+      "pipeline_id": 101,
+      "queued_seconds": 2,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-01T10:02:07+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1012"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 210,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T10:05:40+00:00",
+      "id": 1011,
+      "name": "unit_tests",
+      "pipeline_id": 101,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "test",
+      "started_at": "2026-09-01T10:02:10+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1011"
+    },
+    {
+      "allow_failure": false,
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 120,
+      "failure_reason": null,
+      "finished_at": "2026-09-01T10:02:05+00:00",
+      "id": 1010,
+      "name": "build",
+      "pipeline_id": 101,
+      "queued_seconds": 5,
+      "ref": "main",
+      "runner": {
+        "description": "demo-runner",
+        "id": 1
+      },
+      "stage": "build",
+      "started_at": "2026-09-01T10:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/jobs/1010"
+    }
+  ],
+  "kind": "report",
+  "method": {
+    "group_key": "project+ref+stage+job_name",
+    "percentile": "linear-interpolation-(n-1)*p",
+    "policy": {
+      "absolute_growth_seconds": 30.0,
+      "minimum_baseline_observations": 3,
+      "minimum_current_observations": 1,
+      "relative_growth_percent": 20.0
+    },
+    "timing_job_status": "success",
+    "timing_pipeline_status": "success"
+  },
+  "pipelines": [
+    {
+      "created_at": "2026-09-08T10:00:00+00:00",
+      "duration_seconds": 1037.0,
+      "finished_at": "2026-09-08T10:20:19+00:00",
+      "id": 108,
+      "queued_seconds": 180,
+      "ref": "main",
+      "sha": "000000000000000000000000000000000000006c",
+      "source": "push",
+      "started_at": "2026-09-08T10:03:00+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/108"
+    },
+    {
+      "created_at": "2026-09-07T10:00:00+00:00",
+      "duration_seconds": 456.0,
+      "finished_at": "2026-09-07T10:07:49+00:00",
+      "id": 107,
+      "queued_seconds": 11,
+      "ref": "main",
+      "sha": "000000000000000000000000000000000000006b",
+      "source": "push",
+      "started_at": "2026-09-07T10:00:11+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/107"
+    },
+    {
+      "created_at": "2026-09-06T10:00:00+00:00",
+      "duration_seconds": 453.0,
+      "finished_at": "2026-09-06T10:07:45+00:00",
+      "id": 106,
+      "queued_seconds": 10,
+      "ref": "main",
+      "sha": "000000000000000000000000000000000000006a",
+      "source": "push",
+      "started_at": "2026-09-06T10:00:10+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/106"
+    },
+    {
+      "created_at": "2026-09-05T10:00:00+00:00",
+      "duration_seconds": 450.0,
+      "finished_at": "2026-09-05T10:07:41+00:00",
+      "id": 105,
+      "queued_seconds": 9,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000069",
+      "source": "push",
+      "started_at": "2026-09-05T10:00:09+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/105"
+    },
+    {
+      "created_at": "2026-09-04T10:00:00+00:00",
+      "duration_seconds": 447.0,
+      "finished_at": "2026-09-04T10:07:37+00:00",
+      "id": 104,
+      "queued_seconds": 8,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000068",
+      "source": "push",
+      "started_at": "2026-09-04T10:00:08+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/104"
+    },
+    {
+      "created_at": "2026-09-03T10:00:00+00:00",
+      "duration_seconds": 444.0,
+      "finished_at": "2026-09-03T10:07:33+00:00",
+      "id": 103,
+      "queued_seconds": 7,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000067",
+      "source": "push",
+      "started_at": "2026-09-03T10:00:07+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/103"
+    },
+    {
+      "created_at": "2026-09-02T10:00:00+00:00",
+      "duration_seconds": 441.0,
+      "finished_at": "2026-09-02T10:07:29+00:00",
+      "id": 102,
+      "queued_seconds": 6,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000066",
+      "source": "push",
+      "started_at": "2026-09-02T10:00:06+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/102"
+    },
+    {
+      "created_at": "2026-09-01T10:00:00+00:00",
+      "duration_seconds": 438.0,
+      "finished_at": "2026-09-01T10:07:25+00:00",
+      "id": 101,
+      "queued_seconds": 5,
+      "ref": "main",
+      "sha": "0000000000000000000000000000000000000065",
+      "source": "push",
+      "started_at": "2026-09-01T10:00:05+00:00",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/101"
+    }
+  ],
+  "project": {
+    "default_branch": "main",
+    "host": "gitlab.example.com",
+    "id": 42,
+    "path": "example/demo-service",
+    "web_url": "https://gitlab.example.com/example/demo-service"
+  },
+  "schema_version": "1.0.0",
+  "snapshot_summary": {
+    "active_attempts": 0,
+    "attempts": 40,
+    "pipelines": 8,
+    "status_counts": {
+      "success": 40
+    }
+  },
+  "timezone": "UTC",
+  "views": [
+    {
+      "baseline_period": {
+        "attempts": 35,
+        "from": "2026-09-01T10:00:00+00:00",
+        "pipeline_ids": [
+          107,
+          106,
+          105,
+          104,
+          103,
+          102,
+          101
+        ],
+        "to": "2026-09-07T10:00:00+00:00"
+      },
+      "baseline_window": 10,
+      "current_period": {
+        "attempts": 5,
+        "from": "2026-09-08T10:00:00+00:00",
+        "pipeline_ids": [
+          108
+        ],
+        "to": "2026-09-08T10:00:00+00:00"
+      },
+      "groups": [
+        {
+          "baseline": {
+            "attempts": 7,
+            "execution": {
+              "known": 7,
+              "max_seconds": 126,
+              "missing": 0,
+              "p50_seconds": 123.0,
+              "p95_seconds": 125.7,
+              "sum_seconds": 861
+            },
+            "lifecycle": {
+              "known": 7,
+              "max_seconds": 137.0,
+              "missing": 0,
+              "p50_seconds": 131.0,
+              "p95_seconds": 136.4,
+              "sum_seconds": 917.0
+            },
+            "queue": {
+              "known": 7,
+              "max_seconds": 11,
+              "missing": 0,
+              "p50_seconds": 8.0,
+              "p95_seconds": 10.7,
+              "sum_seconds": 56
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 7
+            },
+            "successful_attempts": 7
+          },
+          "current": {
+            "attempts": 1,
+            "execution": {
+              "known": 1,
+              "max_seconds": 127,
+              "missing": 0,
+              "p50_seconds": 127.0,
+              "p95_seconds": 127.0,
+              "sum_seconds": 127
+            },
+            "lifecycle": {
+              "known": 1,
+              "max_seconds": 307.0,
+              "missing": 0,
+              "p50_seconds": 307.0,
+              "p95_seconds": 307.0,
+              "sum_seconds": 307.0
+            },
+            "queue": {
+              "known": 1,
+              "max_seconds": 180,
+              "missing": 0,
+              "p50_seconds": 180.0,
+              "p95_seconds": 180.0,
+              "sum_seconds": 180
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 1
+            },
+            "successful_attempts": 1
+          },
+          "drivers": [
+            "queue"
+          ],
+          "execution_change": {
+            "baseline_seconds": 123.0,
+            "current_seconds": 127.0,
+            "delta_percent": 3.2520325203252036,
+            "delta_seconds": 4.0,
+            "status": "stable"
+          },
+          "latest_attempt_id": 1080,
+          "name": "build",
+          "purpose": {
+            "description": "Собирает образ приложения.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": 8.0,
+            "current_seconds": 180.0,
+            "delta_percent": 2150.0,
+            "delta_seconds": 172.0,
+            "status": "regressed"
+          },
+          "ref": "main",
+          "stage": "build"
+        },
+        {
+          "baseline": {
+            "attempts": 7,
+            "execution": {
+              "known": 7,
+              "max_seconds": 322,
+              "missing": 0,
+              "p50_seconds": 316.0,
+              "p95_seconds": 321.4,
+              "sum_seconds": 2212
+            },
+            "lifecycle": {
+              "known": 7,
+              "max_seconds": 469.0,
+              "missing": 0,
+              "p50_seconds": 457.0,
+              "p95_seconds": 467.8,
+              "sum_seconds": 3199.0
+            },
+            "queue": {
+              "known": 7,
+              "max_seconds": 10,
+              "missing": 0,
+              "p50_seconds": 10.0,
+              "p95_seconds": 10.0,
+              "sum_seconds": 70
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 7
+            },
+            "successful_attempts": 7
+          },
+          "current": {
+            "attempts": 1,
+            "execution": {
+              "known": 1,
+              "max_seconds": 324,
+              "missing": 0,
+              "p50_seconds": 324.0,
+              "p95_seconds": 324.0,
+              "sum_seconds": 324
+            },
+            "lifecycle": {
+              "known": 1,
+              "max_seconds": 641.0,
+              "missing": 0,
+              "p50_seconds": 641.0,
+              "p95_seconds": 641.0,
+              "sum_seconds": 641.0
+            },
+            "queue": {
+              "known": 1,
+              "max_seconds": 10,
+              "missing": 0,
+              "p50_seconds": 10.0,
+              "p95_seconds": 10.0,
+              "sum_seconds": 10
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 1
+            },
+            "successful_attempts": 1
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": 316.0,
+            "current_seconds": 324.0,
+            "delta_percent": 2.5316455696202533,
+            "delta_seconds": 8.0,
+            "status": "stable"
+          },
+          "latest_attempt_id": 1083,
+          "name": "integration_tests",
+          "purpose": {
+            "description": "Проверяет взаимодействие компонентов.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": 10.0,
+            "current_seconds": 10.0,
+            "delta_percent": 0.0,
+            "delta_seconds": 0.0,
+            "status": "stable"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 7,
+            "execution": {
+              "known": 7,
+              "max_seconds": 31,
+              "missing": 0,
+              "p50_seconds": 28.0,
+              "p95_seconds": 30.7,
+              "sum_seconds": 196
+            },
+            "lifecycle": {
+              "known": 7,
+              "max_seconds": 170.0,
+              "missing": 0,
+              "p50_seconds": 161.0,
+              "p95_seconds": 169.1,
+              "sum_seconds": 1127.0
+            },
+            "queue": {
+              "known": 7,
+              "max_seconds": 2,
+              "missing": 0,
+              "p50_seconds": 2.0,
+              "p95_seconds": 2.0,
+              "sum_seconds": 14
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 7
+            },
+            "successful_attempts": 7
+          },
+          "current": {
+            "attempts": 1,
+            "execution": {
+              "known": 1,
+              "max_seconds": 32,
+              "missing": 0,
+              "p50_seconds": 32.0,
+              "p95_seconds": 32.0,
+              "sum_seconds": 32
+            },
+            "lifecycle": {
+              "known": 1,
+              "max_seconds": 341.0,
+              "missing": 0,
+              "p50_seconds": 341.0,
+              "p95_seconds": 341.0,
+              "sum_seconds": 341.0
+            },
+            "queue": {
+              "known": 1,
+              "max_seconds": 2,
+              "missing": 0,
+              "p50_seconds": 2.0,
+              "p95_seconds": 2.0,
+              "sum_seconds": 2
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 1
+            },
+            "successful_attempts": 1
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": 28.0,
+            "current_seconds": 32.0,
+            "delta_percent": 14.285714285714285,
+            "delta_seconds": 4.0,
+            "status": "stable"
+          },
+          "latest_attempt_id": 1082,
+          "name": "lint",
+          "purpose": {
+            "description": "Проверяет стиль и статические ошибки кода.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": 2.0,
+            "current_seconds": 2.0,
+            "delta_percent": 0.0,
+            "delta_seconds": 0.0,
+            "status": "stable"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 7,
+            "execution": {
+              "known": 7,
+              "max_seconds": 46,
+              "missing": 0,
+              "p50_seconds": 43.0,
+              "p95_seconds": 45.7,
+              "sum_seconds": 301
+            },
+            "lifecycle": {
+              "known": 7,
+              "max_seconds": 186.0,
+              "missing": 0,
+              "p50_seconds": 177.0,
+              "p95_seconds": 185.1,
+              "sum_seconds": 1239.0
+            },
+            "queue": {
+              "known": 7,
+              "max_seconds": 3,
+              "missing": 0,
+              "p50_seconds": 3.0,
+              "p95_seconds": 3.0,
+              "sum_seconds": 21
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 7
+            },
+            "successful_attempts": 7
+          },
+          "current": {
+            "attempts": 1,
+            "execution": {
+              "known": 1,
+              "max_seconds": 47,
+              "missing": 0,
+              "p50_seconds": 47.0,
+              "p95_seconds": 47.0,
+              "sum_seconds": 47
+            },
+            "lifecycle": {
+              "known": 1,
+              "max_seconds": 357.0,
+              "missing": 0,
+              "p50_seconds": 357.0,
+              "p95_seconds": 357.0,
+              "sum_seconds": 357.0
+            },
+            "queue": {
+              "known": 1,
+              "max_seconds": 3,
+              "missing": 0,
+              "p50_seconds": 3.0,
+              "p95_seconds": 3.0,
+              "sum_seconds": 3
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 1
+            },
+            "successful_attempts": 1
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": 43.0,
+            "current_seconds": 47.0,
+            "delta_percent": 9.30232558139535,
+            "delta_seconds": 4.0,
+            "status": "stable"
+          },
+          "latest_attempt_id": 1084,
+          "name": "security_scan",
+          "purpose": {
+            "description": "Проверяет зависимости на известные уязвимости.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": 3.0,
+            "current_seconds": 3.0,
+            "delta_percent": 0.0,
+            "delta_seconds": 0.0,
+            "status": "stable"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 7,
+            "execution": {
+              "known": 7,
+              "max_seconds": 228,
+              "missing": 0,
+              "p50_seconds": 219.0,
+              "p95_seconds": 227.1,
+              "sum_seconds": 1533
+            },
+            "lifecycle": {
+              "known": 7,
+              "max_seconds": 376.0,
+              "missing": 0,
+              "p50_seconds": 358.0,
+              "p95_seconds": 374.2,
+              "sum_seconds": 2506.0
+            },
+            "queue": {
+              "known": 7,
+              "max_seconds": 11,
+              "missing": 0,
+              "p50_seconds": 8.0,
+              "p95_seconds": 10.7,
+              "sum_seconds": 56
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 7
+            },
+            "successful_attempts": 7
+          },
+          "current": {
+            "attempts": 1,
+            "execution": {
+              "known": 1,
+              "max_seconds": 900,
+              "missing": 0,
+              "p50_seconds": 900.0,
+              "p95_seconds": 900.0,
+              "sum_seconds": 900
+            },
+            "lifecycle": {
+              "known": 1,
+              "max_seconds": 1219.0,
+              "missing": 0,
+              "p50_seconds": 1219.0,
+              "p95_seconds": 1219.0,
+              "sum_seconds": 1219.0
+            },
+            "queue": {
+              "known": 1,
+              "max_seconds": 12,
+              "missing": 0,
+              "p50_seconds": 12.0,
+              "p95_seconds": 12.0,
+              "sum_seconds": 12
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 1
+            },
+            "successful_attempts": 1
+          },
+          "drivers": [
+            "execution"
+          ],
+          "execution_change": {
+            "baseline_seconds": 219.0,
+            "current_seconds": 900.0,
+            "delta_percent": 310.958904109589,
+            "delta_seconds": 681.0,
+            "status": "regressed"
+          },
+          "latest_attempt_id": 1081,
+          "name": "unit_tests",
+          "purpose": {
+            "description": "Проверяет приложение unit-тестами.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": 8.0,
+            "current_seconds": 12.0,
+            "delta_percent": 50.0,
+            "delta_seconds": 4.0,
+            "status": "stable"
+          },
+          "ref": "main",
+          "stage": "test"
+        }
+      ],
+      "insufficient_count": 0,
+      "latest_pipeline": {
+        "created_at": "2026-09-08T10:00:00+00:00",
+        "duration_seconds": 1037.0,
+        "finished_at": "2026-09-08T10:20:19+00:00",
+        "id": 108,
+        "queued_seconds": 180,
+        "ref": "main",
+        "sha": "000000000000000000000000000000000000006c",
+        "source": "push",
+        "started_at": "2026-09-08T10:03:00+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/108"
+      },
+      "overlap_pipeline_ids": [],
+      "ref": "main",
+      "regression_count": 2,
+      "situation": "attention",
+      "window": 1
+    },
+    {
+      "baseline_period": {
+        "attempts": 0,
+        "from": null,
+        "pipeline_ids": [],
+        "to": null
+      },
+      "baseline_window": 10,
+      "current_period": {
+        "attempts": 40,
+        "from": "2026-09-01T10:00:00+00:00",
+        "pipeline_ids": [
+          108,
+          107,
+          106,
+          105,
+          104,
+          103,
+          102,
+          101
+        ],
+        "to": "2026-09-08T10:00:00+00:00"
+      },
+      "groups": [
+        {
+          "baseline": {
+            "attempts": 0,
+            "execution": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "lifecycle": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "queue": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "rerun_attempts": 0,
+            "status_counts": {},
+            "successful_attempts": 0
+          },
+          "current": {
+            "attempts": 8,
+            "execution": {
+              "known": 8,
+              "max_seconds": 127,
+              "missing": 0,
+              "p50_seconds": 123.5,
+              "p95_seconds": 126.65,
+              "sum_seconds": 988
+            },
+            "lifecycle": {
+              "known": 8,
+              "max_seconds": 307.0,
+              "missing": 0,
+              "p50_seconds": 132.0,
+              "p95_seconds": 247.49999999999991,
+              "sum_seconds": 1224.0
+            },
+            "queue": {
+              "known": 8,
+              "max_seconds": 180,
+              "missing": 0,
+              "p50_seconds": 8.5,
+              "p95_seconds": 120.84999999999991,
+              "sum_seconds": 236
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 8
+            },
+            "successful_attempts": 8
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": null,
+            "current_seconds": 123.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "latest_attempt_id": 1080,
+          "name": "build",
+          "purpose": {
+            "description": "Собирает образ приложения.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": null,
+            "current_seconds": 8.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "ref": "main",
+          "stage": "build"
+        },
+        {
+          "baseline": {
+            "attempts": 0,
+            "execution": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "lifecycle": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "queue": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "rerun_attempts": 0,
+            "status_counts": {},
+            "successful_attempts": 0
+          },
+          "current": {
+            "attempts": 8,
+            "execution": {
+              "known": 8,
+              "max_seconds": 324,
+              "missing": 0,
+              "p50_seconds": 317.0,
+              "p95_seconds": 323.3,
+              "sum_seconds": 2536
+            },
+            "lifecycle": {
+              "known": 8,
+              "max_seconds": 641.0,
+              "missing": 0,
+              "p50_seconds": 459.0,
+              "p95_seconds": 580.8,
+              "sum_seconds": 3840.0
+            },
+            "queue": {
+              "known": 8,
+              "max_seconds": 10,
+              "missing": 0,
+              "p50_seconds": 10.0,
+              "p95_seconds": 10.0,
+              "sum_seconds": 80
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 8
+            },
+            "successful_attempts": 8
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": null,
+            "current_seconds": 317.0,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "latest_attempt_id": 1083,
+          "name": "integration_tests",
+          "purpose": {
+            "description": "Проверяет взаимодействие компонентов.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": null,
+            "current_seconds": 10.0,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 0,
+            "execution": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "lifecycle": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "queue": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "rerun_attempts": 0,
+            "status_counts": {},
+            "successful_attempts": 0
+          },
+          "current": {
+            "attempts": 8,
+            "execution": {
+              "known": 8,
+              "max_seconds": 32,
+              "missing": 0,
+              "p50_seconds": 28.5,
+              "p95_seconds": 31.65,
+              "sum_seconds": 228
+            },
+            "lifecycle": {
+              "known": 8,
+              "max_seconds": 341.0,
+              "missing": 0,
+              "p50_seconds": 162.5,
+              "p95_seconds": 281.1499999999999,
+              "sum_seconds": 1468.0
+            },
+            "queue": {
+              "known": 8,
+              "max_seconds": 2,
+              "missing": 0,
+              "p50_seconds": 2.0,
+              "p95_seconds": 2.0,
+              "sum_seconds": 16
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 8
+            },
+            "successful_attempts": 8
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": null,
+            "current_seconds": 28.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "latest_attempt_id": 1082,
+          "name": "lint",
+          "purpose": {
+            "description": "Проверяет стиль и статические ошибки кода.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": null,
+            "current_seconds": 2.0,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 0,
+            "execution": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "lifecycle": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "queue": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "rerun_attempts": 0,
+            "status_counts": {},
+            "successful_attempts": 0
+          },
+          "current": {
+            "attempts": 8,
+            "execution": {
+              "known": 8,
+              "max_seconds": 47,
+              "missing": 0,
+              "p50_seconds": 43.5,
+              "p95_seconds": 46.65,
+              "sum_seconds": 348
+            },
+            "lifecycle": {
+              "known": 8,
+              "max_seconds": 357.0,
+              "missing": 0,
+              "p50_seconds": 178.5,
+              "p95_seconds": 297.1499999999999,
+              "sum_seconds": 1596.0
+            },
+            "queue": {
+              "known": 8,
+              "max_seconds": 3,
+              "missing": 0,
+              "p50_seconds": 3.0,
+              "p95_seconds": 3.0,
+              "sum_seconds": 24
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 8
+            },
+            "successful_attempts": 8
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": null,
+            "current_seconds": 43.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "latest_attempt_id": 1084,
+          "name": "security_scan",
+          "purpose": {
+            "description": "Проверяет зависимости на известные уязвимости.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": null,
+            "current_seconds": 3.0,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "ref": "main",
+          "stage": "test"
+        },
+        {
+          "baseline": {
+            "attempts": 0,
+            "execution": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "lifecycle": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "queue": {
+              "known": 0,
+              "max_seconds": null,
+              "missing": 0,
+              "p50_seconds": null,
+              "p95_seconds": null,
+              "sum_seconds": null
+            },
+            "rerun_attempts": 0,
+            "status_counts": {},
+            "successful_attempts": 0
+          },
+          "current": {
+            "attempts": 8,
+            "execution": {
+              "known": 8,
+              "max_seconds": 900,
+              "missing": 0,
+              "p50_seconds": 220.5,
+              "p95_seconds": 664.7999999999996,
+              "sum_seconds": 2433
+            },
+            "lifecycle": {
+              "known": 8,
+              "max_seconds": 1219.0,
+              "missing": 0,
+              "p50_seconds": 361.0,
+              "p95_seconds": 923.9499999999996,
+              "sum_seconds": 3725.0
+            },
+            "queue": {
+              "known": 8,
+              "max_seconds": 12,
+              "missing": 0,
+              "p50_seconds": 8.5,
+              "p95_seconds": 11.649999999999999,
+              "sum_seconds": 68
+            },
+            "rerun_attempts": 0,
+            "status_counts": {
+              "success": 8
+            },
+            "successful_attempts": 8
+          },
+          "drivers": [],
+          "execution_change": {
+            "baseline_seconds": null,
+            "current_seconds": 220.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "latest_attempt_id": 1081,
+          "name": "unit_tests",
+          "purpose": {
+            "description": "Проверяет приложение unit-тестами.",
+            "source_url": "https://gitlab.example.com/example/demo-service/-/blob/main/.gitlab-ci.yml",
+            "verified_at": "2026-09-09T10:00:00+00:00"
+          },
+          "queue_change": {
+            "baseline_seconds": null,
+            "current_seconds": 8.5,
+            "delta_percent": null,
+            "delta_seconds": null,
+            "status": "new_job"
+          },
+          "ref": "main",
+          "stage": "test"
+        }
+      ],
+      "insufficient_count": 5,
+      "latest_pipeline": {
+        "created_at": "2026-09-08T10:00:00+00:00",
+        "duration_seconds": 1037.0,
+        "finished_at": "2026-09-08T10:20:19+00:00",
+        "id": 108,
+        "queued_seconds": 180,
+        "ref": "main",
+        "sha": "000000000000000000000000000000000000006c",
+        "source": "push",
+        "started_at": "2026-09-08T10:03:00+00:00",
+        "status": "success",
+        "web_url": "https://gitlab.example.com/example/demo-service/-/pipelines/108"
+      },
+      "overlap_pipeline_ids": [],
+      "ref": "main",
+      "regression_count": 0,
+      "situation": "insufficient_data",
+      "window": 10
+    }
+  ]
+}
