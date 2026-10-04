@@ -32,6 +32,9 @@ class ReviewedCalculations(unittest.TestCase):
         self.assertIsNotNone(history, 'Reviewed history module is not shipped')
         self.assertIsNotNone(priorities, 'Priority calculation module is not shipped')
 
+    def test_metric_sum_is_reproducible_across_python_float_sum_versions(self):
+        self.assertEqual(history.metric([0.1]*10)['sum_seconds'],1.0)
+
     def test_retention_counts_attempts_and_keeps_newest64_per_type(self):
         jobs = [job(i, pipeline=1) for i in range(1, 81)] + [job(99, name='publish', stage='release')]
         types = history.retain_jobs(jobs)

@@ -23,7 +23,7 @@ def metric(values):
         lo, hi = math.floor(index), math.ceil(index)
         return known[lo] + (known[hi]-known[lo])*(index-lo)
     return {'known':len(known), 'missing':len(values)-len(known),
-            'sum_seconds':sum(known) if known else None, 'p50_seconds':percentile(.5),
+            'sum_seconds':math.fsum(known) if known else None, 'p50_seconds':percentile(.5),
             'p95_seconds':percentile(.95), 'max_seconds':max(known) if known else None}
 
 

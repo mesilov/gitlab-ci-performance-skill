@@ -1,5 +1,6 @@
 """Observed per-run interval costs; representative evidence is never a cost."""
 from collections import defaultdict
+import math
 from history import executed, metric
 
 GUIDANCE = {
@@ -23,7 +24,7 @@ def union_seconds(intervals):
             merged[-1]=(merged[-1][0],max(end,merged[-1][1]))
         else:
             merged.append((start,end))
-    return sum(end-start for start,end in merged) if merged else None
+    return math.fsum(end-start for start,end in merged) if merged else None
 
 
 def rank(jobs, details):
