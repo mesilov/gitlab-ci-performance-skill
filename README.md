@@ -2,8 +2,9 @@
 
 # GitLab CI Performance Analyzer
 
-Version **2.0.1** of the reusable agent skill: safe GitLab metadata → bounded
-trace evidence → reproducible calculations → standalone offline report.
+Reusable agent skill being prepared for milestone **0.1.0** (unreleased): safe
+GitLab metadata → bounded trace evidence → reproducible calculations → standalone
+offline report.
 
 ![Synthetic reviewed report](docs/report.png)
 
@@ -34,13 +35,14 @@ parallel or child timings are not added as promised savings.
 ## Install or update
 
 Requirements: Python 3.10+, `glab` with existing authorized GitLab authentication,
-plus the declared Python requirements. Clone the published pinned version:
+plus the declared Python requirements. While milestone 0.1.0 is in development,
+clone the current development snapshot:
 
 ```sh
-git clone --branch v2.0.1 --depth 1 \
-  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
+git clone --depth 1 \
+  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill
 mkdir -p .agents/skills .codex/skills .claude/skills
-cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
+cp -R /tmp/ci-skill/skills/gitlab-ci-performance .agents/skills/
 ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-performance
 ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
 ```
@@ -49,8 +51,9 @@ For an update, first move the old `.agents/skills/gitlab-ci-performance` directo
 to an unused backup location, then copy the new directory into its place.
 Existing links still point at that path. Preserve reports/private caches and any
 customizations in the backup; do not copy old modules over the new skill. The
-installed `VERSION` must read 2.0.1. The release source archive contains tests,
-documentation and fixtures as well as the complete distributable skill directory.
+installed `VERSION` records the source snapshot independently of artifact format
+versions. The repository contains tests, documentation and fixtures as well as
+the complete distributable skill directory.
 
 Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Follow the project's instructions and use an authorized account.
@@ -95,14 +98,14 @@ metadata still contains project/job names and URLs; choose its sharing location.
 ## Contracts and compatibility
 
 - `jobs.json`: immutable schema 1.0 source projection.
-- `details/metadata.json`: schema 2.0 bounded safe refreshed metadata and coverage.
-- `details/timings.json`: schema/parser 2.0 compact allowlisted evidence.
-- `report.json`: schema/calculation 2.0.1 precomputed windows, baseline samples,
+- `details/metadata.json`: bounded safe refreshed metadata and coverage.
+- `details/timings.json`: compact allowlisted timing evidence.
+- `report.json`: precomputed windows, baseline samples,
   priorities and hashes; validated before rendering.
 - `report.html`: standalone embedded compact data, no raw trace text.
 
 Run `ci_report.py validate artifact.json` for schema/ID/calculation checks.
-Older 1.0/1.1/2.0.0 reports retain their rendering. `report --legacy` generates 1.1;
+Supported legacy reports retain their rendering. `report --legacy` generates 1.1;
 `--release-refs REF...` preserves the 1.1 exact-ref exploratory route from #1.
 `--baseline older/jobs.json` retains external same-ref comparison and overlap
 safeguards. Unsupported versions request compatible tooling or explicit re-analysis
@@ -112,13 +115,13 @@ See [methodology](skills/gitlab-ci-performance/references/methodology.md),
 [trace precision/cache rules](skills/gitlab-ci-performance/references/trace-analysis.md)
 and [changelog](CHANGELOG.md).
 
-## Workflow analysis (unreleased)
+## Workflow analysis
 
 ![Synthetic workflow performance report](docs/workflow-report.png)
 
-Workflow mode adds separate **2.0.0** contracts alongside reviewed job reports
-and preserved v1 artifacts. It is pending release; the published v2.0.1 tag does
-not include this route. Read the [workflow methodology and CLI examples](skills/gitlab-ci-performance/references/workflows.md)
+Workflow mode is part of milestone 0.1.0 and adds separate contracts alongside
+reviewed job reports and preserved legacy artifacts.
+Read the [workflow methodology and CLI examples](skills/gitlab-ci-performance/references/workflows.md)
 and use the installed [generic model](skills/gitlab-ci-performance/assets/workflow-model.json).
 The agent verifies resolved CI configuration, records explicit historical coverage
 and stamps it with `define-workflows`. `--workflow-window` defaults to 32 pipeline
@@ -139,7 +142,7 @@ stays in the selected job view.
   --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
 ```
 
-Workflow schema/calculation 2.0.0 exports nullable elapsed/active/gap/queue values,
+Workflow contracts export nullable elapsed/active/gap/queue values,
 coverage, membership, evidence and exact baseline sample IDs. Parallel time is an
 interval union. Latest attempts determine outcomes; all retained attempts contribute
 timing. Independent operations keep separate histories. Missing historical
@@ -181,8 +184,8 @@ a synthetic standalone glab transport, request/payload limits and privacy sentin
 
 ## Canonical report and compact LLM exports (#4)
 
-The published `ci_report.py` workflow above remains compatible with reviewed
-2.0.0/2.0.1 reports. The additional installed `report_cli.py` produces the namespaced
+The `ci_report.py` workflow above supports reviewed job reports. The additional
+installed `report_cli.py` produces the namespaced
 canonical contract from [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4):
 
 ```sh
@@ -198,8 +201,8 @@ overview, selected-window and selected-attempt JSON use the same measurements as
 the offline HTML. Read [contract-v2.md](skills/gitlab-ci-performance/references/contract-v2.md)
 for selectors, budgets, sample/interval policies, unavailable guidance and legacy
 handling. Generate its public synthetic example with `examples/generate_v2.py`.
-Its `gitlab_job_performance_*` kinds distinguish it from the published workflow;
+Its `gitlab_job_performance_*` kinds distinguish it from the `ci_report.py` workflow;
 entrypoints reject incompatible artifacts rather than silently converting them.
-The extension is in main pending a future release; it does not replace published v2.0.1.
+Both entrypoints are included in the scope of milestone 0.1.0.
 
 MIT — [license](LICENSE).

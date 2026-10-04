@@ -2,8 +2,9 @@
 
 # GitLab CI Performance Analyzer
 
-Версия **2.0.1** переиспользуемого скилла: безопасные метаданные GitLab →
-ограниченный анализ логов → воспроизводимые расчёты → автономный HTML-отчёт.
+Переиспользуемый скилл готовится к milestone **0.1.0** (ещё не выпущен):
+безопасные метаданные GitLab → ограниченный анализ логов → воспроизводимые
+расчёты → автономный HTML-отчёт.
 
 ![Синтетический отчёт](docs/report.png)
 
@@ -34,13 +35,14 @@
 ## Установка и обновление
 
 Нужны Python 3.10+, `glab` с существующей авторизованной учётной записью GitLab
-и зависимости из requirements.txt. Устанавливайте опубликованный тег:
+и зависимости из requirements.txt. Пока milestone 0.1.0 в разработке,
+клонируйте текущее состояние репозитория:
 
 ```sh
-git clone --branch v2.0.1 --depth 1 \
-  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill-v2
+git clone --depth 1 \
+  https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill
 mkdir -p .agents/skills .codex/skills .claude/skills
-cp -R /tmp/ci-skill-v2/skills/gitlab-ci-performance .agents/skills/
+cp -R /tmp/ci-skill/skills/gitlab-ci-performance .agents/skills/
 ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-performance
 ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
 ```
@@ -48,9 +50,9 @@ ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-perfor
 При обновлении сначала переместите старый каталог `.agents/skills/gitlab-ci-performance`
 в свободное место резервной копии, затем скопируйте новый на его место. Ссылки
 продолжат работать. Сохраните отчёты, приватные кэши и локальные изменения;
-не накладывайте старые модули поверх новой версии. В установленном VERSION должно
-быть 2.0.1. Архив исходников релиза включает тесты, документацию и fixtures вместе
-с полным каталогом распространяемого скилла.
+не накладывайте старые модули поверх новой версии. Установленный `VERSION`
+фиксирует версию исходной копии независимо от версий форматов данных. Репозиторий
+включает тесты, документацию и fixtures вместе с полным каталогом скилла.
 
 Вызов: `$gitlab-ci-performance` в Codex или `/gitlab-ci-performance` в Claude
 Code. Следуйте правилам проекта и используйте разрешённый доступ GitLab.
@@ -97,14 +99,14 @@ workers 1–8, по умолчанию 4, timeout 60 с, лимит 32 MiB (`--m
 ## Данные и совместимость
 
 - jobs.json: неизменяемый источник schema 1.0.
-- details/metadata.json: ограниченные обновлённые метаданные и охват schema 2.0.
-- details/timings.json: компактные доказательства schema/parser 2.0.
-- report.json: окна, samples baseline, приоритеты и hashes schema/calculation 2.0.1.
+- details/metadata.json: ограниченные обновлённые метаданные и охват.
+- details/timings.json: компактные доказательства временных интервалов.
+- report.json: окна, samples baseline, приоритеты и hashes.
 - report.html: автономный HTML с встроенными данными без сырого лога.
 
 `ci_report.py validate artifact.json` проверяет схемы, ID и расчёты.
 Отчёты 1.0/1.1 рендерятся по сохранённой методике. `report --legacy` создаёт 1.1;
-`--release-refs REF...` сохраняет маршрут точного выбора refs из#1.
+`--release-refs REF...` сохраняет маршрут точного выбора refs из #1.
 `--baseline older/jobs.json` задаёт внешний baseline одной ref с проверкой
 пересечения выборок. Неизвестные версии требуют совместимого helper либо явного
 повторного анализа в новые outputs; скрытой смены методики нет.
@@ -113,12 +115,12 @@ workers 1–8, по умолчанию 4, timeout 60 с, лимит 32 MiB (`--m
 [точность/кэш логов](skills/gitlab-ci-performance/references/trace-analysis.md),
 [история изменений](CHANGELOG.md).
 
-## Workflow-анализ (не выпущен)
+## Workflow-анализ
 
 ![Синтетический workflow-отчёт](docs/workflow-report.png)
 
-Workflow-режим добавляет отдельные контракты **2.0.0**, сохраняя reviewed-отчёты
-и артефакты v1. Режим пока не выпущен; опубликованный тег v2.0.1 его не содержит. Правила и CLI — в [методике workflow](skills/gitlab-ci-performance/references/workflows.md),
+Workflow-режим входит в milestone 0.1.0 и добавляет отдельные контракты, сохраняя
+reviewed-отчёты и legacy-артефакты. Правила и CLI — в [методике workflow](skills/gitlab-ci-performance/references/workflows.md),
 структура модели — в [установленном примере](skills/gitlab-ci-performance/assets/workflow-model.json).
 Агент проверяет разрешённую CI-конфигурацию, явно указывает историческое покрытие
 и сохраняет подтверждения через `define-workflows`. `--workflow-window` выбирает
@@ -139,7 +141,7 @@ Workflow-режим добавляет отдельные контракты **2
   --report reports/workflow-run/report.json --output reports/workflow-run/llm.json
 ```
 
-Схема/расчёт workflow 2.0.0 экспортируют nullable elapsed/active/gap/queue,
+Workflow-контракты экспортируют nullable elapsed/active/gap/queue,
 покрытие, членство попыток, подтверждения определения и точные ID baseline.
 Параллельное время считается объединением интервалов. Последняя попытка задаёт
 исход, а все сохранённые попытки входят во время. Независимые операции имеют
@@ -182,8 +184,8 @@ CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исхо
 
 ## Канонический отчёт и compact JSON для LLM (#4)
 
-Опубликованный workflow `ci_report.py` выше сохраняет совместимость с отчётами
-2.0.0/2.0.1 и принятый UI. Дополнительный установленный `report_cli.py` реализует
+Workflow `ci_report.py` выше поддерживает reviewed-отчёты jobs. Дополнительный
+установленный `report_cli.py` реализует
 отдельный канонический контракт [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4):
 
 ```sh
@@ -199,8 +201,7 @@ CI_REPORT_BROWSER_CHANNEL=chromium. Проверяются ru/en,32/64, исхо
 что offline HTML. [Контракт](skills/gitlab-ci-performance/references/contract-v2.md)
 описывает selectors, бюджеты, baseline/интервалы, provenance рекомендаций и legacy.
 `examples/generate_v2.py` генерирует публичный синтетический пример. Отдельные kinds
-`gitlab_job_performance_*` отличают этот формат от опубликованного; CLI отклоняет
-чужой формат, не преобразуя его незаметно. Дополнение находится в main до следующего
-релиза и не заменяет опубликованный v2.0.1.
+`gitlab_job_performance_*` отличают этот формат от workflow `ci_report.py`; CLI
+отклоняет чужой формат, не преобразуя его незаметно. Оба CLI входят в milestone 0.1.0.
 
 MIT — [лицензия](LICENSE).
