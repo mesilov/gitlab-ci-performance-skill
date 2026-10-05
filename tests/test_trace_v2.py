@@ -24,7 +24,8 @@ AT = '2026-10-04T00:00:00Z'
 TRACE_KEYS = {'job_id', 'state', 'reason_code', 'sha256', 'prefix_sha256', 'bytes_read',
               'line_count', 'parser_version', 'fetched_at', 'analyzed_at', 'cached',
               'coverage', 'evidence'}
-NODE_KEYS = {'id', 'kind', 'code', 'parent_id', 'timing', 'cached', 'complete', 'lines', 'push_coverage', 'buildkit', 'identity'}
+NODE_KEYS = {'id', 'kind', 'code', 'parent_id', 'timing', 'cached', 'complete', 'lines',
+             'push_coverage', 'buildkit', 'identity', 'source_label'}
 
 
 class TraceTests(unittest.TestCase):
@@ -141,6 +142,78 @@ class TraceTests(unittest.TestCase):
         export = operations[1]
         self.assertEqual(export['lines'], {'start': 4, 'end': 10})
         self.assertEqual(export['timing']['duration_seconds'], 3.0)
+
+    def test_original_buildkit_operation_titles_are_preserved_separately_from_category(self):
+        result = self.parse('#0 building with "default" instance using docker driver\n'
+                            '#1 [internal] load build definition from Dockerfile\n#1 DONE 0.1s\n'
+                            '#8 [internal] load build context\n#8 DONE 2.0s\n'
+                            '#16 exporting to image\n#16 DONE 3.0s\n')
+        operations = {n['buildkit']['step_id']:n for n in result['evidence']
+                      if n['kind']=='operation'}
+        expected = {
+            1: ('other_operation', '[internal] load build definition from Dockerfile', 2),
+            8: ('context_application_copy', '[internal] load build context', 4),
+            16: ('export_local_unpack', 'exporting to image', 6),
+        }
+        for step, (code, title, line) in expected.items():
+            with self.subTest(step=step):
+                self.assertEqual(operations[step]['code'], code)
+                self.assertEqual(operations[step]['source_label'], {
+                    'state':'original', 'text':title, 'origin':'buildkit_header',
+                    'lines':{'start':line, 'end':line}})
+
+    def test_export_suboperation_titles_are_preserved_without_destination_or_duration(self):
+        result = self.parse('#16 exporting to image\n'
+                            '#16 exporting layers 2.0s done\n'
+                            '#16 unpacking to registry.example/group/service:tag 1.0s done\n'
+                            '#16 DONE 3.0s\n')
+        parts = [n for n in result['evidence'] if n['kind']=='part']
+        self.assertEqual([n['source_label'] for n in parts], [
+            {'state':'original', 'text':'exporting layers', 'origin':'buildkit_progress',
+             'lines':{'start':2, 'end':2}},
+            {'state':'redacted', 'text':'unpacking to [redacted]', 'origin':'buildkit_progress',
+             'lines':{'start':3, 'end':3}},
+        ])
+
+    def test_same_category_keeps_distinct_safe_titles(self):
+        result = self.parse('#1 [internal] load build context\n#1 DONE 1s\n'
+                            '#2 [stage 1/2] COPY private.pem /app/private.pem\n#2 DONE 1s\n')
+        operations = [n for n in result['evidence'] if n['kind']=='operation']
+        self.assertEqual([n['code'] for n in operations],
+                         ['context_application_copy', 'context_application_copy'])
+        self.assertEqual([n['source_label']['text'] for n in operations],
+                         ['[internal] load build context', '[stage 1/2] COPY [redacted]'])
+        self.assertEqual(operations[1]['source_label']['state'], 'redacted')
+        self.assertNotIn('private.pem', json.dumps(result))
+
+    def test_titles_survive_ansi_timestamps_redraws_and_reused_step_ids(self):
+        first = ('2026-10-04T00:00:00Z 00O \x1b[32m#0 building with "default" instance using docker driver\x1b[0m\n'
+                 '2026-10-04T00:00:01Z 00O \x1b[32m#8 [internal] load build context\x1b[0m\n'
+                 '2026-10-04T00:00:02Z 00O #8 DONE 1s\n'
+                 '2026-10-04T00:00:03Z 00O #8 [internal] load build context\n')
+        second = ('2026-10-04T00:00:04Z 00O #0 building with "default" instance using docker driver\n'
+                  '2026-10-04T00:00:05Z 00O #8 exporting to image\n'
+                  '2026-10-04T00:00:06Z 00O #8 DONE 1s\n')
+        result = self.parse(first + second)
+        operations = [n for n in result['evidence'] if n['kind']=='operation']
+        self.assertEqual([n['source_label']['text'] for n in operations],
+                         ['[internal] load build context', 'exporting to image'])
+        self.assertEqual(operations[0]['source_label']['lines'], {'start':2, 'end':2})
+
+    def test_operation_titles_never_export_arguments_markup_or_overlong_text(self):
+        secret = 'PRIVATE_TOKEN=hunter2'
+        result = self.parse(f'#1 [secret-stage 1/2] RUN <img src=x onerror=alert(1)> {secret}\n'
+                            '#1 DONE 1s\n'
+                            '#2 [internal] ' + ('x' * 200) + '\n#2 DONE 1s\n')
+        operations = [n for n in result['evidence'] if n['kind']=='operation']
+        self.assertEqual(operations[0]['source_label'], {
+            'state':'redacted', 'text':'[stage 1/2] RUN [redacted]',
+            'origin':'buildkit_header', 'lines':{'start':1, 'end':1}})
+        self.assertEqual(operations[1]['source_label'], {
+            'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None})
+        payload = json.dumps(result)
+        for unsafe in (secret, '<img', 'secret-stage', 'x' * 129):
+            self.assertNotIn(unsafe, payload)
 
     def test_identity_and_source_step_ids_have_physical_provenance(self):
         result = self.parse('#0 building with "default" instance using docker driver\n'

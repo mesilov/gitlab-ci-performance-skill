@@ -199,8 +199,11 @@ The canonical HTML now follows the reviewed report layout: compact job cards wit
 baseline/outcome context, a framed vertical list of action priorities, collapsed history and a compact
 two-level attempt timeline. Select an image build, then an operation to see
 its source lines and nested substeps. Runner phases and technical metadata are
-collapsed. Canonical schema/calculation 2.1.0 and parser 1.1.0 preserve confirmed
-safe image basenames, original BuildKit step numbers and physical source ranges.
+collapsed. Canonical schema/calculation 2.2.0 and parser 1.2.0 preserve confirmed
+safe image basenames, original BuildKit step numbers, safe original operation and
+suboperation titles, and physical source ranges. The interface language never
+translates source titles. Sensitive instruction arguments are replaced with an
+explicit `[redacted]`; unavailable titles use an explicit category fallback.
 Unknown, conflicting or redacted identities are explicit. Export progress stays
 inside its source operation; nested/overlapping durations are not added. Only the
 current canonical contract is supported; collect fresh data instead of migrating
