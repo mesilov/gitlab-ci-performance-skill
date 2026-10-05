@@ -23,7 +23,7 @@ class CLIV2Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             d=Path(d);source=d/'source.json';source.write_text(json.dumps(sample()))
             self.run_cli('report','--snapshot',source,'--generated-at',AT,'--output',d/'report.json')
-            report=json.loads((d/'report.json').read_text());self.assertEqual(report['schema_version'],'2.1.0')
+            report=json.loads((d/'report.json').read_text());self.assertEqual(report['schema_version'],'2.2.0')
             self.assertEqual(report['skill_version'],(SKILL/'VERSION').read_text().strip())
             self.run_cli('export','--report',d/'report.json','--scope','overview','--output',d/'compact.json')
             self.run_cli('validate',d/'compact.json')
@@ -70,7 +70,7 @@ class MainCompatibilityTests(unittest.TestCase):
             self.run_cli('render','--report',directory/'published.json','--language','ru','--output',directory/'published.html',path=published_cli)
             self.run_cli('report','--snapshot',source,'--generated-at',AT,'--output',directory/'canonical.json',path=canonical_cli)
             canonical=json.loads((directory/'canonical.json').read_text())
-            self.assertEqual((canonical['kind'],canonical['schema_version']),('gitlab_job_performance_report','2.1.0'))
+            self.assertEqual((canonical['kind'],canonical['schema_version']),('gitlab_job_performance_report','2.2.0'))
             self.assertEqual(canonical['skill_version'],(installed/'VERSION').read_text().strip())
             self.run_cli('export','--report',directory/'canonical.json','--scope','overview','--output',directory/'compact.json',path=canonical_cli)
             self.run_cli('validate',directory/'compact.json',path=canonical_cli)

@@ -1,4 +1,4 @@
-# Report contract 2.1.0
+# Report contract 2.2.0
 
 This contract implements issue #4 through the installed `scripts/report_cli.py`.
 It coexists with the published `scripts/ci_report.py` reviewed-report workflow
@@ -22,8 +22,14 @@ shared scale must not claim that its zero is the API start.
 Unknown positions receive no invented bar; CACHED is labeled without a numeric
 zero. Known image identities show a safe lowercase basename from a naming or
 unpack line; absent, conflicting or redacted names remain explicit. Operations
-and parts retain their original BuildKit source step IDs. An unknown image's
-ordinal is only a display label; ambiguous parser sessions must not be merged by HTML.
+and parts retain their original BuildKit source step IDs and a separate
+`source_label`. Safe fixed BuildKit titles are stored exactly; Dockerfile
+instructions and destination-bearing operations retain only their structural
+prefix/opcode with `[redacted]`. The label records original/redacted/unavailable
+state, header/progress origin and physical source lines. Localized categories
+remain separate calculation keys. HTML prefixes the saved step ID once and keeps
+the label unchanged in English and Russian. An unknown image's ordinal is only a
+display label; ambiguous parser sessions must not be merged by HTML.
 The reviewed renderer stays available through
 `ci_report.py`. Shared presentation does not imply shared calculation semantics:
 queue-spike rules, baseline eligibility and evidence policies remain in each saved
@@ -45,7 +51,7 @@ python scripts/report_cli.py render --report <new-run>/report.json --language ru
 ```
 
 Only collection performs transport requests. This route accepts only canonical
-schema 2.1.0 and parser 1.1.0. Collect a fresh source for older artifacts; there
+schema 2.2.0 and parser 1.2.0. Collect a fresh source for older artifacts; there
 is no migration, old-source calculation or old-report rendering/export support.
 
 ## Artifacts and validation
@@ -53,7 +59,7 @@ is no migration, old-source calculation or old-report rendering/export support.
 | Artifact | Kind | Schema |
 |---|---|---|
 | Safe metadata and compact trace summaries | `gitlab_job_performance_source` | `source-contract-v2.schema.json` |
-| Individual trace summary | parser `1.1.0` | `trace.schema.json` |
+| Individual trace summary | parser `1.2.0` | `trace.schema.json` |
 | Canonical report | `gitlab_job_performance_report` | `report-contract-v2.schema.json` |
 | LLM selection | `gitlab_job_performance_compact` | `compact.schema.json` |
 
@@ -73,7 +79,7 @@ and recomputed sample aggregates/category unions/ranks. Run `report_cli.py valid
 
 ## Envelope and source provenance
 
-The report stores schema/calculation versions `2.1.0`, parser `1.1.0`, the actual
+The report stores schema/calculation versions `2.2.0`, parser `1.2.0`, the actual
 installed skill version read from `VERSION`, and a
 stable report kind. These versions are independent; the local prototype's version
 is unrelated. `report_id` hashes input provenance and policies, excluding generated
@@ -107,10 +113,15 @@ per type, up to 10 baseline-only metadata candidates/type, concurrency 4, reques
 60 s, trace 4 MiB/50,000 physical lines. Page budget may be explicitly increased;
 concurrency/type/trace caps cannot exceed these ceilings. Positive limits and
 selector types are checked before collection. The report/export payload cap is
-16 MiB, individual trace summary 128 KiB. The parser admits at most 160 nodes;
-each parent and child consumes one slot. This replaces the 120-node budget after
+16 MiB, individual trace summary 128 KiB. The parser admits at most 152 nodes;
+each parent and child consumes one slot. Before returning, it measures the exact
+serialized summary and removes trailing evidence groups when variable-length job
+IDs or line positions would exceed 128 KiB. Such coverage is marked
+`partial/evidence_limit`. This replaces the 120-node budget after
 measuring 126 correctly segmented nodes / about 77 KiB for the reported eight-build
-job. Maximum-length named fixtures also stay under 128 KiB. Existing operations
+job. The prior 160-node ceiling was reduced to 152 after adding structured source
+title provenance; the maximum-length identity/title fixture with a two-digit job ID
+is 128,837 bytes. The verified 126-node job remains admitted. Existing operations
 still receive progress, DONE, naming and section closures after admission stops.
 Omitted nodes retain `partial/evidence_limit`, whole-source hash/size/line counts
 and explicit incomplete coverage. The schema ceiling of 512 is not a runtime budget.
@@ -143,7 +154,7 @@ per-invocation page budget. Request/page counters are cumulative; budgets descri
 the current invocation. Already-seen IDs are deduplicated across resume snapshots;
 duplicates/cycles within a new invocation are errors. Fresh job/pipeline checks are
 repeated. `resumed_from_sha256` records the previous snapshot.
-Resume and cache inputs must use schema 2.1.0 / parser 1.1.0; incompatible inputs
+Resume and cache inputs must use schema 2.2.0 / parser 1.2.0; incompatible inputs
 fail before any transport request.
 
 `--cache source.json` reuses only validated summaries for unchanged freshly checked
@@ -322,7 +333,7 @@ source/evidence and recorded calculation policy, never HTML scraping/browser exe
 ## Versions and installed verification
 
 Schema, calculation and parser versions identify the accepted artifact semantics.
-This route supports only schema/calculation 2.1.0 with parser 1.1.0. Unknown or
+This route supports only schema/calculation 2.2.0 with parser 1.2.0. Unknown or
 older versions/fields reject; there are no frozen canonical schemas, migration
 or old-report support. A new collection supplies the required evidence.
 `render --language en|ru` affects HTML only; saved language metadata and embedded

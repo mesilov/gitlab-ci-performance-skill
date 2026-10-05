@@ -23,10 +23,11 @@ baseline/outcome cards, collapsed history and two-level selected-attempt timelin
 keeping its own saved calculation semantics. Existing outputs are never overwritten.
 Select an image build, then an operation to inspect source lines and
 substeps. Runner phases and technical metadata stay collapsed. Canonical schema
-2.1.0 / parser 1.1.0 retains safe image basenames from naming/unpack evidence and
-original BuildKit step numbers. Show saved identity states honestly, including
-unknown/conflicting/redacted names; use saved source numbers without inventing
-names, numbers or merges.
+2.2.0 / parser 1.2.0 retains safe image basenames from naming/unpack evidence,
+original BuildKit step numbers, and bounded safe operation/suboperation titles
+with physical-line provenance. Keep source titles identical in English and
+Russian. Show redaction and unavailable states explicitly; keep localized
+categories separate and never replace a known source title with a category.
 
 The contract has distinct `gitlab_job_performance_*` kinds and its own schemas.
 Use the same entrypoint throughout its collect → report → export → render chain.

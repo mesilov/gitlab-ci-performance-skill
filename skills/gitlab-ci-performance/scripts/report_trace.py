@@ -7,13 +7,17 @@ Unknown formats remain unsupported; missing boundaries remain partial.
 from datetime import datetime
 from decimal import Decimal
 import hashlib
+import json
 import math
 import re
 
-PARSER_VERSION = '1.1.0'
+PARSER_VERSION = '1.2.0'
 # The source contract bounds each formatted safe summary at 128 KiB. Reserve
 # space for provenance; an input cap alone does not bound generated evidence.
-MAX_EVIDENCE_NODES = 160
+# Source-title provenance increases each node's fixed footprint. The final
+# serialized-size check also accounts for variable job IDs and line numbers.
+MAX_EVIDENCE_NODES = 152
+MAX_SUMMARY_BYTES = 128 * 1024
 PHASES = frozenset(('prepare_executor', 'prepare_script', 'get_sources', 'restore_cache',
                     'download_artifacts', 'step_script', 'after_script', 'archive_cache',
                     'upload_artifacts', 'cleanup_file_variables'))
@@ -33,10 +37,69 @@ LAYER_PROGRESS = re.compile(r'^(?:extracting )?sha256:[a-f0-9]{64}(?:\s|$)')
 NAME_FRAME = re.compile(r'^(naming to|unpacking to) (\S+)(?: (\d+(?:\.\d+)?)s)? done$')
 COMPONENT = r'[a-z0-9]+(?:[._-][a-z0-9]+)*'
 SENSITIVE = re.compile(r'(?:secret|password|passwd|credential|access[_-]?token|auth[_-]?token|private[_-]?key|api[_-]?key)', re.I)
+INSTRUCTION = re.compile(r'^(FROM|RUN|COPY|ADD|ENV|ARG|WORKDIR|USER|SHELL|CMD|ENTRYPOINT|LABEL|EXPOSE|VOLUME|STOPSIGNAL|HEALTHCHECK|ONBUILD)\b', re.I)
+SOURCE_LABEL_MAX = 128
+SAFE_HEADER_TITLES = frozenset((
+    '[internal] load build definition from Dockerfile',
+    '[internal] load .dockerignore',
+    '[internal] load build context',
+    'exporting to image',
+    'exporting to docker image format',
+    'exporting to oci image format',
+    'preparing build cache for export',
+))
 
 
 def _unknown_identity():
     return {'state':'unknown', 'name':None, 'origin':'unknown', 'step_id':None, 'lines':None}
+
+
+def _unavailable_source_label():
+    return {'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None}
+
+
+def _label(value, state, origin, line):
+    if not value or len(value)>SOURCE_LABEL_MAX or any(ord(char)<32 or ord(char)==127 for char in value):
+        return _unavailable_source_label()
+    return {'state':state, 'text':value, 'origin':origin,
+            'lines':{'start':line, 'end':line}}
+
+
+def _safe_prefix(prefix):
+    """Return a structural BuildKit prefix without retaining arbitrary stage names."""
+    if prefix == '[internal]':
+        return prefix
+    if re.fullmatch(r'\[\d+/\d+\]', prefix):
+        return prefix
+    match = re.fullmatch(r'\[[^\]]+ (\d+/\d+)\]', prefix)
+    return f'[stage {match[1]}]' if match else '[stage]'
+
+
+def _header_source_label(body, line):
+    """Extract a bounded title through a closed grammar; never retain arguments."""
+    if body in SAFE_HEADER_TITLES:
+        return _label(body, 'original', 'buildkit_header', line)
+    prefix, content = '', body
+    bracket = re.match(r'^(\[[^\]\r\n]{1,96}\])\s+(.+)$', body)
+    if bracket:
+        prefix, content = _safe_prefix(bracket[1]), bracket[2]
+    instruction = INSTRUCTION.match(content)
+    if instruction:
+        title = ((prefix+' ') if prefix else '') + instruction[1].upper() + ' [redacted]'
+        return _label(title, 'redacted', 'buildkit_header', line)
+    if content.startswith('load metadata for '):
+        title = ((prefix+' ') if prefix else '') + 'load metadata for [redacted]'
+        return _label(title, 'redacted', 'buildkit_header', line)
+    if body.startswith('importing cache manifest from '):
+        return _label('importing cache manifest from [redacted]', 'redacted',
+                      'buildkit_header', line)
+    return _unavailable_source_label()
+
+
+def _part_source_label(semantic, line):
+    if semantic == 'unpacking to':
+        return _label('unpacking to [redacted]', 'redacted', 'buildkit_progress', line)
+    return _label(semantic, 'original', 'buildkit_progress', line)
 
 
 def _image_name(reference):
@@ -83,7 +146,14 @@ def _node(identifier, kind, code, parent, line):
     return {'id': identifier, 'kind': kind, 'code': code, 'parent_id': parent,
             'timing': _timing(), 'cached': False, 'complete': False,
             'lines': {'start': line, 'end': line}, 'push_coverage': 'unknown',
-            'buildkit': None, 'identity': _unknown_identity() if kind=='image' else None}
+            'buildkit': None, 'identity': _unknown_identity() if kind=='image' else None,
+            'source_label': _unavailable_source_label() if kind in {'operation','part'} else None}
+
+
+def _summary_bytes(value):
+    """Measure the same canonical JSON bytes enforced by report_contract."""
+    return len((json.dumps(value, ensure_ascii=False, sort_keys=True,
+                           indent=2, allow_nan=False) + '\n').encode('utf-8'))
 
 
 def _precision(number):
@@ -388,6 +458,10 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
         if step not in steps:
             node = _node(f'{image["id"]}-op-{len(steps) + 1}', 'operation', 'export_local_unpack' if export_progress or part else _operation_code(body), image['id'], line_no)
             node['buildkit'] = {'step_id':int(step)}
+            if header:
+                node['source_label'] = _header_source_label(body, line_no)
+            elif part:
+                node['source_label'] = _part_source_label(part[1], line_no)
             if not admit(node):
                 continue
             image_operations[image['id']].append(node)
@@ -403,6 +477,8 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
         if header and not part:
             labels[step] = body
             node['code'] = _operation_code(body)
+            if node['source_label']['state']=='unavailable':
+                node['source_label'] = _header_source_label(body, line_no)
             if body.startswith(('exporting to image', 'exporting to docker image', 'exporting to local', 'exporting to tar')):
                 if image['push_coverage'] != 'included':
                     image['push_coverage'] = 'excluded'
@@ -433,6 +509,7 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             if key not in parts:
                 child = _node(f'{node["id"]}-part-{len(parts) + 1}', 'part', 'export_local_unpack', node['id'], line_no)
                 child['buildkit'] = {'step_id':int(step)}
+                child['source_label'] = _part_source_label(semantic, line_no)
                 if not admit(child):
                     continue
                 parts[key] = child
@@ -491,4 +568,28 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                       'evidence_limit' if evidence_limited else 'incomplete_evidence')
     else:
         result.update(state='available', reason_code='parsed')
+    # Node count alone cannot bound JSON bytes: the GitLab job ID is repeated
+    # in node/parent IDs, and line positions also vary with the input. Preserve
+    # a valid prefix of the parent-first evidence list within the source cap.
+    while evidence and _summary_bytes(result) > MAX_SUMMARY_BYTES:
+        dropped = evidence.pop()
+        if dropped['kind'] == 'operation':
+            # The image's confirmed name may point at this operation. Remove
+            # the whole trailing image instead of leaving dangling provenance.
+            while evidence and evidence[-1]['id'] != dropped['parent_id']:
+                evidence.pop()
+            if evidence:
+                evidence.pop()
+        else:
+            parent_id = dropped['parent_id']
+            while parent_id is not None:
+                parent = nodes[parent_id]
+                if parent['kind'] == 'image':
+                    parent['complete'] = False
+                    if parent['timing']['quality'] == 'inferred':
+                        parent['timing']['quality'] = 'partial'
+                    break
+                parent_id = parent['parent_id']
+        result['coverage']['complete'] = False
+        result.update(state='partial', reason_code='input_truncated' if truncated else 'evidence_limit')
     return result

@@ -30,13 +30,15 @@ def node(identifier, start, end, code='export_local_unpack', parent=None, cached
                        'end_seconds': end, 'origin': 'buildkit_reported', 'quality': 'exact',
                        'precision_seconds': .001}, 'cached': cached, 'complete': True,
             'lines': {'start': 1, 'end': 2}, 'push_coverage': 'unknown',
-            'buildkit': None, 'identity': None}
+            'buildkit': None, 'identity': None,
+            'source_label': {'state':'unavailable', 'text':None,
+                             'origin':'unknown', 'lines':None}}
 
 
 def trace(job_id, evidence):
     return {'job_id': job_id, 'state': 'available', 'reason_code': 'recognized',
             'sha256': 'a'*64, 'prefix_sha256': None, 'bytes_read': 100,
-            'line_count': 10, 'parser_version': '1.1.0', 'fetched_at': AT,
+            'line_count': 10, 'parser_version': '1.2.0', 'fetched_at': AT,
             'analyzed_at': AT, 'cached': False,
             'coverage': {'recognized_lines': 10, 'total_lines': 10,
                          'truncated': False, 'complete': True}, 'evidence': evidence}
@@ -285,6 +287,17 @@ class CalculationTests(unittest.TestCase):
         sample=categories['export_local_unpack']['samples'][0]
         self.assertEqual(sample['intervals'],[[10.0,15.0]])
         self.assertEqual(len(sample['interval_ids']),1)
+        changed=copy.deepcopy(s)
+        for trace_item in changed['traces']:
+            for evidence in trace_item['evidence']:
+                if evidence['kind']=='operation' and evidence['code']=='context_application_copy':
+                    evidence['source_label']={'state':'redacted','text':'[stage] COPY [redacted]',
+                                              'origin':'buildkit_header',
+                                              'lines':copy.deepcopy(evidence['source_label']['lines'])}
+        relabeled=self.report(changed)
+        self.assertEqual(relabeled['job_types'],r['job_types'])
+        self.assertEqual(relabeled['windows'],r['windows'])
+        self.assertEqual(relabeled['selection'],r['selection'])
         compact=exporter.export_report(r,window_id=r['windows'][0]['id'])
         self.assertEqual(compact['windows'][0]['findings'],r['windows'][0]['findings'])
 

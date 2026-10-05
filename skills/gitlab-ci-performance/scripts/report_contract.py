@@ -11,12 +11,30 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '2.1.0'
+VERSION = '2.2.0'
 SKILL_VERSION = (ROOT/'VERSION').read_text(encoding='utf-8').strip()
-PARSER_VERSION = '1.1.0'
+PARSER_VERSION = '1.2.0'
 MAX_PAYLOAD_BYTES = 16 * 1024 * 1024
 KINDS = {'gitlab_job_performance_source':'jobs','gitlab_job_performance_report':'report',
          'gitlab_job_performance_compact':'compact'}
+SAFE_ORIGINAL_SOURCE_LABELS = frozenset((
+    '[internal] load build definition from Dockerfile',
+    '[internal] load .dockerignore',
+    '[internal] load build context',
+    'exporting to image',
+    'exporting to docker image format',
+    'exporting to oci image format',
+    'preparing build cache for export',
+    'exporting layers',
+    'sending tarball',
+    'pushing layers',
+    'pushing manifest',
+))
+SAFE_REDACTED_SOURCE_LABEL = re.compile(
+    r'^(?:(?:\[internal\]|\[\d+/\d+\]|\[stage(?: \d+/\d+)?\]) )?'
+    r'(?:(?:FROM|RUN|COPY|ADD|ENV|ARG|WORKDIR|USER|SHELL|CMD|ENTRYPOINT|LABEL|EXPOSE|VOLUME|STOPSIGNAL|HEALTHCHECK|ONBUILD) \[redacted\]|load metadata for \[redacted\])$'
+    r'|^importing cache manifest from \[redacted\]$'
+    r'|^unpacking to \[redacted\]$')
 
 
 def now():
@@ -143,6 +161,26 @@ def check_trace(t):
                          p['buildkit']['step_id']==identity['step_id']]
                 require(any(p['lines']['start']<=source_lines['start']<=source_lines['end']<=p['lines']['end']
                             for p in sources),'Image identity source does not resolve inside its BuildKit operation')
+        label=n['source_label']
+        require((label is not None)==(n['kind'] in {'operation','part'}),
+                'Source title is only valid for BuildKit operation evidence')
+        if label is not None:
+            if label['state']=='unavailable':
+                require(label=={'state':'unavailable','text':None,'origin':'unknown','lines':None},
+                        'Unavailable source title contains invented data')
+            else:
+                require(n['buildkit'] is not None,'Source title lacks BuildKit source step')
+                source_lines=label['lines']
+                require(lines['start']<=source_lines['start']<=source_lines['end']<=lines['end'],
+                        'Source title lines exceed evidence node range')
+                if label['state']=='original':
+                    require(label['text'] in SAFE_ORIGINAL_SOURCE_LABELS,
+                            'Unsafe or unsupported original source title')
+                else:
+                    require(SAFE_REDACTED_SOURCE_LABEL.fullmatch(label['text']) is not None,
+                            'Redacted source title is outside the closed grammar')
+                require(not re.match(r'^#\d+\s',label['text']),
+                        'Source title duplicates its BuildKit step ID')
 
 
 def check_source(s):
@@ -355,7 +393,7 @@ def validate(value, kind=None):
     from jsonschema import Draft202012Validator, FormatChecker
     from referencing import Registry, Resource
     if kind != 'trace':
-        require(value.get('schema_version')==VERSION,'Unsupported schema version; collect a fresh 2.1.0 source')
+        require(value.get('schema_version')==VERSION,'Unsupported schema version; collect a fresh 2.2.0 source')
     artifact=KINDS.get(value.get('kind'))
     if kind=='trace':artifact='trace'
     require(artifact is not None,'Unknown artifact kind')

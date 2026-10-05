@@ -19,8 +19,8 @@ from report_cli import render
 
 def current_source():
     value = sample(1)
-    value['schema_version'] = '2.1.0'
-    value['traces'][0]['parser_version'] = '1.1.0'
+    value['schema_version'] = '2.2.0'
+    value['traces'][0]['parser_version'] = '1.2.0'
     return value
 
 
@@ -36,17 +36,24 @@ def evidence_source():
              'timing': timing, 'cached': False, 'complete': True,
              'lines': {'start': 1, 'end': 8}, 'push_coverage': 'excluded',
              'buildkit': None,
+             'source_label': None,
              'identity': {'state': 'known', 'name': 'safe-image',
                           'origin': 'buildkit_naming', 'step_id': 12,
                           'lines': {'start': 4, 'end': 4}}}
     operation = copy.deepcopy(image)
     operation.update(id='export', kind='operation', code='export_local_unpack',
                      parent_id='image', lines={'start': 2, 'end': 8},
-                     identity=None, buildkit={'step_id': 12})
+                     identity=None, buildkit={'step_id': 12},
+                     source_label={'state':'original', 'text':'exporting to image',
+                                   'origin':'buildkit_header',
+                                   'lines':{'start':2, 'end':2}})
     operation['timing']['origin'] = 'buildkit_reported'
     part = copy.deepcopy(operation)
     part.update(id='layers', kind='part', parent_id='export',
-                lines={'start': 3, 'end': 6})
+                lines={'start': 3, 'end': 6},
+                source_label={'state':'original', 'text':'exporting layers',
+                              'origin':'buildkit_progress',
+                              'lines':{'start':3, 'end':3}})
     part['timing'].update(duration_seconds=3, end_seconds=3)
     trace['evidence'] = [image, operation, part]
     return value
@@ -59,7 +66,7 @@ class BuildKitContractTests(unittest.TestCase):
         validate(source)
         report = build_report(source, generated_at=AT)
         self.assertEqual((report['schema_version'], report['calculation_version'],
-                          report['trace_parser_version']), ('2.1.0', '2.1.0', '1.1.0'))
+                          report['trace_parser_version']), ('2.2.0', '2.2.0', '1.2.0'))
         canonical = encoded(report)
         compact = export_report(report, attempt_ids=[1])
         self.assertEqual(compact['attempts'][0]['trace']['evidence'],
@@ -72,15 +79,16 @@ class BuildKitContractTests(unittest.TestCase):
         self.assertEqual(encoded(report), canonical)
 
     def test_old_source_requires_new_collection_for_calculation(self):
-        source = current_source()
-        source['schema_version'] = '2.0.0'
-        source['traces'][0]['parser_version'] = '1.0.0'
-        with self.assertRaisesRegex(ValueError, 'Unsupported schema version'):
-            build_report(source)
+        for schema, parser in (('2.0.0','1.0.0'), ('2.1.0','1.1.0')):
+            source = current_source()
+            source['schema_version'] = schema
+            source['traces'][0]['parser_version'] = parser
+            with self.subTest(schema=schema), self.assertRaisesRegex(ValueError, 'Unsupported schema version'):
+                build_report(source)
 
     def test_old_reports_reject_render_and_export_without_writes(self):
         report = build_report(evidence_source(), generated_at=AT)
-        for version in ('1.0.0', '1.1.0', '2.0.0'):
+        for version in ('1.0.0', '1.1.0', '2.0.0', '2.1.0'):
             with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
                 old = copy.deepcopy(report)
                 old['schema_version'] = version
@@ -148,10 +156,47 @@ class BuildKitContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source step'):
                 validate(source)
 
+    def test_source_labels_are_closed_bounded_and_line_provenanced(self):
+        allowed = evidence_source()
+        validate(allowed)
+        mutations = [
+            {'state':'original', 'text':'RUN echo $SECRET', 'origin':'buildkit_header',
+             'lines':{'start':2, 'end':2}},
+            {'state':'original', 'text':'#12 exporting to image', 'origin':'buildkit_header',
+             'lines':{'start':2, 'end':2}},
+            {'state':'redacted', 'text':'[stage] RUN hunter2', 'origin':'buildkit_header',
+             'lines':{'start':2, 'end':2}},
+            {'state':'original', 'text':'exporting to image\nsecret', 'origin':'buildkit_header',
+             'lines':{'start':2, 'end':2}},
+            {'state':'original', 'text':'exporting to image', 'origin':'buildkit_header',
+             'lines':{'start':1, 'end':1}},
+        ]
+        for label in mutations:
+            with self.subTest(label=label):
+                source = evidence_source()
+                source['traces'][0]['evidence'][1]['source_label'] = label
+                with self.assertRaises(ValueError):
+                    validate(source)
+
+    def test_unavailable_source_label_has_no_invented_text_or_provenance(self):
+        unavailable = {'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None}
+        source = evidence_source()
+        for node in source['traces'][0]['evidence'][1:]:
+            node['source_label'] = copy.deepcopy(unavailable)
+        validate(source)
+        for field, value in (('text', 'other'), ('origin', 'buildkit_header'),
+                             ('lines', {'start':2, 'end':2})):
+            bad = copy.deepcopy(source)
+            bad['traces'][0]['evidence'][1]['source_label'][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                validate(bad)
+
     def test_authored_operations_without_buildkit_source_ids_remain_valid(self):
         source = evidence_source()
         for node in source['traces'][0]['evidence'][1:]:
             node['buildkit'] = None
+            node['source_label'] = {
+                'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None}
         source['traces'][0]['evidence'][0]['identity'] = {
             'state': 'unknown', 'name': None, 'origin': 'unknown',
             'step_id': None, 'lines': None}

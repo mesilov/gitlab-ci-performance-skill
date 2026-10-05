@@ -22,6 +22,12 @@ def generate(output):
              (16, 50, 'example/SECRET_TOKEN:tag'), (24, 99, 'example/'+'a'*128+':tag')]
     for start, step, target in cases:
         add(start, '#0 building with "default" instance using docker driver')
+        add(start, '#1 [internal] load build definition from Dockerfile')
+        add(start, '#1 DONE 0.1s')
+        add(start, '#8 [internal] load build context')
+        add(start, '#8 DONE 0.2s')
+        add(start, f'#{step-2} [private-stage 1/2] RUN <img src=x onerror=alert(1)> PRIVATE_TOKEN=hunter2')
+        add(start, f'#{step-2} DONE 0.3s')
         add(start, f'#{step-1} [1/1] COPY app /app')
         add(start, f'#{step-1} CACHED')
         add(start, f'#{step} exporting to image')
@@ -32,6 +38,8 @@ def generate(output):
     raw = ('\n'.join(lines)+'\n').encode()
     source['traces'] = [parse_trace(j['id'], raw, fetched_at=AT, analyzed_at=AT) for j in source['jobs']]
     assert b'SECRET_TOKEN' not in encoded(source)
+    assert b'PRIVATE_TOKEN' not in encoded(source)
+    assert b'<img' not in encoded(source)
     save(output/'jobs.json', source)
     report = build_report(source, generated_at=AT)
     save(output/'report.json', report)

@@ -352,7 +352,7 @@
     2,
     1
   ],
-  "schema_version": "2.1.0",
+  "schema_version": "2.2.0",
   "skill_version": "2.0.1",
   "source": {
     "anchor_max_job_id": 104,
@@ -435,6 +435,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -458,6 +459,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 35.0,
@@ -481,6 +483,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 15.0,
             "end_seconds": 25.0,
@@ -504,6 +507,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 35.0,
@@ -517,7 +521,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 104,
       "line_count": 6,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "b72214fe1803fdc36afadda7ad52b28c681f2979b4dc4e3f1efadc664b1e3dcb",
@@ -548,6 +552,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -571,6 +576,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 35.0,
@@ -594,6 +600,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 15.0,
             "end_seconds": 25.0,
@@ -617,6 +624,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 35.0,
@@ -630,7 +638,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 103,
       "line_count": 6,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "83c5f2f90121cea3248b277dd5756e966ef7ca2bc134f370c9cae6db76f45058",
@@ -661,6 +669,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -684,6 +693,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 35.0,
@@ -707,6 +717,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 15.0,
             "end_seconds": 25.0,
@@ -730,6 +741,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 35.0,
@@ -743,7 +755,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 102,
       "line_count": 6,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "000a3306530036169bca3f213e31982918afab9323da4c15b369d3fee7e3a792",
@@ -774,6 +786,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -797,6 +810,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 35.0,
@@ -820,6 +834,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 15.0,
             "end_seconds": 25.0,
@@ -843,6 +858,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 35.0,
@@ -856,7 +872,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 101,
       "line_count": 6,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "448741a2091a4914eb2767aba83e301e7dd079657713ab339f419a001ef012e0",
@@ -887,6 +903,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -910,6 +927,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 325.0,
             "end_seconds": 330.0,
@@ -942,6 +960,7 @@
           },
           "parent_id": null,
           "push_coverage": "excluded",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 40.0,
@@ -967,6 +986,15 @@
           },
           "parent_id": "j4-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 4,
+              "start": 4
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[internal] load metadata for [redacted]"
+          },
           "timing": {
             "duration_seconds": 3.0,
             "end_seconds": 13.0,
@@ -992,6 +1020,15 @@
           },
           "parent_id": "j4-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 6,
+              "start": 6
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[1/2] COPY [redacted]"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 20.0,
@@ -1017,6 +1054,15 @@
           },
           "parent_id": "j4-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 8,
+              "start": 8
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[2/2] RUN [redacted]"
+          },
           "timing": {
             "duration_seconds": 8.0,
             "end_seconds": 29.0,
@@ -1042,6 +1088,12 @@
           },
           "parent_id": "j4-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": null,
+            "origin": "unknown",
+            "state": "unavailable",
+            "text": null
+          },
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 40.0,
@@ -1067,6 +1119,15 @@
           },
           "parent_id": "j4-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 11,
+              "start": 11
+            },
+            "origin": "buildkit_progress",
+            "state": "original",
+            "text": "exporting layers"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 36.0,
@@ -1092,6 +1153,15 @@
           },
           "parent_id": "j4-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 13,
+              "start": 13
+            },
+            "origin": "buildkit_progress",
+            "state": "redacted",
+            "text": "unpacking to [redacted]"
+          },
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 40.0,
@@ -1105,7 +1175,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 4,
       "line_count": 15,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "10ff728a9d1a69fd45b6243d1472bf7c4541e37ddc32cecc37eb5e49919a9142",
@@ -1136,6 +1206,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -1159,6 +1230,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 325.0,
             "end_seconds": 330.0,
@@ -1191,6 +1263,7 @@
           },
           "parent_id": null,
           "push_coverage": "excluded",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 40.0,
@@ -1216,6 +1289,15 @@
           },
           "parent_id": "j3-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 4,
+              "start": 4
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[internal] load metadata for [redacted]"
+          },
           "timing": {
             "duration_seconds": 3.0,
             "end_seconds": 13.0,
@@ -1241,6 +1323,15 @@
           },
           "parent_id": "j3-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 6,
+              "start": 6
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[1/2] COPY [redacted]"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 20.0,
@@ -1266,6 +1357,15 @@
           },
           "parent_id": "j3-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 8,
+              "start": 8
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[2/2] RUN [redacted]"
+          },
           "timing": {
             "duration_seconds": 8.0,
             "end_seconds": 29.0,
@@ -1291,6 +1391,12 @@
           },
           "parent_id": "j3-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": null,
+            "origin": "unknown",
+            "state": "unavailable",
+            "text": null
+          },
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 40.0,
@@ -1316,6 +1422,15 @@
           },
           "parent_id": "j3-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 11,
+              "start": 11
+            },
+            "origin": "buildkit_progress",
+            "state": "original",
+            "text": "exporting layers"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 36.0,
@@ -1341,6 +1456,15 @@
           },
           "parent_id": "j3-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 13,
+              "start": 13
+            },
+            "origin": "buildkit_progress",
+            "state": "redacted",
+            "text": "unpacking to [redacted]"
+          },
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 40.0,
@@ -1354,7 +1478,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 3,
       "line_count": 15,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "2f5c5fe1c5e0a03c690074728348d34bd4463dd7b2cbd87c081145cf8d515acb",
@@ -1385,6 +1509,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -1408,6 +1533,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 325.0,
             "end_seconds": 330.0,
@@ -1440,6 +1566,7 @@
           },
           "parent_id": null,
           "push_coverage": "excluded",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 40.0,
@@ -1465,6 +1592,15 @@
           },
           "parent_id": "j2-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 4,
+              "start": 4
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[internal] load metadata for [redacted]"
+          },
           "timing": {
             "duration_seconds": 3.0,
             "end_seconds": 13.0,
@@ -1490,6 +1626,15 @@
           },
           "parent_id": "j2-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 6,
+              "start": 6
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[1/2] COPY [redacted]"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 20.0,
@@ -1515,6 +1660,15 @@
           },
           "parent_id": "j2-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 8,
+              "start": 8
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[2/2] RUN [redacted]"
+          },
           "timing": {
             "duration_seconds": 8.0,
             "end_seconds": 29.0,
@@ -1540,6 +1694,12 @@
           },
           "parent_id": "j2-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": null,
+            "origin": "unknown",
+            "state": "unavailable",
+            "text": null
+          },
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 40.0,
@@ -1565,6 +1725,15 @@
           },
           "parent_id": "j2-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 11,
+              "start": 11
+            },
+            "origin": "buildkit_progress",
+            "state": "original",
+            "text": "exporting layers"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 36.0,
@@ -1590,6 +1759,15 @@
           },
           "parent_id": "j2-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 13,
+              "start": 13
+            },
+            "origin": "buildkit_progress",
+            "state": "redacted",
+            "text": "unpacking to [redacted]"
+          },
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 40.0,
@@ -1603,7 +1781,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 2,
       "line_count": 15,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "8164977e363788089940c97294191f51fa7a920432d5843a4667dd9285de85a7",
@@ -1634,6 +1812,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 4.0,
@@ -1657,6 +1836,7 @@
           },
           "parent_id": null,
           "push_coverage": "unknown",
+          "source_label": null,
           "timing": {
             "duration_seconds": 325.0,
             "end_seconds": 330.0,
@@ -1689,6 +1869,7 @@
           },
           "parent_id": null,
           "push_coverage": "excluded",
+          "source_label": null,
           "timing": {
             "duration_seconds": 30.0,
             "end_seconds": 40.0,
@@ -1714,6 +1895,15 @@
           },
           "parent_id": "j1-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 4,
+              "start": 4
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[internal] load metadata for [redacted]"
+          },
           "timing": {
             "duration_seconds": 3.0,
             "end_seconds": 13.0,
@@ -1739,6 +1929,15 @@
           },
           "parent_id": "j1-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 6,
+              "start": 6
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[1/2] COPY [redacted]"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 20.0,
@@ -1764,6 +1963,15 @@
           },
           "parent_id": "j1-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 8,
+              "start": 8
+            },
+            "origin": "buildkit_header",
+            "state": "redacted",
+            "text": "[2/2] RUN [redacted]"
+          },
           "timing": {
             "duration_seconds": 8.0,
             "end_seconds": 29.0,
@@ -1789,6 +1997,12 @@
           },
           "parent_id": "j1-image-1",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": null,
+            "origin": "unknown",
+            "state": "unavailable",
+            "text": null
+          },
           "timing": {
             "duration_seconds": 10.0,
             "end_seconds": 40.0,
@@ -1814,6 +2028,15 @@
           },
           "parent_id": "j1-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 11,
+              "start": 11
+            },
+            "origin": "buildkit_progress",
+            "state": "original",
+            "text": "exporting layers"
+          },
           "timing": {
             "duration_seconds": 6.0,
             "end_seconds": 36.0,
@@ -1839,6 +2062,15 @@
           },
           "parent_id": "j1-image-1-op-4",
           "push_coverage": "unknown",
+          "source_label": {
+            "lines": {
+              "end": 13,
+              "start": 13
+            },
+            "origin": "buildkit_progress",
+            "state": "redacted",
+            "text": "unpacking to [redacted]"
+          },
           "timing": {
             "duration_seconds": 4.0,
             "end_seconds": 40.0,
@@ -1852,7 +2084,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 1,
       "line_count": 15,
-      "parser_version": "1.1.0",
+      "parser_version": "1.2.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "09e3fc73fe440a15615761b9e9a55c0f3c4b3c69b29cdb636bb56c99972f7a3e",

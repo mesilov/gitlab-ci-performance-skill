@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.gitlab-ci-performance.invalid/v2.1/common.schema.json",
+  "$id": "https://schemas.gitlab-ci-performance.invalid/v2.2/common.schema.json",
   "$defs": {
     "project": {
       "type": "object",
@@ -532,6 +532,16 @@
               "type": "null"
             }
           ]
+        },
+        "source_label": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/source_label"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -545,7 +555,8 @@
         "lines",
         "push_coverage",
         "buildkit",
-        "identity"
+        "identity",
+        "source_label"
       ],
       "allOf": [
         {
@@ -586,6 +597,32 @@
           "then": {
             "properties": {
               "buildkit": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "operation",
+                  "part"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_label": {
+                "$ref": "#/$defs/source_label"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "source_label": {
                 "type": "null"
               }
             }
@@ -647,7 +684,7 @@
           "minimum": 0
         },
         "parser_version": {
-          "const": "1.1.0"
+          "const": "1.2.0"
         },
         "fetched_at": {
           "type": "string",
@@ -966,7 +1003,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "skill_version": {
           "type": "string",
@@ -2224,7 +2261,7 @@
           "const": "per-run-interval-union-then-median"
         },
         "trace_parser": {
-          "const": "1.1.0"
+          "const": "1.2.0"
         },
         "timing_evidence_policy": {
           "const": "reported-duration-with-inferred-positions-allowed"
@@ -2248,13 +2285,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "calculation_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "trace_parser_version": {
-          "const": "1.1.0"
+          "const": "1.2.0"
         },
         "skill_version": {
           "type": "string",
@@ -2387,13 +2424,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "calculation_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "trace_parser_version": {
-          "const": "1.1.0"
+          "const": "1.2.0"
         },
         "skill_version": {
           "type": "string",
@@ -2563,7 +2600,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.1.0"
+          "const": "2.2.0"
         },
         "kind": {
           "const": "gitlab_job_performance_compact"
@@ -2699,6 +2736,95 @@
       },
       "required": [
         "step_id"
+      ]
+    },
+    "source_label": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "original",
+            "redacted",
+            "unavailable"
+          ]
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "buildkit_header",
+            "buildkit_progress",
+            "unknown"
+          ]
+        },
+        "lines": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/lines"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "text",
+        "origin",
+        "lines"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "unavailable"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "text": {
+                "type": "null"
+              },
+              "origin": {
+                "const": "unknown"
+              },
+              "lines": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "origin": {
+                "enum": [
+                  "buildkit_header",
+                  "buildkit_progress"
+                ]
+              },
+              "lines": {
+                "$ref": "#/$defs/lines"
+              }
+            }
+          }
+        }
       ]
     },
     "image_identity": {
