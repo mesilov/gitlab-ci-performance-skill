@@ -372,9 +372,14 @@ JSON remain unchanged.
 
 When installing/updating a ready upstream tag/commit, verify its official upstream
 provenance and resolved commit, complete directory replacement and required
-dependencies (install pinned requirements in a venv if needed). Run documented
-commands using the installed helper; successful execution checks the installed
-copy's usability. Do not obtain the whole repository solely to rerun tests.
+dependencies (install pinned requirements in a venv if needed). For installation
+or update only, run `python <skill-dir>/scripts/report_cli.py --help` as a local
+entrypoint smoke check, then report the installed directory and resolved commit.
+It needs no GitLab project or saved report inputs and performs no GitLab transport;
+do not request those inputs or collect from a project solely to verify installation.
+This checks CLI startup, not end-to-end report behavior. Run the documented report
+route using the installed helper only when a report is also requested.
+Do not obtain the whole repository solely to rerun tests.
 This replacement, a schema change or report size does not automatically require
 acceptance/regression testing or establish a published release.
 

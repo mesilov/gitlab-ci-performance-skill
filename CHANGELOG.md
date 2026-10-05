@@ -5,6 +5,8 @@
 - Separate routine report generation, ready upstream installation/update and
   skill development/diagnosis; retain built-in validation without automatically
   rerunning the full repository test/browser QA suite for each report (#23).
+- Complete install/update-only requests with a local installed-helper `--help`
+  check; require the report route only when a report is also requested (PR #25 review).
 - Raise canonical serialized UTF-8 JSON to 64 MiB inclusive; HTML has no JSON cap.
 - Materialize all 16/32 pages (default 16) within retention 64 and independent baseline 10.
 - Preserve original log bytes/titles/stages/arguments/references and provenance.

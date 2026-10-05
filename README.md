@@ -49,8 +49,10 @@ own file format; keep their files separate.
 
 ## Install or update
 
-You need Python 3.10+, `glab` authenticated for your GitLab host, and the Python
-dependencies in [requirements.txt](skills/gitlab-ci-performance/requirements.txt).
+You need Python 3.10+ and the Python dependencies in
+[requirements.txt](skills/gitlab-ci-performance/requirements.txt). GitLab collection
+also requires `glab` authenticated for your GitLab host; local `--help` and offline
+commands need no GitLab authentication.
 
 1. Use the official upstream repository below. The clone selects its current
    default branch. For a pinned version, select the required tag or commit before
@@ -83,13 +85,19 @@ To update, move the old `.agents/skills/gitlab-ci-performance` directory to an
 unused backup location. Keep reports, private caches and customizations there.
 Copy the new skill into its place; existing links still work. Do not overlay old
 modules. Check that the installed files match the selected upstream commit and
-that dependencies are available. A successful run through the installed helper
-confirms that copy works. Installing a ready version is not skill development
+that dependencies are available. For installation/update only, run the selected
+installed helper with `--help` (for example,
+`python <skill-dir>/scripts/report_cli.py --help`), then report the installed
+directory and resolved commit. This local check confirms CLI startup without a
+GitLab project, saved report inputs or GitLab transport. Do not request those
+inputs or collect solely to verify installation. Run the report route through
+that copy only when a report is also requested; `--help` does not verify
+end-to-end report behavior. Installing a ready version is not skill development
 or release verification; do not obtain the whole repository just to rerun tests.
 
 ## Report use and checks
 
-Run the documented commands with compatible inputs and keep built-in validation
+For a requested report, run the documented commands with compatible inputs and keep built-in validation
 enabled. For offline regeneration, reuse saved data. Finish with a report link.
 Do not repeat a successful built-in check with a separate validation command.
 
