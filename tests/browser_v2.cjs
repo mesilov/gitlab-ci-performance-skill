@@ -6,7 +6,7 @@ const url=process.argv[2],out=process.argv[3];
 if(!url||!out)throw Error('Usage: browser_v2.cjs FILE_URL OUTPUT_DIRECTORY');
 (async()=>{fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({channel:process.env.CI_REPORT_BROWSER_CHANNEL==='chromium'?undefined:(process.env.CI_REPORT_BROWSER_CHANNEL||'chrome'),headless:true});
 try{const context=await browser.newContext({offline:true,viewport:{width:1280,height:960}}),page=await context.newPage(),errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(['warning','error'].includes(m.type()))errors.push(m.text());});page.on('request',r=>requests.push(r.url()));await page.goto(url);
-const R=await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent));assert.equal(R.schema_version,'2.0.0');assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('#jobs button').count(),R.job_types.length);
+const R=await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent));assert.equal(R.schema_version,'2.1.0');assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('#jobs button').count(),R.job_types.length);
 // Reviewed visual hierarchy must survive the canonical renderer and clean installs.
 const ru=await page.locator('html').getAttribute('lang')==='ru';
 assert.equal(await page.locator('h1').innerText(),ru?'Как работает CI':'How CI is performing');

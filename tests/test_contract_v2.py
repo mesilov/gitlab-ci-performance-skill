@@ -28,7 +28,7 @@ class ContractV2Tests(unittest.TestCase):
     def test_impossible_evidence_intervals_and_parents(self):
         s=sample();t=s['traces'][0];t.update(state='available',reason_code='parsed',sha256='a'*64,bytes_read=10,line_count=2)
         t['coverage'].update(recognized_lines=2,total_lines=2,complete=True)
-        n={'id':'phase-1','kind':'phase','code':'step_script','parent_id':None,'timing':{'duration_seconds':1,'start_seconds':0,'end_seconds':1,'origin':'section','quality':'exact','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown'}
+        n={'id':'phase-1','kind':'phase','code':'step_script','parent_id':None,'timing':{'duration_seconds':1,'start_seconds':0,'end_seconds':1,'origin':'section','quality':'exact','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown','buildkit':None,'identity':None}
         t['evidence']=[n];self.c.validate(s)
         for mutate in [lambda n:n['timing'].update(end_seconds=-1),lambda n:n.update(parent_id='missing'),lambda n:n['timing'].update(origin='api_execution'),lambda n:n.update(parent_id='phase-1')]:
             bad=copy.deepcopy(s);mutate(bad['traces'][0]['evidence'][0])
@@ -66,7 +66,7 @@ class ReviewRegressionTests(unittest.TestCase):
         from report_contract import check_trace
         t=sample()['traces'][0];t.update(state='available',sha256='a'*64,bytes_read=10,line_count=2)
         t['coverage'].update(recognized_lines=2,total_lines=2,complete=True)
-        t['evidence']=[{'id':'op','kind':'operation','code':'export_local_unpack','parent_id':None,'timing':{'duration_seconds':100,'start_seconds':0,'end_seconds':2,'origin':'buildkit_reported','quality':'inferred','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown'}]
+        t['evidence']=[{'id':'op','kind':'operation','code':'export_local_unpack','parent_id':None,'timing':{'duration_seconds':100,'start_seconds':0,'end_seconds':2,'origin':'buildkit_reported','quality':'inferred','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown','buildkit':{'step_id':1},'identity':None}]
         with self.assertRaises(ValueError):check_trace(t)
     def test_filtered_canonical_attempt_can_export_with_external_type(self):
         from report_calculate import build_report

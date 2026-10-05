@@ -29,13 +29,14 @@ def node(identifier, start, end, code='export_local_unpack', parent=None, cached
             'timing': {'duration_seconds': None if cached else end-start, 'start_seconds': start,
                        'end_seconds': end, 'origin': 'buildkit_reported', 'quality': 'exact',
                        'precision_seconds': .001}, 'cached': cached, 'complete': True,
-            'lines': {'start': 1, 'end': 2}, 'push_coverage': 'unknown'}
+            'lines': {'start': 1, 'end': 2}, 'push_coverage': 'unknown',
+            'buildkit': None, 'identity': None}
 
 
 def trace(job_id, evidence):
     return {'job_id': job_id, 'state': 'available', 'reason_code': 'recognized',
             'sha256': 'a'*64, 'prefix_sha256': None, 'bytes_read': 100,
-            'line_count': 10, 'parser_version': '1.0.0', 'fetched_at': AT,
+            'line_count': 10, 'parser_version': '1.1.0', 'fetched_at': AT,
             'analyzed_at': AT, 'cached': False,
             'coverage': {'recognized_lines': 10, 'total_lines': 10,
                          'truncated': False, 'complete': True}, 'evidence': evidence}

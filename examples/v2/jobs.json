@@ -352,7 +352,7 @@
     2,
     1
   ],
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "skill_version": "2.0.1",
   "source": {
     "anchor_max_job_id": 104,
@@ -422,10 +422,12 @@
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j104-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -443,10 +445,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j104-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 6,
@@ -464,10 +468,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j104-command-1",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 4,
@@ -485,10 +491,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j104-command-2",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 6,
@@ -509,7 +517,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 104,
       "line_count": 6,
-      "parser_version": "1.0.0",
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "b72214fe1803fdc36afadda7ad52b28c681f2979b4dc4e3f1efadc664b1e3dcb",
@@ -527,10 +535,12 @@
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j103-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -548,10 +558,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j103-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 6,
@@ -569,10 +581,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j103-command-1",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 4,
@@ -590,10 +604,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j103-command-2",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 6,
@@ -614,7 +630,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 103,
       "line_count": 6,
-      "parser_version": "1.0.0",
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "83c5f2f90121cea3248b277dd5756e966ef7ca2bc134f370c9cae6db76f45058",
@@ -632,10 +648,12 @@
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j102-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -653,10 +671,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j102-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 6,
@@ -674,10 +694,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j102-command-1",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 4,
@@ -695,10 +717,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j102-command-2",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 6,
@@ -719,7 +743,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 102,
       "line_count": 6,
-      "parser_version": "1.0.0",
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "000a3306530036169bca3f213e31982918afab9323da4c15b369d3fee7e3a792",
@@ -737,10 +761,12 @@
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j101-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -758,10 +784,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j101-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 6,
@@ -779,10 +807,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j101-command-1",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 4,
@@ -800,10 +830,12 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "script_command",
           "complete": true,
           "id": "j101-command-2",
+          "identity": null,
           "kind": "command",
           "lines": {
             "end": 6,
@@ -824,7 +856,7 @@
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 101,
       "line_count": 6,
-      "parser_version": "1.0.0",
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
       "sha256": "448741a2091a4914eb2767aba83e301e7dd079657713ab339f419a001ef012e0",
@@ -832,20 +864,22 @@
     },
     {
       "analyzed_at": "2026-10-04T00:00:00+00:00",
-      "bytes_read": 654,
+      "bytes_read": 788,
       "cached": false,
       "coverage": {
         "complete": true,
-        "recognized_lines": 14,
-        "total_lines": 14,
+        "recognized_lines": 15,
+        "total_lines": 15,
         "truncated": false
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j4-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -863,13 +897,15 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j4-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
-            "end": 14,
+            "end": 15,
             "start": 3
           },
           "parent_id": null,
@@ -884,13 +920,24 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "image_build",
           "complete": true,
           "id": "j4-image-1",
+          "identity": {
+            "lines": {
+              "end": 12,
+              "start": 12
+            },
+            "name": "demo-service",
+            "origin": "buildkit_naming",
+            "state": "known",
+            "step_id": 4
+          },
           "kind": "image",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 4
           },
           "parent_id": null,
@@ -905,10 +952,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 1
+          },
           "cached": false,
           "code": "base_image",
           "complete": true,
           "id": "j4-image-1-op-1",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 5,
@@ -926,10 +977,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 2
+          },
           "cached": false,
           "code": "context_application_copy",
           "complete": true,
           "id": "j4-image-1-op-2",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 7,
@@ -947,10 +1002,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 3
+          },
           "cached": false,
           "code": "dependencies_builder_setup",
           "complete": true,
           "id": "j4-image-1-op-3",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 9,
@@ -968,13 +1027,17 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j4-image-1-op-4",
+          "identity": null,
           "kind": "operation",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 10
           },
           "parent_id": "j4-image-1",
@@ -989,10 +1052,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j4-image-1-op-4-part-1",
+          "identity": null,
           "kind": "part",
           "lines": {
             "end": 11,
@@ -1010,14 +1077,18 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j4-image-1-op-4-part-2",
+          "identity": null,
           "kind": "part",
           "lines": {
-            "end": 12,
-            "start": 12
+            "end": 13,
+            "start": 13
           },
           "parent_id": "j4-image-1-op-4",
           "push_coverage": "unknown",
@@ -1033,29 +1104,31 @@
       ],
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 4,
-      "line_count": 14,
-      "parser_version": "1.0.0",
+      "line_count": 15,
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
-      "sha256": "eb84241419303491e5543182b73fa71c04042f0dcef449b8176d6f2a72260837",
+      "sha256": "10ff728a9d1a69fd45b6243d1472bf7c4541e37ddc32cecc37eb5e49919a9142",
       "state": "available"
     },
     {
       "analyzed_at": "2026-10-04T00:00:00+00:00",
-      "bytes_read": 654,
+      "bytes_read": 788,
       "cached": false,
       "coverage": {
         "complete": true,
-        "recognized_lines": 14,
-        "total_lines": 14,
+        "recognized_lines": 15,
+        "total_lines": 15,
         "truncated": false
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j3-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -1073,13 +1146,15 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j3-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
-            "end": 14,
+            "end": 15,
             "start": 3
           },
           "parent_id": null,
@@ -1094,13 +1169,24 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "image_build",
           "complete": true,
           "id": "j3-image-1",
+          "identity": {
+            "lines": {
+              "end": 12,
+              "start": 12
+            },
+            "name": "demo-service",
+            "origin": "buildkit_naming",
+            "state": "known",
+            "step_id": 4
+          },
           "kind": "image",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 4
           },
           "parent_id": null,
@@ -1115,10 +1201,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 1
+          },
           "cached": false,
           "code": "base_image",
           "complete": true,
           "id": "j3-image-1-op-1",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 5,
@@ -1136,10 +1226,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 2
+          },
           "cached": false,
           "code": "context_application_copy",
           "complete": true,
           "id": "j3-image-1-op-2",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 7,
@@ -1157,10 +1251,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 3
+          },
           "cached": false,
           "code": "dependencies_builder_setup",
           "complete": true,
           "id": "j3-image-1-op-3",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 9,
@@ -1178,13 +1276,17 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j3-image-1-op-4",
+          "identity": null,
           "kind": "operation",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 10
           },
           "parent_id": "j3-image-1",
@@ -1199,10 +1301,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j3-image-1-op-4-part-1",
+          "identity": null,
           "kind": "part",
           "lines": {
             "end": 11,
@@ -1220,14 +1326,18 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j3-image-1-op-4-part-2",
+          "identity": null,
           "kind": "part",
           "lines": {
-            "end": 12,
-            "start": 12
+            "end": 13,
+            "start": 13
           },
           "parent_id": "j3-image-1-op-4",
           "push_coverage": "unknown",
@@ -1243,29 +1353,31 @@
       ],
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 3,
-      "line_count": 14,
-      "parser_version": "1.0.0",
+      "line_count": 15,
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
-      "sha256": "826f62e612eaa40abc66c4c41b0f32fff1fe622118dfacb1aec4a86acfff01a3",
+      "sha256": "2f5c5fe1c5e0a03c690074728348d34bd4463dd7b2cbd87c081145cf8d515acb",
       "state": "available"
     },
     {
       "analyzed_at": "2026-10-04T00:00:00+00:00",
-      "bytes_read": 654,
+      "bytes_read": 788,
       "cached": false,
       "coverage": {
         "complete": true,
-        "recognized_lines": 14,
-        "total_lines": 14,
+        "recognized_lines": 15,
+        "total_lines": 15,
         "truncated": false
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j2-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -1283,13 +1395,15 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j2-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
-            "end": 14,
+            "end": 15,
             "start": 3
           },
           "parent_id": null,
@@ -1304,13 +1418,24 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "image_build",
           "complete": true,
           "id": "j2-image-1",
+          "identity": {
+            "lines": {
+              "end": 12,
+              "start": 12
+            },
+            "name": "demo-service",
+            "origin": "buildkit_naming",
+            "state": "known",
+            "step_id": 4
+          },
           "kind": "image",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 4
           },
           "parent_id": null,
@@ -1325,10 +1450,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 1
+          },
           "cached": false,
           "code": "base_image",
           "complete": true,
           "id": "j2-image-1-op-1",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 5,
@@ -1346,10 +1475,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 2
+          },
           "cached": false,
           "code": "context_application_copy",
           "complete": true,
           "id": "j2-image-1-op-2",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 7,
@@ -1367,10 +1500,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 3
+          },
           "cached": false,
           "code": "dependencies_builder_setup",
           "complete": true,
           "id": "j2-image-1-op-3",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 9,
@@ -1388,13 +1525,17 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j2-image-1-op-4",
+          "identity": null,
           "kind": "operation",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 10
           },
           "parent_id": "j2-image-1",
@@ -1409,10 +1550,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j2-image-1-op-4-part-1",
+          "identity": null,
           "kind": "part",
           "lines": {
             "end": 11,
@@ -1430,14 +1575,18 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j2-image-1-op-4-part-2",
+          "identity": null,
           "kind": "part",
           "lines": {
-            "end": 12,
-            "start": 12
+            "end": 13,
+            "start": 13
           },
           "parent_id": "j2-image-1-op-4",
           "push_coverage": "unknown",
@@ -1453,29 +1602,31 @@
       ],
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 2,
-      "line_count": 14,
-      "parser_version": "1.0.0",
+      "line_count": 15,
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
-      "sha256": "ab68c26415cd1f189dd3a4e28d5809e4d9629baad19e7a72a936afba6c5626d1",
+      "sha256": "8164977e363788089940c97294191f51fa7a920432d5843a4667dd9285de85a7",
       "state": "available"
     },
     {
       "analyzed_at": "2026-10-04T00:00:00+00:00",
-      "bytes_read": 654,
+      "bytes_read": 788,
       "cached": false,
       "coverage": {
         "complete": true,
-        "recognized_lines": 14,
-        "total_lines": 14,
+        "recognized_lines": 15,
+        "total_lines": 15,
         "truncated": false
       },
       "evidence": [
         {
+          "buildkit": null,
           "cached": false,
           "code": "get_sources",
           "complete": true,
           "id": "j1-phase-1",
+          "identity": null,
           "kind": "phase",
           "lines": {
             "end": 2,
@@ -1493,13 +1644,15 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "step_script",
           "complete": true,
           "id": "j1-phase-2",
+          "identity": null,
           "kind": "phase",
           "lines": {
-            "end": 14,
+            "end": 15,
             "start": 3
           },
           "parent_id": null,
@@ -1514,13 +1667,24 @@
           }
         },
         {
+          "buildkit": null,
           "cached": false,
           "code": "image_build",
           "complete": true,
           "id": "j1-image-1",
+          "identity": {
+            "lines": {
+              "end": 12,
+              "start": 12
+            },
+            "name": "demo-service",
+            "origin": "buildkit_naming",
+            "state": "known",
+            "step_id": 4
+          },
           "kind": "image",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 4
           },
           "parent_id": null,
@@ -1535,10 +1699,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 1
+          },
           "cached": false,
           "code": "base_image",
           "complete": true,
           "id": "j1-image-1-op-1",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 5,
@@ -1556,10 +1724,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 2
+          },
           "cached": false,
           "code": "context_application_copy",
           "complete": true,
           "id": "j1-image-1-op-2",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 7,
@@ -1577,10 +1749,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 3
+          },
           "cached": false,
           "code": "dependencies_builder_setup",
           "complete": true,
           "id": "j1-image-1-op-3",
+          "identity": null,
           "kind": "operation",
           "lines": {
             "end": 9,
@@ -1598,13 +1774,17 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j1-image-1-op-4",
+          "identity": null,
           "kind": "operation",
           "lines": {
-            "end": 13,
+            "end": 14,
             "start": 10
           },
           "parent_id": "j1-image-1",
@@ -1619,10 +1799,14 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j1-image-1-op-4-part-1",
+          "identity": null,
           "kind": "part",
           "lines": {
             "end": 11,
@@ -1640,14 +1824,18 @@
           }
         },
         {
+          "buildkit": {
+            "step_id": 4
+          },
           "cached": false,
           "code": "export_local_unpack",
           "complete": true,
           "id": "j1-image-1-op-4-part-2",
+          "identity": null,
           "kind": "part",
           "lines": {
-            "end": 12,
-            "start": 12
+            "end": 13,
+            "start": 13
           },
           "parent_id": "j1-image-1-op-4",
           "push_coverage": "unknown",
@@ -1663,11 +1851,11 @@
       ],
       "fetched_at": "2026-10-04T00:00:00+00:00",
       "job_id": 1,
-      "line_count": 14,
-      "parser_version": "1.0.0",
+      "line_count": 15,
+      "parser_version": "1.1.0",
       "prefix_sha256": null,
       "reason_code": "parsed",
-      "sha256": "ecde260ba2cc004ccb7f3270db1eaf035984c5a25890512f9f00b826071da8c0",
+      "sha256": "09e3fc73fe440a15615761b9e9a55c0f3c4b3c69b29cdb636bb56c99972f7a3e",
       "state": "available"
     }
   ]

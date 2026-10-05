@@ -633,10 +633,10 @@
       "type_id": "jobtype-ed596d8361aeb47303e9"
     }
   ],
-  "canonical_report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c",
-  "canonical_report_sha256": "762d9bfbbd57e46f518d03f565e4b15f2865b340f54eeced96da7485d8b947d9",
+  "canonical_report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d",
+  "canonical_report_sha256": "664c83d8dbf2ab9429d51f16894dd1fd58a9aae304b314d0ab7c0f3cf0558e00",
   "envelope": {
-    "calculation_version": "2.0.0",
+    "calculation_version": "2.1.0",
     "collected_at": "2026-10-04T00:00:00+00:00",
     "coverage": {
       "baseline_source": null,
@@ -713,7 +713,7 @@
       },
       "refs": [],
       "timing_evidence_policy": "reported-duration-with-inferred-positions-allowed",
-      "trace_parser": "1.0.0"
+      "trace_parser": "1.1.0"
     },
     "project": {
       "default_branch": "main",
@@ -726,11 +726,11 @@
       "baseline_sha256": null,
       "catalog_sha256": null,
       "guidance_sha256": null,
-      "snapshot_sha256": "5974d984724542a353270a62a0156fb04d82231971f8714aef49967c854bbeb8",
+      "snapshot_sha256": "e1b567763473af5fffa343f01a53d6218c8ef9728a999cea55fe600a95478916",
       "source_configuration": []
     },
-    "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c",
-    "schema_version": "2.0.0",
+    "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d",
+    "schema_version": "2.1.0",
     "selection": {
       "job_type_id": "jobtype-ed596d8361aeb47303e9",
       "reason_code": "longest_known_total"
@@ -738,48 +738,48 @@
     "skill_version": "2.0.1",
     "timezone": "UTC",
     "trace_analyzed_at": "2026-10-04T00:00:00+00:00",
-    "trace_parser_version": "1.0.0"
+    "trace_parser_version": "1.1.0"
   },
   "external_references": [
     {
       "collection": "traces",
       "id": "1",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "101",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "102",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "103",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "104",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "2",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "3",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     },
     {
       "collection": "traces",
       "id": "4",
-      "report_id": "36b5861bc35936305e2646a0509416c9ba905ffc5688540268b04984bb73d83c"
+      "report_id": "d67d20c634948ecf63d1ee1769833872602797e4fcfeef6ced572af3b07c3f5d"
     }
   ],
   "job_types": [
@@ -965,7 +965,7 @@
     }
   ],
   "kind": "gitlab_job_performance_compact",
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "scope": {
     "attempt_ids": [],
     "job_type_id": null,
@@ -2035,7 +2035,7 @@
               "evidence_id": "j1-image-1-op-4",
               "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
               "lines": {
-                "end": 13,
+                "end": 14,
                 "start": 10
               }
             },
@@ -2379,7 +2379,7 @@
               "evidence_id": "j1-phase-2",
               "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
               "lines": {
-                "end": 14,
+                "end": 15,
                 "start": 3
               }
             },
@@ -2682,7 +2682,7 @@
               "evidence_id": "j1-image-1-op-4",
               "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
               "lines": {
-                "end": 13,
+                "end": 14,
                 "start": 10
               }
             },
@@ -3026,7 +3026,7 @@
               "evidence_id": "j1-phase-2",
               "job_url": "https://gitlab.example.com/example/demo-service/-/jobs/1",
               "lines": {
-                "end": 14,
+                "end": 15,
                 "start": 3
               }
             },

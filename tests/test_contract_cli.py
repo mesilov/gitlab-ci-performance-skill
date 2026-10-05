@@ -23,7 +23,7 @@ class CLIV2Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             d=Path(d);source=d/'source.json';source.write_text(json.dumps(sample()))
             self.run_cli('report','--snapshot',source,'--generated-at',AT,'--output',d/'report.json')
-            report=json.loads((d/'report.json').read_text());self.assertEqual(report['schema_version'],'2.0.0')
+            report=json.loads((d/'report.json').read_text());self.assertEqual(report['schema_version'],'2.1.0')
             self.assertEqual(report['skill_version'],(SKILL/'VERSION').read_text().strip())
             self.run_cli('export','--report',d/'report.json','--scope','overview','--output',d/'compact.json')
             self.run_cli('validate',d/'compact.json')
@@ -44,14 +44,14 @@ class CLIV2Tests(unittest.TestCase):
             self.assertIn('Asia/Bishkek',html)
             self.run_cli('report','--snapshot',source,'--language','de','--output',d/'bad.json',ok=False)
             self.assertFalse((d/'bad.json').exists())
-    def test_v1_requires_explicit_legacy_generation_but_renders(self):
-        with tempfile.TemporaryDirectory() as d:
-            d=Path(d)
-            p=self.run_cli('report','--snapshot',ROOT/'examples/jobs.json','--output',d/'bad.json',ok=False)
-            self.assertIn('--legacy',p.stderr);self.assertFalse((d/'bad.json').exists())
-            self.run_cli('report','--legacy','--snapshot',ROOT/'examples/jobs.json','--output',d/'old.json')
-            self.run_cli('render','--report',d/'old.json','--output',d/'old.html')
-            self.run_cli('validate',ROOT/'examples/report.json')
+    def test_old_artifacts_and_legacy_flags_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory=Path(directory)
+            self.run_cli('report','--snapshot',ROOT/'examples/jobs.json','--output',directory/'bad.json',ok=False)
+            self.run_cli('report','--legacy','--snapshot',ROOT/'examples/jobs.json','--output',directory/'old.json',ok=False)
+            self.run_cli('render','--report',ROOT/'examples/report.json','--output',directory/'old.html',ok=False)
+            self.run_cli('validate',ROOT/'examples/report.json',ok=False)
+            self.assertEqual(list(directory.iterdir()),[])
 
 class MainCompatibilityTests(unittest.TestCase):
     run_cli=CLIV2Tests.run_cli
@@ -70,7 +70,7 @@ class MainCompatibilityTests(unittest.TestCase):
             self.run_cli('render','--report',directory/'published.json','--language','ru','--output',directory/'published.html',path=published_cli)
             self.run_cli('report','--snapshot',source,'--generated-at',AT,'--output',directory/'canonical.json',path=canonical_cli)
             canonical=json.loads((directory/'canonical.json').read_text())
-            self.assertEqual((canonical['kind'],canonical['schema_version']),('gitlab_job_performance_report','2.0.0'))
+            self.assertEqual((canonical['kind'],canonical['schema_version']),('gitlab_job_performance_report','2.1.0'))
             self.assertEqual(canonical['skill_version'],(installed/'VERSION').read_text().strip())
             self.run_cli('export','--report',directory/'canonical.json','--scope','overview','--output',directory/'compact.json',path=canonical_cli)
             self.run_cli('validate',directory/'compact.json',path=canonical_cli)
@@ -85,10 +85,10 @@ class MainCompatibilityTests(unittest.TestCase):
             result=subprocess.run([sys.executable,str(ROOT/'examples/generate_release_demo.py'),'--output-dir',directory],
                                   cwd=directory,capture_output=True,text=True)
             self.assertEqual(result.returncode,0,result.stderr)
-            self.run_cli('validate',Path(directory)/'report.json')
+            self.run_cli('validate',Path(directory)/'report.json',path=SKILL/'scripts/ci_report.py')
             self.assertTrue((Path(directory)/'report.html').is_file())
 
-    def test_language_override_keeps_canonical_json_and_installed_legacy(self):
+    def test_language_override_keeps_canonical_json_in_installed_skill(self):
         import re
         with tempfile.TemporaryDirectory() as root:
             root=Path(root);installed=root/'installed';shutil.copytree(SKILL,installed)
@@ -99,17 +99,7 @@ class MainCompatibilityTests(unittest.TestCase):
             self.run_cli('render','--report',root/'v2.json','--language','en','--output',root/'v2.html',path=installed_cli)
             rendered=(root/'v2.html').read_text();self.assertIn('lang="en"',rendered)
             self.assertEqual(json.loads(re.search(r'<script id="report-data" type="application/json">(.*?)</script>',rendered,re.S)[1]),saved)
-            self.run_cli('report','--legacy','--snapshot',ROOT/'examples/jobs.json','--release-refs','main',
-                         '--windows','1','--baseline-window','4','--growth-percent','40','--growth-seconds','60',
-                         '--min-baseline','2','--min-current','1','--output',root/'old.json',path=installed_cli)
-            old=json.loads((root/'old.json').read_text());self.assertEqual(old['schema_version'],'1.1.0')
-            self.assertEqual(old['release_history']['baseline_window'],4)
-            self.assertEqual(old['method']['policy']['relative_growth_percent'],40)
-            self.run_cli('render','--report',root/'old.json','--language','ru','--output',root/'old.html',path=installed_cli)
-            self.assertIn('lang="ru"',(root/'old.html').read_text())
-            for version in ['old.json','v2.json']:
-                self.run_cli('validate',root/version,path=installed_cli)
-            self.run_cli('validate',ROOT/'examples/report.json',path=installed_cli)
+            self.run_cli('validate',root/'v2.json',path=installed_cli)
             self.run_cli('report','--snapshot',source,'--windows','32','--output',root/'invalid.json',ok=False)
             self.assertFalse((root/'invalid.json').exists())
 
