@@ -6,7 +6,9 @@ const url=process.argv[2],out=process.argv[3];
 if(!url||!out)throw Error('Usage: browser_v2.cjs FILE_URL OUTPUT_DIRECTORY');
 (async()=>{fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({channel:process.env.CI_REPORT_BROWSER_CHANNEL==='chromium'?undefined:(process.env.CI_REPORT_BROWSER_CHANNEL||'chrome'),headless:true});
 try{const context=await browser.newContext({offline:true,viewport:{width:1280,height:960}}),page=await context.newPage(),errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(['warning','error'].includes(m.type()))errors.push(m.text());});page.on('request',r=>requests.push(r.url()));await page.goto(url);
-const R=await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent));assert.equal(R.schema_version,'2.2.0');assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('#jobs button').count(),R.job_types.length);
+const R=await page.locator('#report-data').evaluate(e=>JSON.parse(e.textContent));assert.equal(R.schema_version,'3.0.0');assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('#jobs button').count(),R.job_types.length);
+assert.equal(await page.locator('#size').inputValue(),'16','initial window contains 16 attempts');
+assert.deepEqual(await page.locator('#size option').evaluateAll(options=>options.map(o=>o.value)),['16','32']);
 // Reviewed visual hierarchy must survive the canonical renderer and clean installs.
 const ru=await page.locator('html').getAttribute('lang')==='ru';
 assert.equal(await page.locator('h1').innerText(),ru?'Как работает CI':'How CI is performing');
@@ -27,7 +29,7 @@ await page.locator('#attempt-history summary').click();
 for(const jt of R.job_types){
 assert.equal(await page.locator(`[data-type="${jt.id}"]`).getAttribute('data-latest-seconds'),String(R.attempts.find(a=>a.id===jt.latest_attempt_id).timing.total.value_seconds));
 assert.equal(await page.locator(`[data-baseline="${jt.id}"]`).getAttribute('data-seconds'),String(jt.baseline.metrics.total.median_seconds));
-await page.locator(`[data-type="${jt.id}"]`).click();for(const size of ['32','64']){await page.locator('#size').selectOption(size);let w=R.windows.find(w=>w.type_id===jt.id&&w.size===Number(size)&&w.page===0);await verifyWindow(w);if(size==='32'&&w.has_older){await page.locator('#older').click();w=R.windows.find(v=>v.id===w.older_window_id);await verifyWindow(w);await page.locator('#latest').click();}}
+await page.locator(`[data-type="${jt.id}"]`).click();for(const size of ['16','32']){await page.locator('#size').selectOption(size);let w=R.windows.find(w=>w.type_id===jt.id&&w.size===Number(size)&&w.page===0);await verifyWindow(w);while(w.has_older){await page.locator('#older').click();w=R.windows.find(v=>v.id===w.older_window_id);await verifyWindow(w);}while(w.has_newer){await page.locator('#newer').click();w=R.windows.find(v=>v.id===w.newer_window_id);await verifyWindow(w);}if(w.has_older){await page.locator('#older').click();await page.locator('#latest').click();await verifyWindow(R.windows.find(v=>v.id===w.id));}else assert.equal(await page.locator('#latest').isDisabled(),true);}
 }
 async function verifyWindow(w){
 assert.match(await page.locator('#detail-title').innerText(),new RegExp('#'+w.attempt_ids[0]+' '),'latest attempt selected in a new window');

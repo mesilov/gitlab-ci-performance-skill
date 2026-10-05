@@ -182,7 +182,7 @@ def _input_snapshot(value, host, project):
     validate(value, 'jobs')
     if (value.get('schema_version') != VERSION or value.get('kind') != 'gitlab_job_performance_source' or
             any(value.get('project', {}).get(k) != project[k] for k in ('host', 'id', 'path'))):
-        raise ValueError('Resume/cache requires a 2.2.0 source for the same host/project')
+        raise ValueError('Resume/cache requires a 3.0.0 source for the same host/project')
     if len({j['id'] for j in value['jobs']}) != len(value['jobs']):
         raise ValueError('Resume/cache has duplicate job IDs')
 

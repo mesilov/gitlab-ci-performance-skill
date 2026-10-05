@@ -7,8 +7,8 @@ and refs absent from pipeline metadata are errors. A single selected ref is
 allowed, but has no cross-ref evidence by itself. Branches and tags share the
 API ref field; this mode does not infer ref type from names.
 
-The v2 workflow uses `--comparison-mode cross_ref --ref REF` with v2 sources;
-see [contract-v2.md](contract-v2.md) for its independent 32/64 attempt windows
+The canonical workflow uses `--comparison-mode cross_ref --ref REF` with canonical sources;
+see [contract-v2.md](contract-v2.md) for its independent 16/32 attempt windows
 and baseline policy. The method below remains the legacy 1.1 behavior.
 
 ## Selection and grouping

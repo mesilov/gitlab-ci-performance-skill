@@ -1,4 +1,4 @@
-# Report contract 2.2.0
+# Report contract 3.0.0
 
 This contract implements issue #4 through the installed `scripts/report_cli.py`.
 It coexists with the published `scripts/ci_report.py` reviewed-report workflow
@@ -20,16 +20,13 @@ Other command intervals remain accessible. Stored offsets use the first log
 timestamp/marker as origin; its alignment with API job start is not known. The
 shared scale must not claim that its zero is the API start.
 Unknown positions receive no invented bar; CACHED is labeled without a numeric
-zero. Known image identities show a safe lowercase basename from a naming or
-unpack line; absent, conflicting or redacted names remain explicit. Operations
-and parts retain their original BuildKit source step IDs and a separate
-`source_label`. Safe fixed BuildKit titles are stored exactly; Dockerfile
-instructions and destination-bearing operations retain only their structural
-prefix/opcode with `[redacted]`. The label records original/redacted/unavailable
-state, header/progress origin and physical source lines. Localized categories
-remain separate calculation keys. HTML prefixes the saved step ID once and keeps
-the label unchanged in English and Russian. An unknown image's ordinal is only a
-display label; ambiguous parser sessions must not be merged by HTML.
+zero. Known image identities show a short basename on the timeline and the full
+original destination reference in details. Unknown and conflicting identities are
+explicit. Operations/parts retain complete original BuildKit titles and source
+step IDs. Arguments, stage names, registry/path/tag/digest, markup and long titles
+are never masked, translated or truncated. Categories stay separate calculation
+keys. The original title is identical in English and Russian. Text is untrusted data.
+
 The reviewed renderer stays available through
 `ci_report.py`. Shared presentation does not imply shared calculation semantics:
 queue-spike rules, baseline eligibility and evidence policies remain in each saved
@@ -51,15 +48,15 @@ python scripts/report_cli.py render --report <new-run>/report.json --language ru
 ```
 
 Only collection performs transport requests. This route accepts only canonical
-schema 2.2.0 and parser 1.2.0. Collect a fresh source for older artifacts; there
+schema 3.0.0 and parser 2.0.0. Collect a fresh source for older artifacts; there
 is no migration, old-source calculation or old-report rendering/export support.
 
 ## Artifacts and validation
 
 | Artifact | Kind | Schema |
 |---|---|---|
-| Safe metadata and compact trace summaries | `gitlab_job_performance_source` | `source-contract-v2.schema.json` |
-| Individual trace summary | parser `1.2.0` | `trace.schema.json` |
+| Projected metadata, evidence and original log bytes | `gitlab_job_performance_source` | `source-contract-v2.schema.json` |
+| Individual trace summary | parser `2.0.0` | `trace.schema.json` |
 | Canonical report | `gitlab_job_performance_report` | `report-contract-v2.schema.json` |
 | LLM selection | `gitlab_job_performance_compact` | `compact.schema.json` |
 
@@ -79,7 +76,7 @@ and recomputed sample aggregates/category unions/ranks. Run `report_cli.py valid
 
 ## Envelope and source provenance
 
-The report stores schema/calculation versions `2.2.0`, parser `1.2.0`, the actual
+The report stores schema/calculation versions `3.0.0`, parser `2.0.0`, the actual
 installed skill version read from `VERSION`, and a
 stable report kind. These versions are independent; the local prototype's version
 is unrelated. `report_id` hashes input provenance and policies, excluding generated
@@ -95,7 +92,7 @@ not change any of these timestamps. Dates are machine-readable timestamps with
 an offset; `timezone` is an IANA display zone. The HTML title formats `generated_at`
 in that zone as `GitLab Job performance report <timestamp>` (or a Russian heading).
 
-The canonical report contains the original safe source projection and optional
+The canonical report contains the original source projection and optional
 baseline source, their hashes, project identity, catalog/guidance hashes, policy
 records and `coverage` including collection limits, selection configuration,
 request counters, observed counts and stop/cursor state. Catalog purposes retain
@@ -113,18 +110,23 @@ per type, up to 10 baseline-only metadata candidates/type, concurrency 4, reques
 60 s, trace 4 MiB/50,000 physical lines. Page budget may be explicitly increased;
 concurrency/type/trace caps cannot exceed these ceilings. Positive limits and
 selector types are checked before collection. The report/export payload cap is
-16 MiB, individual trace summary 128 KiB. The parser admits at most 152 nodes;
-each parent and child consumes one slot. Before returning, it measures the exact
-serialized summary and removes trailing evidence groups when variable-length job
-IDs or line positions would exceed 128 KiB. Such coverage is marked
-`partial/evidence_limit`. This replaces the 120-node budget after
-measuring 126 correctly segmented nodes / about 77 KiB for the reported eight-build
-job. The prior 160-node ceiling was reduced to 152 after adding structured source
-title provenance; the maximum-length identity/title fixture with a two-digit job ID
-is 128,837 bytes. The verified 126-node job remains admitted. Existing operations
-still receive progress, DONE, naming and section closures after admission stops.
-Omitted nodes retain `partial/evidence_limit`, whole-source hash/size/line counts
-and explicit incomplete coverage. The schema ceiling of 512 is not a runtime budget.
+64 MiB (67,108,864 bytes) for canonical serialized UTF-8 JSON including indentation
+and trailing LF; equality is allowed. Read, validation, save, calculation, compact
+export and render input use the same limit. This is not a process memory limit.
+A minified input is also checked after canonical serialization. File reads stop
+at cap+1 bytes. HTML has no JSON-size cap: escaping/layout change its byte size.
+A single report may contain several jobs and exceed the previous 16 MiB limit.
+
+Each trace including original source has a 16 MiB serialized ceiling and at most
+4096 evidence nodes. Headers have no separate length limit. Existing closures and
+identity are processed even when admission stops. Coverage exposes evidence_limit
+with reason node_limit or summary_bytes and first_omitted_line; the full received
+bytes remain stored. If source/provenance alone exceeds the trace ceiling, fail
+explicitly rather than silently discarding text.
+
+Omitted evidence retains partial/evidence_limit state, original source hash,
+size and line counts, and an explicit earliest omitted physical line.
+The schema and runtime node-admission ceiling both equal 4096.
 
 Let P be metadata pages, R retained attempts and B extra baseline candidates. Per
 invocation, requests are bounded by `2 + P + 2*(R+B) + R`: project/version, pages,
@@ -154,23 +156,27 @@ per-invocation page budget. Request/page counters are cumulative; budgets descri
 the current invocation. Already-seen IDs are deduplicated across resume snapshots;
 duplicates/cycles within a new invocation are errors. Fresh job/pipeline checks are
 repeated. `resumed_from_sha256` records the previous snapshot.
-Resume and cache inputs must use schema 2.2.0 / parser 1.2.0; incompatible inputs
+Resume and cache inputs must use schema 3.0.0 / parser 2.0.0; incompatible inputs
 fail before any transport request.
 
 `--cache source.json` reuses only validated summaries for unchanged freshly checked
 terminal jobs, same parser, within recorded `cache_max_age_seconds` (default 86400)
 and current input limits. Status/commit/start/finish/duration/erasure changes invalidate
-reuse. Active jobs are re-read. Raw traces are never cached or exported. Cached
+reuse. Active jobs are re-read. Original received bytes are included in cached trace records and full/window/attempt exports. Overview omits traces and declares external references. Cached
 summaries retain original fetch/analysis times and set `cached=true`. `report`,
 `export` and `render` have no transport calls; source availability cannot trigger GETs.
 
 ## Windows, baselines and timings
 
-Only history sizes 32/64 exist. Per selected job/ref mode the report materializes
-newest 32, preceding 32 when available, and newest 64. Older/Newer operate between
-32 pages within retained history; Latest returns to the newest page. Size64 has
-no older page inside the64 retained set. Actual IDs, count, dates, anchor, page and
-navigation flags are stored; small histories are not padded.
+Only display sizes 16/32 exist, default 16. Retention remains at most 64 attempts
+per stage/name, including failures, cancellations and reruns. Every available
+page is materialized: up to four pages of 16 or two pages of 32. Page bounds are
+page * size : page * size + size. Short pages are not padded. IDs, members, dates,
+navigation links and flags are saved and validated. Older/Newer move one page of
+the same size; Latest returns to page zero. Changing size selects its newest page.
+Chart, history, statistics, findings and compact window exports use that page's
+exact members. Existing same-ref and explicit cross-ref selection rules remain.
+
 
 Same-ref is the default. Latest attempt of any outcome anchors its ref. Cross-ref
 requires `--comparison-mode cross_ref --ref REF` (repeat); original refs remain
@@ -179,7 +185,7 @@ and report use the same explicit ref selection when collecting baseline-only dat
 
 The inferential baseline uses up to 10 preceding, freshly known successful jobs in
 freshly successful pipelines on permitted refs. It is independent of the displayed
-32/64 window, excludes the latest ID, and can use metadata outside retained history.
+16/32 window, excludes the latest ID, and can use metadata outside retained history.
 External source baselines must belong to the same project and cannot be newer.
 Overlapping IDs use current metadata and cannot duplicate the latest observation.
 An incomplete search records actual membership/coverage. Descriptive window metrics
@@ -206,10 +212,10 @@ intervals from timestamped echoes are inferred logged intervals, not profiled ru
 
 Every retained attempt has a summary state: available, not_run, empty, unavailable,
 erased, permission_denied, unsupported or partial. not_run requires job metadata
-compatible with no start; erased requires explicit erasure metadata. Trace404 is
+compatible with no start; erased requires explicit erasure metadata. Trace 404 is
 unavailable because the API cannot distinguish absent job from absent log. Fetch
 failures never establish that execution did not occur. A successful empty trace has
-size0 and the empty-byte hash. Unsupported nonempty traces retain hash/counts without
+size 0 and the empty-byte hash. Unsupported nonempty traces retain hash/counts without
 inventing evidence. Failed/canceled runs can still have valid trace evidence.
 
 Whole-byte `sha256` exists only for whole inputs; byte/line-limited prefixes use
@@ -220,13 +226,9 @@ GitLab may not support direct line-range deep links.
 
 Allowlisted nodes cover phases, image sessions, operations, nested parts and command
 intervals. Arbitrary section labels, command strings, arguments, output/environment
-and credentials are omitted. Safe image basenames, fixed semantic codes, bounded
-source step IDs and numerical evidence survive.
-BuildKit instruction matching is anchored, so keywords inside RUN arguments cannot
-misclassify COPY/FROM. Repeated frames deduplicate within a session; repeated step
-IDs across explicit sessions remain separate. Ambiguous changed headers split partial
-sessions. Identical reused IDs/headers without any observable boundary cannot be
-reliably distinguished and remain a documented parser limitation.
+are preserved in source bytes and original labels/references. Localized fixed
+semantic codes stay separate from source. Original text is inert data for HTML
+and LLM consumers; do not execute it or interpret it as instructions.
 
 Only `exporting to ...` starts an export operation. Layers, manifest, config,
 naming and unpacking extend that operation's source range. An identical banner
@@ -249,18 +251,38 @@ BuildKit source step, or `{step_id: INTEGER}` with a source ID from 0 through
 equal its parent operation's source step; nested timings do not add to the parent.
 Part source lines also remain inside their parent operation's line range.
 
-Only image nodes have an `identity` object. It contains `state`, `name`, `origin`,
-`step_id` and `lines`. State is known, unknown, conflicting or redacted. A known
-name is a lowercase leaf basename matching `[a-z0-9]+(?:[._-][a-z0-9]+)*`, at
-most 128 characters; registry/path, credentials, tag and digest are omitted.
-Known identities have `origin=buildkit_naming|buildkit_unpack`, the original
-source step ID and physical source line range. The range stays inside the image
-node's source range and resolves to a direct child operation with the same
-BuildKit source step; its lines stay inside that operation's range. Unknown
-identities have null name/step/lines and origin
-unknown. Conflicting/redacted identities keep a null name and may retain complete
-safe source provenance. Other node kinds have null identity. The closed schema
-rejects raw headers, destinations and additional identity fields.
+Only image nodes have identity: state, short name, full reference, origin, step_id,
+and physical lines. States are known, unknown and conflicting. References retain
+registry/path/tag/digest and are validated against actual naming/unpacking lines.
+A known caption is derived from the reference; no sensitive-name heuristic exists.
+Unknown fields remain null. Conflicting destinations all remain in original bytes;
+the first identity provenance resolves inside its direct operation.
+
+Trace source stores encoding=base64, raw_base64 and the declared display_transform
+utf 8-replacement-ansi-csi-strip-outer-cr. Decoding yields every received byte,
+including ANSI/control sequences and invalid UTF-8. Hash, byte count and physical
+LF-delimited line count are validated against it. Evidence links through job ID,
+hash and physical lines to image/operation/part IDs. Operation fragments select
+physical frames of the saved BuildKit step within its range; interleaved other
+steps stay in the full log. Phase/command fragments preserve their entire ranges.
+The full received log remains viewable even if unsupported or evidence-limited.
+
+HTML offers selectable original text, complete titles/references, copying and
+lossless byte downloads. A separate readable view removes ANSI CSI and outer CR
+only. Text views decode invalid UTF-8 with replacement and explicitly explain
+that limitation; downloaded bytes/base64 remain lossless. Original spaces, case
+and arguments are preserved. Rendering uses textContent; embedded JSON escapes
+less-than, greater-than and ampersand, including a source closing script tag.
+No source command is executed or treated as an LLM instruction; source is data.
+
+Coverage distinguishes received-byte completeness from supported-line parsing:
+truncated input uses a prefix hash; missing bytes are not recovered; unparsed
+lines set partial coverage. Supported timing costs remain measured observations.
+Schema 3.0.0/parser 2.0.0 rejects earlier masked sources/reports, including 2.2.0/1.2.0.
+There is no silent migration: original text requires fresh collection or
+reprocessing an independently retained original log. Masked arguments cannot be
+recovered. The separate ci_report.py route retains its older contracts.
+
 
 BuildKit durations remain `origin=buildkit_reported`. With a timestamped DONE,
 defensible positions can be inferred from completion time minus reported duration:
@@ -313,7 +335,7 @@ python scripts/report_cli.py export --report report.json --job-type JOB_TYPE_ID 
 python scripts/report_cli.py export --report report.json --attempt-ids 123 124 --output attempts.json
 ```
 
-Overview contains all overviews/materialized findings and safe timing metadata, omitting
+Overview contains all overviews/materialized findings and projected timing metadata, omitting
 trace nodes. Window exports contain one selected window/type with baseline/latest
 metadata needed to interpret it, omitting unrelated traces. Attempt exports contain
 selected metadata/trace details and parent nodes. Selection order is deterministic;
@@ -333,7 +355,7 @@ source/evidence and recorded calculation policy, never HTML scraping/browser exe
 ## Versions and installed verification
 
 Schema, calculation and parser versions identify the accepted artifact semantics.
-This route supports only schema/calculation 2.2.0 with parser 1.2.0. Unknown or
+This route supports only schema/calculation 3.0.0 with parser 2.0.0. Unknown or
 older versions/fields reject; there are no frozen canonical schemas, migration
 or old-report support. A new collection supplies the required evidence.
 `render --language en|ru` affects HTML only; saved language metadata and embedded

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.gitlab-ci-performance.invalid/v2.2/common.schema.json",
+  "$id": "https://schemas.gitlab-ci-performance.invalid/v3.0/common.schema.json",
   "$defs": {
     "project": {
       "type": "object",
@@ -684,7 +684,7 @@
           "minimum": 0
         },
         "parser_version": {
-          "const": "1.2.0"
+          "const": "2.0.0"
         },
         "fetched_at": {
           "type": "string",
@@ -714,13 +714,41 @@
             },
             "complete": {
               "type": "boolean"
+            },
+            "evidence_limit": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "reason",
+                    "first_omitted_line"
+                  ],
+                  "properties": {
+                    "reason": {
+                      "enum": [
+                        "node_limit",
+                        "summary_bytes"
+                      ]
+                    },
+                    "first_omitted_line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              ]
             }
           },
           "required": [
             "recognized_lines",
             "total_lines",
             "truncated",
-            "complete"
+            "complete",
+            "evidence_limit"
           ]
         },
         "evidence": {
@@ -728,7 +756,27 @@
           "items": {
             "$ref": "#/$defs/node"
           },
-          "maxItems": 512
+          "maxItems": 4096
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "encoding",
+            "raw_base64",
+            "display_transform"
+          ],
+          "properties": {
+            "encoding": {
+              "const": "base64"
+            },
+            "raw_base64": {
+              "type": "string"
+            },
+            "display_transform": {
+              "const": "utf8-replacement-ansi-csi-strip-outer-cr"
+            }
+          }
         }
       },
       "required": [
@@ -744,7 +792,8 @@
         "analyzed_at",
         "cached",
         "coverage",
-        "evidence"
+        "evidence",
+        "source"
       ]
     },
     "budgets": {
@@ -1003,7 +1052,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "skill_version": {
           "type": "string",
@@ -1513,7 +1562,8 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 3
+          "maxItems": 6,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -1986,13 +2036,14 @@
         },
         "size": {
           "enum": [
-            32,
-            64
+            16,
+            32
           ]
         },
         "page": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 3
         },
         "anchor_attempt_id": {
           "anyOf": [
@@ -2011,7 +2062,8 @@
             "type": "integer",
             "minimum": 1
           },
-          "maxItems": 64
+          "maxItems": 32,
+          "uniqueItems": true
         },
         "from": {
           "anyOf": [
@@ -2077,7 +2129,7 @@
                 "type": "integer",
                 "minimum": 1
               },
-              "maxItems": 64
+              "maxItems": 32
             },
             "metrics": {
               "$ref": "#/$defs/metrics"
@@ -2098,7 +2150,7 @@
                 "type": "integer",
                 "minimum": 1
               },
-              "maxItems": 64
+              "maxItems": 32
             },
             "metrics": {
               "$ref": "#/$defs/metrics"
@@ -2132,6 +2184,40 @@
         "descriptive",
         "inferential",
         "findings"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "size": {
+                "const": 16
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attempt_ids": {
+                "maxItems": 16
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "size": {
+                "const": 32
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "page": {
+                "maximum": 1
+              }
+            }
+          }
+        }
       ]
     },
     "provenance": {
@@ -2261,7 +2347,7 @@
           "const": "per-run-interval-union-then-median"
         },
         "trace_parser": {
-          "const": "1.2.0"
+          "const": "2.0.0"
         },
         "timing_evidence_policy": {
           "const": "reported-duration-with-inferred-positions-allowed"
@@ -2285,13 +2371,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "calculation_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "trace_parser_version": {
-          "const": "1.2.0"
+          "const": "2.0.0"
         },
         "skill_version": {
           "type": "string",
@@ -2424,13 +2510,13 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "calculation_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "trace_parser_version": {
-          "const": "1.2.0"
+          "const": "2.0.0"
         },
         "skill_version": {
           "type": "string",
@@ -2600,7 +2686,7 @@
       "additionalProperties": false,
       "properties": {
         "schema_version": {
-          "const": "2.2.0"
+          "const": "3.0.0"
         },
         "kind": {
           "const": "gitlab_job_performance_compact"
@@ -2745,7 +2831,6 @@
         "state": {
           "enum": [
             "original",
-            "redacted",
             "unavailable"
           ]
         },
@@ -2753,9 +2838,7 @@
           "anyOf": [
             {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 128,
-              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+              "minLength": 1
             },
             {
               "type": "null"
@@ -2835,16 +2918,14 @@
           "enum": [
             "known",
             "unknown",
-            "conflicting",
-            "redacted"
+            "conflicting"
           ]
         },
         "name": {
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$",
-              "maxLength": 128
+              "minLength": 1
             },
             {
               "type": "null"
@@ -2879,6 +2960,17 @@
               "type": "null"
             }
           ]
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -2886,7 +2978,8 @@
         "name",
         "origin",
         "step_id",
-        "lines"
+        "lines",
+        "reference"
       ],
       "allOf": [
         {
@@ -2915,6 +3008,10 @@
               },
               "lines": {
                 "$ref": "#/$defs/lines"
+              },
+              "reference": {
+                "type": "string",
+                "minLength": 1
               }
             }
           },
@@ -2943,6 +3040,9 @@
                 "type": "null"
               },
               "lines": {
+                "type": "null"
+              },
+              "reference": {
                 "type": "null"
               }
             }

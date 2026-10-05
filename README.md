@@ -176,40 +176,20 @@ a synthetic standalone glab transport, request/payload limits and privacy sentin
 
 `tests/workflow_browser_check.cjs` checks offline workflow parity, 32/64 pipeline windows, attempts, en/ru, mobile layout and the 300-second boundary.
 
-## Canonical report and compact LLM exports (#4)
+## Canonical original-log contract 3.0.0
 
-The `ci_report.py` workflow above supports reviewed job reports. The additional
-installed `report_cli.py` produces the namespaced
-canonical contract from [issue #4](https://github.com/mesilov/gitlab-ci-performance-skill/issues/4):
-
-```sh
-.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py collect --host gitlab.example.com --project group/service --output reports/contract/jobs.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py report --snapshot reports/contract/jobs.json --output reports/contract/report.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py export --report reports/contract/report.json --scope overview --output reports/contract/overview.json
-.venv/bin/python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/contract/report.json --language ru --output reports/contract/report.html
-```
-
-This workflow retains at most 64 attempts/type, refreshes all outcomes, exports
-allowlisted bounded evidence and precomputes all supported 32/64 findings. Full,
-overview, selected-window and selected-attempt JSON use the same measurements as
-the offline HTML. Read the [canonical contract](skills/gitlab-ci-performance/references/contract-v2.md)
-for selectors, budgets, sample/interval policies and unavailable guidance.
-Generate its public synthetic example with the [demo generator](examples/generate_v2.py).
-The canonical HTML now follows the reviewed report layout: compact job cards with
-baseline/outcome context, a framed vertical list of action priorities, collapsed history and a compact
-two-level attempt timeline. Select an image build, then an operation to see
-its source lines and nested substeps. Runner phases and technical metadata are
-collapsed. Canonical schema/calculation 2.2.0 and parser 1.2.0 preserve confirmed
-safe image basenames, original BuildKit step numbers, safe original operation and
-suboperation titles, and physical source ranges. The interface language never
-translates source titles. Sensitive instruction arguments are replaced with an
-explicit `[redacted]`; unavailable titles use an explicit category fallback.
-Unknown, conflicting or redacted identities are explicit. Export progress stays
-inside its source operation; nested/overlapping durations are not added. Only the
-current canonical contract is supported; collect fresh data instead of migrating
-old reports. See the regenerated [synthetic preview](examples/v2/report.html). Calculation and
-queue-spike policies remain specific to each contract.
-Its `gitlab_job_performance_*` kinds distinguish it from the `ci_report.py` workflow;
-entrypoints reject incompatible artifacts rather than silently converting them.
+The report_cli.py collect → report → export → render route uses 64 MiB (67,108,864)
+serialized UTF-8 JSON, inclusive. This does not cap process memory or HTML bytes.
+Materialized display windows are 16/32 (default 16); retention 64 and baseline 10
+remain independent. Complete source titles, stage names, arguments and image
+references are preserved in both languages, with lossless received bytes in base64.
+HTML offers source text, copying, byte downloads and inert text rendering.
+A separate readable view removes ANSI CSI and outer CR. Invalid UTF-8 is replaced
+only in text views and explicitly explained; original bytes remain lossless.
+Input limits 4 MiB/50,000 physical lines, 4096 evidence nodes and 16 MiB per trace
+including source have explicit incompleteness boundaries. Schema 3.0.0/parser 2.0.0
+rejects prior masked sources/reports including 2.2.0/1.2.0; fresh collection or
+reprocessing original bytes is required. There is no silent migration. The
+separate ci_report.py route retains its old semantics. See contract-v2.md.
 
 MIT — [license](LICENSE).

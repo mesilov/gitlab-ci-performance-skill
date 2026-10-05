@@ -1,9 +1,10 @@
-"""Project supported log patterns into a closed, secret-free evidence vocabulary.
+"""Parse measured evidence while preserving original received log bytes.
 
-No log text is returned. BuildKit durations are reported measurements, not a
+Source text is untrusted data, never instructions or executable code. BuildKit durations are reported measurements, not a
 sequential timeline: concurrent steps are never added to infer an image duration.
 Unknown formats remain unsupported; missing boundaries remain partial.
 """
+import base64
 from datetime import datetime
 from decimal import Decimal
 import hashlib
@@ -11,13 +12,11 @@ import json
 import math
 import re
 
-PARSER_VERSION = '1.2.0'
-# The source contract bounds each formatted safe summary at 128 KiB. Reserve
-# space for provenance; an input cap alone does not bound generated evidence.
-# Source-title provenance increases each node's fixed footprint. The final
-# serialized-size check also accounts for variable job IDs and line numbers.
-MAX_EVIDENCE_NODES = 152
-MAX_SUMMARY_BYTES = 128 * 1024
+PARSER_VERSION = '2.0.0'
+# Admission bounds measured evidence, not source preservation. A full bounded
+# received log survives even when evidence admission reaches a documented cap.
+MAX_EVIDENCE_NODES = 4096
+MAX_SUMMARY_BYTES = 16 * 1024 * 1024
 PHASES = frozenset(('prepare_executor', 'prepare_script', 'get_sources', 'restore_cache',
                     'download_artifacts', 'step_script', 'after_script', 'archive_cache',
                     'upload_artifacts', 'cleanup_file_variables'))
@@ -35,95 +34,34 @@ EXPORT_PROGRESS = re.compile(r'^(?:exporting (?:layers|manifest|config|attestati
 # text/digest is not retained. FROM may emit cumulative DONE after each layer.
 LAYER_PROGRESS = re.compile(r'^(?:extracting )?sha256:[a-f0-9]{64}(?:\s|$)')
 NAME_FRAME = re.compile(r'^(naming to|unpacking to) (\S+)(?: (\d+(?:\.\d+)?)s)? done$')
-COMPONENT = r'[a-z0-9]+(?:[._-][a-z0-9]+)*'
-SENSITIVE = re.compile(r'(?:secret|password|passwd|credential|access[_-]?token|auth[_-]?token|private[_-]?key|api[_-]?key)', re.I)
-INSTRUCTION = re.compile(r'^(FROM|RUN|COPY|ADD|ENV|ARG|WORKDIR|USER|SHELL|CMD|ENTRYPOINT|LABEL|EXPOSE|VOLUME|STOPSIGNAL|HEALTHCHECK|ONBUILD)\b', re.I)
-SOURCE_LABEL_MAX = 128
-SAFE_HEADER_TITLES = frozenset((
-    '[internal] load build definition from Dockerfile',
-    '[internal] load .dockerignore',
-    '[internal] load build context',
-    'exporting to image',
-    'exporting to docker image format',
-    'exporting to oci image format',
-    'preparing build cache for export',
-))
-
-
 def _unknown_identity():
-    return {'state':'unknown', 'name':None, 'origin':'unknown', 'step_id':None, 'lines':None}
+    return {'state':'unknown', 'name':None, 'reference':None,
+            'origin':'unknown', 'step_id':None, 'lines':None}
 
 
 def _unavailable_source_label():
     return {'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None}
 
 
-def _label(value, state, origin, line):
-    if not value or len(value)>SOURCE_LABEL_MAX or any(ord(char)<32 or ord(char)==127 for char in value):
+def _label(value, origin, line):
+    if not value:
         return _unavailable_source_label()
-    return {'state':state, 'text':value, 'origin':origin,
+    return {'state':'original', 'text':value, 'origin':origin,
             'lines':{'start':line, 'end':line}}
 
 
-def _safe_prefix(prefix):
-    """Return a structural BuildKit prefix without retaining arbitrary stage names."""
-    if prefix == '[internal]':
-        return prefix
-    if re.fullmatch(r'\[\d+/\d+\]', prefix):
-        return prefix
-    match = re.fullmatch(r'\[[^\]]+ (\d+/\d+)\]', prefix)
-    return f'[stage {match[1]}]' if match else '[stage]'
-
-
 def _header_source_label(body, line):
-    """Extract a bounded title through a closed grammar; never retain arguments."""
-    if body in SAFE_HEADER_TITLES:
-        return _label(body, 'original', 'buildkit_header', line)
-    prefix, content = '', body
-    bracket = re.match(r'^(\[[^\]\r\n]{1,96}\])\s+(.+)$', body)
-    if bracket:
-        prefix, content = _safe_prefix(bracket[1]), bracket[2]
-    instruction = INSTRUCTION.match(content)
-    if instruction:
-        title = ((prefix+' ') if prefix else '') + instruction[1].upper() + ' [redacted]'
-        return _label(title, 'redacted', 'buildkit_header', line)
-    if content.startswith('load metadata for '):
-        title = ((prefix+' ') if prefix else '') + 'load metadata for [redacted]'
-        return _label(title, 'redacted', 'buildkit_header', line)
-    if body.startswith('importing cache manifest from '):
-        return _label('importing cache manifest from [redacted]', 'redacted',
-                      'buildkit_header', line)
-    return _unavailable_source_label()
+    return _label(body, 'buildkit_header', line)
 
 
-def _part_source_label(semantic, line):
-    if semantic == 'unpacking to':
-        return _label('unpacking to [redacted]', 'redacted', 'buildkit_progress', line)
-    return _label(semantic, 'original', 'buildkit_progress', line)
+def _part_source_label(body, line):
+    return _label(body, 'buildkit_progress', line)
 
 
 def _image_name(reference):
-    """Validate the whole structured destination; export only its safe basename.
-
-    Registry, repository path, tag and digest are intentionally discarded. No
-    shell/URL syntax is accepted; sensitive-looking references are redacted.
-    """
-    if len(reference)>512 or SENSITIVE.search(reference):
-        return None
-    base, separator, digest = reference.partition('@')
-    if separator and not re.fullmatch(r'sha256:[a-f0-9]{64}', digest):
-        return None
-    path = base.split('/')
-    leaf, colon, tag = path[-1].partition(':')
-    if colon and not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', tag):
-        return None
-    if len(leaf)>128 or not re.fullmatch(COMPONENT, leaf):
-        return None
-    for index, component in enumerate(path[:-1]):
-        pattern = COMPONENT + (r'(?::[0-9]{1,5})?' if index==0 else '')
-        if not re.fullmatch(pattern, component):
-            return None
-    return leaf
+    # Only the convenient timeline caption is shortened. The full reference is
+    # retained separately, without validation/redaction heuristics.
+    return reference.split('@', 1)[0].rsplit('/', 1)[-1].split(':', 1)[0] or reference
 
 
 def empty_trace(job_id, state, reason_code, at):
@@ -134,7 +72,9 @@ def empty_trace(job_id, state, reason_code, at):
             'sha256': None, 'prefix_sha256': None, 'bytes_read': 0, 'line_count': 0,
             'parser_version': PARSER_VERSION, 'fetched_at': at, 'analyzed_at': at,
             'cached': False, 'coverage': {'recognized_lines': 0, 'total_lines': 0,
-                                        'truncated': False, 'complete': False}, 'evidence': []}
+                                        'truncated': False, 'complete': False, 'evidence_limit': None},
+            'source': {'encoding':'base64', 'raw_base64':'',
+                       'display_transform':'utf8-replacement-ansi-csi-strip-outer-cr'}, 'evidence': []}
 
 
 def _timing(duration=None, start=None, end=None, origin='unknown', quality='unknown', precision=None):
@@ -216,6 +156,7 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
     digest = hashlib.sha256(raw).hexdigest()
     result['sha256' if not truncated else 'prefix_sha256'] = digest
     result['bytes_read'] = len(raw)
+    result['source']['raw_base64'] = base64.b64encode(raw).decode('ascii')
     lines = raw.split(b'\n') if raw else []
     if lines and lines[-1] == b'':
         lines.pop()
@@ -271,6 +212,8 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
         nonlocal evidence_limited
         if len(evidence)>=MAX_EVIDENCE_NODES:
             evidence_limited = True
+            if result['coverage']['evidence_limit'] is None:
+                result['coverage']['evidence_limit'] = {'reason':'node_limit', 'first_omitted_line':node['lines']['start']}
             if image is not None and node['kind'] in {'image','operation','part'}:
                 limited_sessions.add(image['id'])
             return False
@@ -283,18 +226,18 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
         name = _image_name(match[2])
         old = image['identity']
         source = 'buildkit_naming' if match[1]=='naming to' else 'buildkit_unpack'
-        candidate = {'state':'known' if name else 'redacted', 'name':name,
+        candidate = {'state':'known', 'name':name, 'reference':match[2],
                      'origin':source, 'step_id':int(step), 'lines':{'start':line,'end':line}}
         if old['state']=='unknown':
             image['identity'] = candidate
-        elif old['state']=='known' and name and old['name']==name:
+        elif old['state']=='known' and old['reference']==match[2]:
             # Prefer the explicit naming event over a fallback unpacking event.
             if source=='buildkit_naming' and old['origin']=='buildkit_unpack':
                 image['identity'] = candidate
             elif source==old['origin'] and int(step)==old['step_id']:
                 old['lines']['end']=line
-        elif old['state'] not in {'conflicting','redacted'}:
-            old.update(state='conflicting' if name else 'redacted', name=None)
+        elif old['state'] != 'conflicting':
+            old.update(state='conflicting', name=None)
             # Keep the first event's resolvable source. A second destination may
             # belong to another export step; never claim its line as step one.
 
@@ -398,7 +341,7 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                 command = None
             continue
 
-        frame = FRAME.match(content.strip())
+        frame = FRAME.match(content)
         if not frame:
             continue
         step, body = frame.groups()
@@ -461,7 +404,7 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             if header:
                 node['source_label'] = _header_source_label(body, line_no)
             elif part:
-                node['source_label'] = _part_source_label(part[1], line_no)
+                node['source_label'] = _part_source_label(body, line_no)
             if not admit(node):
                 continue
             image_operations[image['id']].append(node)
@@ -509,7 +452,7 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
             if key not in parts:
                 child = _node(f'{node["id"]}-part-{len(parts) + 1}', 'part', 'export_local_unpack', node['id'], line_no)
                 child['buildkit'] = {'step_id':int(step)}
-                child['source_label'] = _part_source_label(semantic, line_no)
+                child['source_label'] = _part_source_label(body, line_no)
                 if not admit(child):
                     continue
                 parts[key] = child
@@ -559,27 +502,36 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                 infer_positions(node, timing['start_seconds'], timing['end_seconds'])
     result['coverage']['recognized_lines'] = len(recognized)
     partial = truncated or evidence_limited or any(not n['complete'] for n in evidence)
-    result['coverage']['complete'] = not partial
+    result['coverage']['complete'] = not partial and len(recognized)==len(lines)
     if not evidence:
         result.update(state='partial' if truncated else 'unsupported',
                       reason_code='input_truncated' if truncated else 'no_supported_patterns')
     elif partial:
         result.update(state='partial', reason_code='input_truncated' if truncated else
                       'evidence_limit' if evidence_limited else 'incomplete_evidence')
+    elif len(recognized)<len(lines):
+        result.update(state='partial', reason_code='unparsed_lines')
     else:
         result.update(state='available', reason_code='parsed')
     # Node count alone cannot bound JSON bytes: the GitLab job ID is repeated
     # in node/parent IDs, and line positions also vary with the input. Preserve
     # a valid prefix of the parent-first evidence list within the source cap.
-    while evidence and _summary_bytes(result) > MAX_SUMMARY_BYTES:
+    def remove_tail():
         dropped = evidence.pop()
+        limit = result['coverage']['evidence_limit']
+        result['coverage']['evidence_limit'] = {'reason':'summary_bytes',
+            'first_omitted_line':min(dropped['lines']['start'], limit['first_omitted_line'] if limit else dropped['lines']['start'])}
+        return dropped
+
+    while evidence and _summary_bytes(result) > MAX_SUMMARY_BYTES:
+        dropped = remove_tail()
         if dropped['kind'] == 'operation':
             # The image's confirmed name may point at this operation. Remove
             # the whole trailing image instead of leaving dangling provenance.
             while evidence and evidence[-1]['id'] != dropped['parent_id']:
-                evidence.pop()
+                remove_tail()
             if evidence:
-                evidence.pop()
+                remove_tail()
         else:
             parent_id = dropped['parent_id']
             while parent_id is not None:
@@ -592,4 +544,6 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                 parent_id = parent['parent_id']
         result['coverage']['complete'] = False
         result.update(state='partial', reason_code='input_truncated' if truncated else 'evidence_limit')
+    if _summary_bytes(result)>MAX_SUMMARY_BYTES:
+        raise ValueError('Trace with original source exceeds 16 MiB serialized UTF-8 JSON; reduce explicit trace byte limit')
     return result

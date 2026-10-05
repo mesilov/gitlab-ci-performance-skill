@@ -1,5 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.gitlab-ci-performance.invalid/v2.2/trace.schema.json",
-  "$ref": "https://schemas.gitlab-ci-performance.invalid/v2.2/common.schema.json#/$defs/trace"
+  "$id": "https://schemas.gitlab-ci-performance.invalid/v3.0/trace.schema.json",
+  "$ref": "https://schemas.gitlab-ci-performance.invalid/v3.0/common.schema.json#/$defs/trace"
 }
