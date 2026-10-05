@@ -51,6 +51,11 @@ Only collection performs transport requests. This route accepts only canonical
 schema 3.0.0 and parser 2.0.0. Collect a fresh source for older artifacts; there
 is no migration, old-source calculation or old-report rendering/export support.
 
+For routine generation, complete this route and return the report link; offline
+regeneration uses saved compatible inputs. Follow [execution modes](../SKILL.md#execution-modes-and-check-scope):
+neither new data nor a ready upstream update requires the repository test suite,
+browser QA, install/update regression or custom report-check scripts by default.
+
 ## Artifacts and validation
 
 | Artifact | Kind | Schema |
@@ -70,9 +75,13 @@ Nullable fields contain JSON null when unknown; omitted timing is not supported.
 relations, source counts and anchors, per-type retention, timestamps/HTTPS URLs,
 trace availability, cache/partial semantics, parent acyclicity/containment, timing
 origins and eligibility, window reference closure, source hashes, source equality,
-and recomputed sample aggregates/category unions/ranks. Run `report_cli.py validate
-<artifact.json>` before consuming untrusted artifacts. `report`, `export` and
-`render` also validate their inputs and outputs; writes reject existing paths.
+and recomputed sample aggregates/category unions/ranks. `report`, `export` and
+`render` validate their inputs and outputs; writes reject existing paths.
+Keep built-in validation enabled and use command exit codes/error messages.
+Use `report_cli.py validate <artifact.json>` for independently loaded artifacts
+or consumption boundaries without equivalent validation. A command that
+validates its input already satisfies that boundary, including untrusted inputs;
+do not repeat its successful checks manually or with a separate `validate`.
 
 ## Envelope and source provenance
 
@@ -361,8 +370,20 @@ or old-report support. A new collection supplies the required evidence.
 `render --language en|ru` affects HTML only; saved language metadata and embedded
 JSON remain unchanged.
 
-After updating/copying the skill directory, install its pinned requirements in a venv
-and run documented commands using the copied helper. Unit tests copy the complete skill
-outside the checkout and verify canonical bytes/HTML round trips. CLI modules import
-only bundled siblings/schemas/templates. Release publication and installed-release
-verification follow integration; a local copy smoke does not establish a published tag.
+When installing/updating a ready upstream tag/commit, verify its official upstream
+provenance and resolved commit, complete directory replacement and required
+dependencies (install pinned requirements in a venv if needed). Run documented
+commands using the installed helper; successful execution checks the installed
+copy's usability. Do not obtain the whole repository solely to rerun tests.
+This replacement, a schema change or report size does not automatically require
+acceptance/regression testing or establish a published release.
+
+During skill development/release verification, repository unit tests copy the
+complete skill outside the checkout and verify canonical bytes/HTML round trips.
+CLI modules import only bundled siblings/schemas/templates. Release publication
+and installed-release verification follow integration; a local copy smoke does
+not establish a published tag. During use, explicit acceptance/testing requests,
+command/validation errors, concrete data contradictions or unsupported edge cases
+justify additional checks. Reproduce with the smallest targeted check, then add
+new edge cases as repository regression tests and verify the affected workflow;
+do not launch the entire suite automatically.

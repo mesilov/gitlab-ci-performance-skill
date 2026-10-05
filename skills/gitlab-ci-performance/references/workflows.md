@@ -165,9 +165,13 @@ ineligible for successful trends and baselines.
 - `workflow-report`: [workflow-report.schema.json](../schemas/workflow-report.schema.json), canonical definitions, provenance, membership, outcomes, timing, coverage, histories and comparisons.
 - `workflow-llm`: [workflow-llm.schema.json](../schemas/workflow-llm.schema.json), omits repeated raw jobs/pipelines but preserves exact canonical views, definitions, coverage and original report SHA-256.
 
-All use schema 2.0.0; derived calculations are 2.0.0. Validate with
-`ci_report.py validate <artifact>`. Hash serialization: UTF-8, sorted keys, indent
-2, final newline. Same saved report renders byte-identically. HTML embeds canonical
+All use schema 2.0.0; derived calculations are 2.0.0. Use
+`ci_report.py validate <artifact>` at independently loaded/consumption boundaries
+without equivalent validation; report/render/export commands perform their own
+checks. Do not duplicate successful validation or run repository tests/browser QA
+for routine generation. See [execution modes](../SKILL.md#execution-modes-and-check-scope)
+for installation, development and targeted diagnosis. Hash serialization: UTF-8,
+sorted keys, indent 2, final newline. Same saved report renders byte-identically. HTML embeds canonical
 JSON, with no browser timing/baseline aggregation. Coordinates, formatting and
 selection are presentation only. `render --language en|ru` chooses the initial
 interface language; the HTML also provides an in-report language selector.
