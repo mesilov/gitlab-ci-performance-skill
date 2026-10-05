@@ -7,15 +7,17 @@ Unknown formats remain unsupported; missing boundaries remain partial.
 from datetime import datetime
 from decimal import Decimal
 import hashlib
+import json
 import math
 import re
 
 PARSER_VERSION = '1.2.0'
 # The source contract bounds each formatted safe summary at 128 KiB. Reserve
 # space for provenance; an input cap alone does not bound generated evidence.
-# Source-title provenance increases each node's fixed footprint, so 152 keeps the
-# worst supported 128-character identity/title fixture below the 128 KiB cap.
+# Source-title provenance increases each node's fixed footprint. The final
+# serialized-size check also accounts for variable job IDs and line numbers.
 MAX_EVIDENCE_NODES = 152
+MAX_SUMMARY_BYTES = 128 * 1024
 PHASES = frozenset(('prepare_executor', 'prepare_script', 'get_sources', 'restore_cache',
                     'download_artifacts', 'step_script', 'after_script', 'archive_cache',
                     'upload_artifacts', 'cleanup_file_variables'))
@@ -146,6 +148,12 @@ def _node(identifier, kind, code, parent, line):
             'lines': {'start': line, 'end': line}, 'push_coverage': 'unknown',
             'buildkit': None, 'identity': _unknown_identity() if kind=='image' else None,
             'source_label': _unavailable_source_label() if kind in {'operation','part'} else None}
+
+
+def _summary_bytes(value):
+    """Measure the same canonical JSON bytes enforced by report_contract."""
+    return len((json.dumps(value, ensure_ascii=False, sort_keys=True,
+                           indent=2, allow_nan=False) + '\n').encode('utf-8'))
 
 
 def _precision(number):
@@ -560,4 +568,28 @@ def parse_trace(job_id, raw: bytes, *, fetched_at, analyzed_at, truncated=False)
                       'evidence_limit' if evidence_limited else 'incomplete_evidence')
     else:
         result.update(state='available', reason_code='parsed')
+    # Node count alone cannot bound JSON bytes: the GitLab job ID is repeated
+    # in node/parent IDs, and line positions also vary with the input. Preserve
+    # a valid prefix of the parent-first evidence list within the source cap.
+    while evidence and _summary_bytes(result) > MAX_SUMMARY_BYTES:
+        dropped = evidence.pop()
+        if dropped['kind'] == 'operation':
+            # The image's confirmed name may point at this operation. Remove
+            # the whole trailing image instead of leaving dangling provenance.
+            while evidence and evidence[-1]['id'] != dropped['parent_id']:
+                evidence.pop()
+            if evidence:
+                evidence.pop()
+        else:
+            parent_id = dropped['parent_id']
+            while parent_id is not None:
+                parent = nodes[parent_id]
+                if parent['kind'] == 'image':
+                    parent['complete'] = False
+                    if parent['timing']['quality'] == 'inferred':
+                        parent['timing']['quality'] = 'partial'
+                    break
+                parent_id = parent['parent_id']
+        result['coverage']['complete'] = False
+        result.update(state='partial', reason_code='input_truncated' if truncated else 'evidence_limit')
     return result

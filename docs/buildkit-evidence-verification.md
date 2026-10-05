@@ -61,13 +61,16 @@ The canonical CLI supports only this new contract; old routes/artifacts are reje
 
 - Baseline: 214 tests passed. The supplied minimal log failed with 3 images;
   after the fix it gives 1 image, 2 operations and nested export measurements.
-- Final: `python -m unittest discover -s tests -v` — 244 passed in 33.247 seconds.
+- Final: `.venv/bin/python -m unittest discover -s tests` — 251 passed in 38.673 seconds.
   Regressions cover identical banners/IDs, early redraw, active parallel work,
   cumulative FROM, repeated completed export/CACHED/bare DONE, conflicting names,
   provenance resolution, secret sentinels, failed/canceled/partial logs and limits.
-- Runtime admission is capped at 152 nodes. Maximum-length timestamped identity
-  and title fixture: 128,837 bytes, below the unchanged 128 KiB summary cap. Excess nodes
-  mark `partial/evidence_limit`; known nodes still receive closures and identity.
+- Runtime admission is capped at 152 nodes. The maximum-length identity/title
+  fixture with job ID 42 is 128,837 bytes. The same 76-build fixture with a
+  12-digit job ID initially exceeded 128 KiB at 131,127 bytes; the parser now
+  measures final serialized bytes and retains 150 nodes / 129,412 bytes with
+  `partial/evidence_limit`. Long IDs and line positions follow the same bound.
+  Known nodes still receive closures and identity.
   Input remains 4 MiB/50,000 lines, full/compact payloads remain 16 MiB.
 - Referenced real job was re-fetched through existing glab authentication in
   bounded memory. Hash matched the saved report. Before: 16 anonymous fragments,

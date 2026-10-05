@@ -114,11 +114,14 @@ per type, up to 10 baseline-only metadata candidates/type, concurrency 4, reques
 concurrency/type/trace caps cannot exceed these ceilings. Positive limits and
 selector types are checked before collection. The report/export payload cap is
 16 MiB, individual trace summary 128 KiB. The parser admits at most 152 nodes;
-each parent and child consumes one slot. This replaces the 120-node budget after
+each parent and child consumes one slot. Before returning, it measures the exact
+serialized summary and removes trailing evidence groups when variable-length job
+IDs or line positions would exceed 128 KiB. Such coverage is marked
+`partial/evidence_limit`. This replaces the 120-node budget after
 measuring 126 correctly segmented nodes / about 77 KiB for the reported eight-build
 job. The prior 160-node ceiling was reduced to 152 after adding structured source
-title provenance; the maximum-length identity/title fixture is 128,837 bytes and
-the verified 126-node job remains admitted. Existing operations
+title provenance; the maximum-length identity/title fixture with a two-digit job ID
+is 128,837 bytes. The verified 126-node job remains admitted. Existing operations
 still receive progress, DONE, naming and section closures after admission stops.
 Omitted nodes retain `partial/evidence_limit`, whole-source hash/size/line counts
 and explicit incomplete coverage. The schema ceiling of 512 is not a runtime budget.

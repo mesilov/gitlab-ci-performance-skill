@@ -32,8 +32,8 @@ class TraceTests(unittest.TestCase):
     def setUp(self):
         self.assertIsNotNone(parser, 'safe trace parser must exist')
 
-    def parse(self, text, **kwargs):
-        result = parser.parse_trace(42, text.encode(), fetched_at=AT, analyzed_at=AT, **kwargs)
+    def parse(self, text, job_id=42, **kwargs):
+        result = parser.parse_trace(job_id, text.encode(), fetched_at=AT, analyzed_at=AT, **kwargs)
         if contract:
             contract.validate(result, kind='trace')
         return result
@@ -483,9 +483,22 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(len(result['evidence']), parser.MAX_EVIDENCE_NODES)
         self.assertEqual(result['state'],'available')
         self.assertLess(len(contract.encoded(result)),128*1024)
-        limited=self.parse(build*(parser.MAX_EVIDENCE_NODES//2+1))
-        self.assertEqual(limited['reason_code'],'evidence_limit')
-        self.assertLess(len(contract.encoded(limited)),128*1024)
+        for job_id in (999_999_999_999, 9_223_372_036_854_775_807):
+            with self.subTest(job_id=job_id):
+                # Later source lines increase several provenance fields too.
+                padding='unrecognized\n'*10_000 if job_id>999_999_999_999 else ''
+                limited=self.parse(padding+build*(parser.MAX_EVIDENCE_NODES//2), job_id=job_id)
+                self.assertEqual(limited['reason_code'],'evidence_limit')
+                self.assertEqual(limited['state'],'partial')
+                self.assertFalse(limited['coverage']['complete'])
+                self.assertLess(len(limited['evidence']),parser.MAX_EVIDENCE_NODES)
+                self.assertLessEqual(len(contract.encoded(limited)),128*1024)
+                ids={node['id'] for node in limited['evidence']}
+                self.assertTrue(all(node['parent_id'] is None or node['parent_id'] in ids
+                                    for node in limited['evidence']))
+        over_limit=self.parse(build*(parser.MAX_EVIDENCE_NODES//2+1))
+        self.assertEqual(over_limit['reason_code'],'evidence_limit')
+        self.assertLessEqual(len(contract.encoded(over_limit)),128*1024)
 
     def test_part_without_known_parent_bounds_keeps_unknown_positions(self):
         result = self.parse('2026-10-04T00:00:00Z #1 exporting to docker image\n'
