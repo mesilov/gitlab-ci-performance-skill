@@ -61,6 +61,8 @@ jobs:
           python examples/generate_v2.py --output-dir reports/browser-contract-demo
           python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-contract-demo/report.json --language ru --output reports/browser-contract-demo/report-ru.html
           python examples/generate_v2.py --output-dir reports/browser-root-demo --attempts-per-type 4 --root-operations
+          python examples/generate_v2.py --output-dir reports/browser-single-demo --attempts-per-type 1
+          python skills/gitlab-ci-performance/scripts/report_cli.py render --report reports/browser-single-demo/report.json --language ru --output reports/browser-single-demo/report-ru.html
           python tests/generate_buildkit_fixture.py --output-dir reports/browser-buildkit-identities
           python tests/generate_original_fixture.py --output-dir reports/browser-original-source
       - run: |
@@ -81,6 +83,10 @@ jobs:
           node tests/browser_reviewed.cjs "file://$PWD/reports/browser-demo/report-ru.html" reports/browser-ru
           node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/browser-contract-en
           node tests/browser_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/browser-contract-ru
+          node tests/browser_chart_keyboard.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/chart-keyboard-en
+          node tests/browser_chart_keyboard.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/chart-keyboard-ru
+          node tests/browser_chart_keyboard.cjs "file://$PWD/reports/browser-single-demo/report.html" reports/chart-keyboard-single-en
+          node tests/browser_chart_keyboard.cjs "file://$PWD/reports/browser-single-demo/report-ru.html" reports/chart-keyboard-single-ru
           node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-contract-demo/report.html" reports/drilldown-contract-en
           node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-contract-demo/report-ru.html" reports/drilldown-contract-ru
           node tests/browser_drilldown_v2.cjs "file://$PWD/reports/browser-root-demo/report.html" reports/drilldown-root
