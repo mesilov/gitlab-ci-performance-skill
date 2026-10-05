@@ -1,11 +1,13 @@
 # README clarity verification — issue #24
 
-Date: 2026-10-05. Base: `331dcb7c015e712df72cf3dde9c58d08d3e49c6a`.
+Date: 2026-10-05. Initial base: `331dcb7c015e712df72cf3dde9c58d08d3e49c6a`.
+Integrated main: `83b50e77f9a068201d25aa29b716c9a926492328` (issue #23).
+The rewrite preserves its upstream provenance and execution-mode instructions.
 Branch: `codex/issue-24-readme` in a separate managed worktree.
 
 ## Result
 
-README.md and README.ru.md now share nine sections, the same shell examples and
+README.md and README.ru.md now share ten sections, the same shell examples and
 localized Mermaid diagrams. They explain the main task before the implementation,
 define six terms, distinguish both CLI routes and workflow mode, and link detailed
 contracts. Existing synthetic HTML examples and screenshots remain available.
@@ -34,11 +36,11 @@ No new website, video, parser, schema, calculation or report UI was introduced.
 
 ## Checks performed
 
-- 46 local Markdown links/images resolve, including the collection-budget anchor.
+- 48 local Markdown links/images resolve, including the collection-budget anchor.
 - Fences are balanced. All 10 shell blocks pass `sh -n`.
 - Eight distinct CLI/subcommand help checks confirm documented shell-example flags.
   These checks do not contact GitLab.
-- Both README files have nine matching sections. Shell blocks are identical after
+- Both README files have ten matching sections. Shell blocks are identical after
   normalizing the intentionally localized `render --language en|ru` argument.
 - Synthetic canonical generation, report calculation, overview export and rendering
   in English/Russian all succeed. Reviewed report calculation from checked-in
@@ -77,12 +79,12 @@ Whitespace-separated words include code, diagrams and tables:
 
 | File | Before | After | Lines before → after |
 | --- | ---: | ---: | --- |
-| README.md | 1,135 | 1,257 | 195 → 199 |
-| README.ru.md | 1,190 | 1,209 | 217 → 205 |
+| README.md | 1,438 | 1,469 | 232 → 222 |
+| README.ru.md | 1,458 | 1,389 | 256 → 231 |
 
-The English version is longer because it now includes the previously missing
-canonical command sequence, term definitions and route comparison. The rewrite
-simplifies reading rather than targeting fewer words at the expense of meaning.
+Counts compare with integrated main, including issue #23. The rewrite adds the
+missing English canonical command sequence, term definitions and route comparison.
+It simplifies reading rather than targeting fewer words at the expense of meaning.
 Dense internal contract details are linked through the existing references.
 
 The two README files are the product change. The accompanying design, plan and

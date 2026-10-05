@@ -52,11 +52,15 @@ own file format; keep their files separate.
 You need Python 3.10+, `glab` authenticated for your GitLab host, and the Python
 dependencies in [requirements.txt](skills/gitlab-ci-performance/requirements.txt).
 
-1. From your target project directory, copy the skill and create the agent links:
+1. Use the official upstream repository below. The clone selects its current
+   default branch. For a pinned version, select the required tag or commit before
+   copying. Verify its origin and record the commit printed by `rev-parse`.
+   From your target project directory, copy the skill and create the agent links:
 
    ```sh
    git clone --depth 1 \
      https://github.com/mesilov/gitlab-ci-performance-skill.git /tmp/ci-skill
+   git -C /tmp/ci-skill rev-parse HEAD
    mkdir -p .agents/skills .codex/skills .claude/skills
    cp -R /tmp/ci-skill/skills/gitlab-ci-performance .agents/skills/
    ln -s ../../.agents/skills/gitlab-ci-performance .codex/skills/gitlab-ci-performance
@@ -78,7 +82,26 @@ dependencies in [requirements.txt](skills/gitlab-ci-performance/requirements.txt
 To update, move the old `.agents/skills/gitlab-ci-performance` directory to an
 unused backup location. Keep reports, private caches and customizations there.
 Copy the new skill into its place; existing links still work. Do not overlay old
-modules. The installed skill needs no repository tests or examples.
+modules. Check that the installed files match the selected upstream commit and
+that dependencies are available. A successful run through the installed helper
+confirms that copy works. Installing a ready version is not skill development
+or release verification; do not obtain the whole repository just to rerun tests.
+
+## Report use and checks
+
+Run the documented commands with compatible inputs and keep built-in validation
+enabled. For offline regeneration, reuse saved data. Finish with a report link.
+Do not repeat a successful built-in check with a separate validation command.
+
+Routine reports and ready updates do not require the full unit/CLI suite, browser
+QA or install/update regression tests. Do not add scripts that recheck numbers,
+headings or every detail view. New logs, regenerated files, a schema change or a
+large report alone do not justify a full test run.
+
+Additional checks during use need a testing request, a failed command, a concrete
+data contradiction or a new unsupported edge case. Start with the smallest
+reproduction. Add new edge cases to repository regression tests and check the fix
+in the affected workflow. See [execution rules](skills/gitlab-ci-performance/SKILL.md#execution-modes-and-check-scope).
 
 ## Create your first job report
 

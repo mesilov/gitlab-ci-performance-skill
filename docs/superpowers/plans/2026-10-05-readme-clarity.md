@@ -16,7 +16,7 @@
 
 Files: README.md and README.ru.md.
 
-- [x] Use matching sections: purpose, terms, route choice, install/update, first report, reviewed report, workflow analysis, interpretation, further reading, development.
+- [x] Use matching sections: purpose, terms, route choice, install/update, report use/checks, first report, reviewed report, workflow analysis, interpretation, further reading, development.
 - [x] Add a simple localized GitLab → collect → calculate → HTML/JSON Mermaid diagram.
 - [x] Give complete canonical and reviewed commands with explicit working directory and dependency setup.
 - [x] Keep synthetic examples, screenshots, essential privacy and comparison limits; link detailed references.
@@ -30,3 +30,5 @@ File: docs/superpowers/verification/2026-10-05-readme-clarity.md.
 - [x] Run report/export/render on synthetic canonical data and report/render on reviewed data in a temporary directory.
 - [x] Record three before/after examples per language, size changes and exact verification results.
 - [x] Review the diff and run git diff --check; prepare the scoped changes for a commit and PR against main.
+
+- [x] Integrate main at 83b50e7 and preserve the instructions added by issue #23.

@@ -26,3 +26,7 @@ command parity. Run documented offline calculations, exports and rendering with
 synthetic inputs. Save three before/after examples per language and measured
 README size in the verification document. Do not run the full local suite for this
 documentation-only change. No parser, calculation, schema or report UI changes.
+
+Integration: main advanced to `83b50e77f9a068201d25aa29b716c9a926492328`
+with issue #23. Preserve its upstream verification, installed-copy checks and
+execution-mode rules in the same plain-language structure.
