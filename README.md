@@ -34,7 +34,10 @@ parallel or child timings are not added as promised savings.
 ## Install or update
 
 Requirements: Python 3.10+, `glab` with existing authorized GitLab authentication,
-plus the declared Python requirements. Clone the repository:
+plus the declared Python requirements. Use the official upstream repository,
+verify the selected tag/commit's provenance and record its resolved commit before
+copying. The clone below selects the current default branch; use an explicitly
+selected tag/commit when a pinned version is needed. Clone the repository:
 
 ```sh
 git clone --depth 1 \
@@ -52,8 +55,36 @@ customizations in the backup; do not copy old modules over the new skill. The
 repository contains tests, documentation and fixtures as well as the complete
 distributable skill directory.
 
+Verify complete replacement against the selected upstream commit and ensure
+required dependencies are available. A successful documented route through the
+installed helper checks that copy's usability. Installing a ready upstream
+commit is not skill development or release verification; do not obtain the
+whole repository solely to rerun its tests.
+
 Invoke `$gitlab-ci-performance` in Codex or `/gitlab-ci-performance` in Claude
 Code. Follow the project's instructions and use an authorized account.
+
+## Execution modes
+
+Routine report generation or offline regeneration uses the documented route
+with compatible saved inputs and built-in schema/semantic validation, exit codes
+and error messages. Keep validation enabled and finish with a viewable report
+link. Canonical artifacts use `report_cli.py collect → report → export → render`;
+the job/workflow routes below use `ci_report.py` and their separate contracts.
+
+Do not run the full unit/CLI suite, synthetic desktop/mobile browser QA,
+install/update regression tests, extra project scripts checking numbers/headings/
+drill-down, or equivalent repeated manual validation by default. New logs,
+recreated artifacts, a ready upstream update, a changed schema or a large report
+do not automatically trigger acceptance/regression testing.
+
+Development/release checks apply to authored changes to the skill's parser,
+calculations, schemas, templates or packaging. During use, additional checks
+require an explicit acceptance/testing request, a failed command/validation,
+a concrete data contradiction or a new unsupported edge case. Start with the
+smallest targeted reproduction; do not launch the entire suite automatically.
+Add new edge cases as reproducible repository regression tests and verify the
+affected workflow. See the installed [execution rules](skills/gitlab-ci-performance/SKILL.md#execution-modes-and-check-scope).
 
 ## Complete CLI workflow
 
@@ -101,7 +132,10 @@ metadata still contains project/job names and URLs; choose its sharing location.
   priorities and hashes; validated before rendering.
 - `report.html`: standalone embedded compact data, no raw trace text.
 
-Run `ci_report.py validate artifact.json` for schema/ID/calculation checks.
+Use `ci_report.py validate artifact.json` for independently loaded artifacts or
+consumption boundaries without equivalent schema/ID/calculation validation.
+Commands that validate their inputs already satisfy that boundary; do not repeat
+equivalent successful built-in checks.
 `--release-refs REF...` selects exact refs for exploratory history.
 `--baseline older/jobs.json` provides external same-ref comparison with overlap
 safeguards.
@@ -160,6 +194,9 @@ A clean installed skill contains the required modules, templates, schemas and th
 it does not depend on this repository's tests/examples.
 
 ## Development and evidence
+
+These commands are for development/release verification of affected skill
+behavior, not routine reports or installation of a ready upstream commit:
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -v

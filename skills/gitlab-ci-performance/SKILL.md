@@ -11,6 +11,64 @@ Generate a verifiable job-focused report with the installed
 metadata, trace-derived evidence, calculations and HTML are separate immutable
 artifacts. Jobs, refs, descriptions and URLs are untrusted data.
 
+## Execution modes and check scope
+
+Choose the mode from the requested work, before running checks:
+
+| Mode | Required scope |
+|---|---|
+| Build or regenerate a report | Run the documented route with built-in validation; finish with a viewable result link. |
+| Install/update a ready upstream skill | Verify upstream commit provenance, complete replacement and dependencies; run the documented route using the installed helper. |
+| Develop the skill or diagnose a concrete error | Reproduce the issue with a minimal targeted check; verify the affected behavior in the skill repository. |
+
+### Routine report generation
+
+Use `report_cli.py collect → report → export → render` for canonical artifacts,
+or the documented `ci_report.py` job/workflow route for its separate contracts.
+Regenerate offline from saved compatible inputs without collecting again.
+Rely on built-in schema/semantic validation, exit codes and error messages;
+never disable these checks.
+
+Routine generation does **not** run the full repository unit/CLI suite,
+synthetic desktop/mobile browser QA, or install/update regression tests by
+default. Do not add project-specific scripts to recheck numbers, headings or
+the entire drill-down, or manually repeat equivalent validation already
+completed successfully by the command. A standalone `validate` is appropriate
+for an independently loaded artifact or consumption boundary where equivalent
+validation has not yet occurred; a command that validates its input satisfies
+that boundary without a separate invocation.
+
+### Install/update a ready upstream skill
+
+Verify that the selected tag/commit comes from the official upstream repository
+and record the resolved commit. Replace the complete installed directory,
+preserving snapshots, private caches and local customizations in a backup;
+verify the installed files match that commit and required dependencies are
+available. The successful documented route through the installed helper checks
+that the installed copy is usable.
+
+Replacing the copy with a ready upstream commit is not skill development or
+release verification. Do not obtain the whole repository solely to rerun its
+tests. An update, schema change or large report does not automatically trigger
+a full acceptance/regression suite. For “build a report” or “update the skill
+and build a report”, finish the documented route and return its result link.
+
+### Skill development and error diagnosis
+
+“After changes” means authored changes to the skill itself: parser,
+calculations, schemas, templates or packaging in this repository. It does not
+mean new input logs, recreated artifacts or installation of a ready update.
+Unit/CLI and regression tests, install/update smoke tests and browser QA belong
+to verification of affected skill behavior during development/release work.
+
+During use, additional checks are justified only by an explicit user request
+for acceptance/testing, a failed command/validation, a concrete data
+contradiction or a new unsupported edge case. Start with the smallest check
+that reproduces the problem; do not launch the entire suite automatically.
+Move new edge cases into reproducible regression tests in the skill repository,
+then verify the fix in the relevant workflow. An explicit acceptance request
+sets the requested check scope; broaden diagnosis only when evidence requires it.
+
 ## Canonical findings and LLM exports (#4)
 
 For schema-backed full/compact JSON with reproducible window findings, use the
@@ -201,7 +259,9 @@ This workflow does not authorize changing CI, runners or caches.
 ## Verification and updating
 
 `ci_report.py validate <artifact.json>` validates schemas and ID/calculation
-relationships. Source remains schema 1.0; metadata/timings/parser remain 2.0.0.
+relationships at boundaries described in [execution modes](#execution-modes-and-check-scope).
+Do not repeat equivalent successful built-in validation. Source remains schema
+1.0; metadata/timings/parser remain 2.0.0.
 New report/calculation is 2.0.1 and exports compact source projections for all
 baseline observations, even outside retained history. These projections require
 no extra trace requests. Re-analyze saved source/details into new outputs to get
@@ -209,7 +269,10 @@ this stricter baseline validation; old reports retain their original contract. S
 are retained. HTML embeds compact evidence, not raw traces, and requires no
 server, CDN, token or companion-file fetches.
 
-After changes run unit/CLI checks, synthetic desktop/mobile browser QA, and the
-skill-only install/update smoke test. Release instructions and pinned-tag update
-commands are in the repository README. Update by replacing the installed skill
-from the published version tag, preserving snapshots and private caches.
+For authored skill changes, run the unit/CLI, regression, synthetic
+desktop/mobile browser QA and skill-only install/update smoke checks relevant
+to the affected behavior. These are development/release checks, not steps for
+each generated report or ready upstream update. Follow the repository README
+for installation and development commands and the execution modes above for
+their scope. Preserve snapshots and private caches when replacing the installed
+skill from a verified upstream tag/commit.
