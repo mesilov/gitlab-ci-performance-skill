@@ -33,8 +33,10 @@ parallel or child timings are not added as promised savings.
 
 ## Install or update
 
-Requirements: Python 3.10+, `glab` with existing authorized GitLab authentication,
-plus the declared Python requirements. Use the official upstream repository,
+Requirements: Python 3.10+ and the declared Python requirements. GitLab collection
+additionally requires `glab` with existing authorized GitLab authentication;
+local `--help` and offline commands need no GitLab authentication.
+Use the official upstream repository,
 verify the selected tag/commit's provenance and record its resolved commit before
 copying. The clone below selects the current default branch; use an explicitly
 selected tag/commit when a pinned version is needed. Clone the repository:
@@ -56,8 +58,14 @@ repository contains tests, documentation and fixtures as well as the complete
 distributable skill directory.
 
 Verify complete replacement against the selected upstream commit and ensure
-required dependencies are available. A successful documented route through the
-installed helper checks that copy's usability. Installing a ready upstream
+required dependencies are available. For installation/update only, run the
+selected installed helper with `--help` (for example,
+`python <skill-dir>/scripts/report_cli.py --help`), then report the installed
+directory and resolved commit. This local smoke checks CLI startup without a
+GitLab project, saved report inputs or GitLab transport; do not request those
+inputs or collect solely to verify installation. Run the documented report route
+through that copy only when a report is also requested; `--help` does not verify
+end-to-end report behavior. Installing a ready upstream
 commit is not skill development or release verification; do not obtain the
 whole repository solely to rerun its tests.
 

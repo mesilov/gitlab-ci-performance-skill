@@ -18,7 +18,7 @@ Choose the mode from the requested work, before running checks:
 | Mode | Required scope |
 |---|---|
 | Build or regenerate a report | Run the documented route with built-in validation; finish with a viewable result link. |
-| Install/update a ready upstream skill | Verify upstream commit provenance, complete replacement and dependencies; run the documented route using the installed helper. |
+| Install/update a ready upstream skill | Verify upstream commit provenance, complete replacement and dependencies; check the installed entrypoint locally with `--help`. Run the report route only if a report is also requested. |
 | Develop the skill or diagnose a concrete error | Reproduce the issue with a minimal targeted check; verify the affected behavior in the skill repository. |
 
 ### Routine report generation
@@ -44,8 +44,15 @@ Verify that the selected tag/commit comes from the official upstream repository
 and record the resolved commit. Replace the complete installed directory,
 preserving snapshots, private caches and local customizations in a backup;
 verify the installed files match that commit and required dependencies are
-available. The successful documented route through the installed helper checks
-that the installed copy is usable.
+available. For an install/update-only request, run the selected installed helper
+with `--help` (for example, `python <skill-dir>/scripts/report_cli.py --help`),
+then report the installed directory and resolved commit. This local entrypoint
+smoke check needs no GitLab project or saved report inputs and performs no GitLab
+transport. Do not request those inputs or collect from a project solely to
+verify installation. The check confirms CLI startup, not end-to-end report behavior.
+
+Run the documented report route through the installed helper only when the user
+also requests a report; its successful execution checks report usability.
 
 Replacing the copy with a ready upstream commit is not skill development or
 release verification. Do not obtain the whole repository solely to rerun its
