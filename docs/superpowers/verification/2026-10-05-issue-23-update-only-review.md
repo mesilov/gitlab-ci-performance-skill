@@ -21,6 +21,9 @@ CLI startup is explicitly distinct from end-to-end report behavior. Both READMEs
 and the canonical reference use the same condition.
 README requirements also limit GitLab authentication to collection; local help
 and offline commands need no GitLab authentication.
+While preparing the correction, main advanced to `e43865e` with PR #27's README
+rewrite and PR #28's keyboard navigation. The branch merged that main and retained
+the new README structure while applying the same conditional installation checks.
 
 ## Revised-instruction scenarios
 
