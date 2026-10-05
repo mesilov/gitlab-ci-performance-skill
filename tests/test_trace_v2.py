@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import importlib.util
 import json
@@ -7,6 +8,7 @@ import unittest
 
 
 PATH = Path(__file__).resolve().parents[1] / 'skills/gitlab-ci-performance/scripts/report_trace.py'
+sys.path.insert(0, str(PATH.parent))
 parser = None
 if PATH.exists():
     spec = importlib.util.spec_from_file_location('report_trace', PATH)
@@ -23,7 +25,7 @@ if CONTRACT.exists():
 AT = '2026-10-04T00:00:00Z'
 TRACE_KEYS = {'job_id', 'state', 'reason_code', 'sha256', 'prefix_sha256', 'bytes_read',
               'line_count', 'parser_version', 'fetched_at', 'analyzed_at', 'cached',
-              'coverage', 'evidence'}
+              'coverage', 'evidence', 'source'}
 NODE_KEYS = {'id', 'kind', 'code', 'parent_id', 'timing', 'cached', 'complete', 'lines',
              'push_coverage', 'buildkit', 'identity', 'source_label'}
 
@@ -34,6 +36,7 @@ class TraceTests(unittest.TestCase):
 
     def parse(self, text, job_id=42, **kwargs):
         result = parser.parse_trace(job_id, text.encode(), fetched_at=AT, analyzed_at=AT, **kwargs)
+        self.assertEqual(base64.b64decode(result['source']['raw_base64']), text.encode())
         if contract:
             contract.validate(result, kind='trace')
         return result
@@ -43,7 +46,7 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(empty['state'], 'empty')
         self.assertEqual(empty['sha256'], hashlib.sha256(b'').hexdigest())
         self.assertEqual(empty['coverage'], {'recognized_lines': 0, 'total_lines': 0,
-                                             'truncated': False, 'complete': True})
+                                             'truncated': False, 'complete': True, 'evidence_limit': None})
         unavailable = parser.empty_trace(42, 'unavailable', 'transport_error', AT)
         self.assertIsNone(unavailable['sha256'])
         self.assertFalse(unavailable['coverage']['complete'])
@@ -68,7 +71,7 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(first['timing'], {'duration_seconds': 4.0, 'start_seconds': 0.0,
                          'end_seconds': 4.0, 'origin': 'section', 'quality': 'exact', 'precision_seconds': 1.0})
         self.assertEqual(first['lines'], {'start': 1, 'end': 2})
-        self.assertNotIn('secret', json.dumps(result))
+        self.assertIn(b'secret', base64.b64decode(result['source']['raw_base64']))
 
     def test_missing_section_end_is_partial_and_never_fabricates_duration(self):
         result = self.parse('section_start:100:step_script\r\nsecret\n')
@@ -97,7 +100,7 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(commands[1]['timing']['duration_seconds'], 1.25)
         self.assertFalse(commands[1]['complete'])
         self.assertEqual(commands[1]['timing']['quality'], 'partial')
-        self.assertNotIn('SECRET', json.dumps(result))
+        self.assertIn(b'SECRET', base64.b64decode(result['source']['raw_base64']))
 
     def test_buildkit_frames_deduplicate_and_export_parts_are_nested(self):
         result = self.parse('#0 building with "SECRET-builder" instance using docker driver\n'
@@ -123,7 +126,7 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(len(parts), 2)
         self.assertTrue(all(n['parent_id'] == export['id'] for n in parts))
         self.assertEqual([n['timing']['duration_seconds'] for n in parts], [1.2, 0.5])
-        self.assertNotIn('SECRET', json.dumps(result))
+        self.assertIn(b'SECRET', base64.b64decode(result['source']['raw_base64']))
         self.assertTrue(all(set(n) == NODE_KEYS for n in nodes))
 
     def test_export_manifest_and_config_stay_in_one_build(self):
@@ -162,29 +165,29 @@ class TraceTests(unittest.TestCase):
                     'state':'original', 'text':title, 'origin':'buildkit_header',
                     'lines':{'start':line, 'end':line}})
 
-    def test_export_suboperation_titles_are_preserved_without_destination_or_duration(self):
+    def test_export_suboperation_titles_preserve_destination_and_duration(self):
         result = self.parse('#16 exporting to image\n'
                             '#16 exporting layers 2.0s done\n'
                             '#16 unpacking to registry.example/group/service:tag 1.0s done\n'
                             '#16 DONE 3.0s\n')
         parts = [n for n in result['evidence'] if n['kind']=='part']
         self.assertEqual([n['source_label'] for n in parts], [
-            {'state':'original', 'text':'exporting layers', 'origin':'buildkit_progress',
+            {'state':'original', 'text':'exporting layers 2.0s done', 'origin':'buildkit_progress',
              'lines':{'start':2, 'end':2}},
-            {'state':'redacted', 'text':'unpacking to [redacted]', 'origin':'buildkit_progress',
+            {'state':'original', 'text':'unpacking to registry.example/group/service:tag 1.0s done', 'origin':'buildkit_progress',
              'lines':{'start':3, 'end':3}},
         ])
 
-    def test_same_category_keeps_distinct_safe_titles(self):
+    def test_same_category_keeps_distinct_original_titles(self):
         result = self.parse('#1 [internal] load build context\n#1 DONE 1s\n'
                             '#2 [stage 1/2] COPY private.pem /app/private.pem\n#2 DONE 1s\n')
         operations = [n for n in result['evidence'] if n['kind']=='operation']
         self.assertEqual([n['code'] for n in operations],
                          ['context_application_copy', 'context_application_copy'])
         self.assertEqual([n['source_label']['text'] for n in operations],
-                         ['[internal] load build context', '[stage 1/2] COPY [redacted]'])
-        self.assertEqual(operations[1]['source_label']['state'], 'redacted')
-        self.assertNotIn('private.pem', json.dumps(result))
+                         ['[internal] load build context', '[stage 1/2] COPY private.pem /app/private.pem'])
+        self.assertEqual(operations[1]['source_label']['state'], 'original')
+        self.assertIn('private.pem', json.dumps(result))
 
     def test_titles_survive_ansi_timestamps_redraws_and_reused_step_ids(self):
         first = ('2026-10-04T00:00:00Z 00O \x1b[32m#0 building with "default" instance using docker driver\x1b[0m\n'
@@ -200,20 +203,15 @@ class TraceTests(unittest.TestCase):
                          ['[internal] load build context', 'exporting to image'])
         self.assertEqual(operations[0]['source_label']['lines'], {'start':2, 'end':2})
 
-    def test_operation_titles_never_export_arguments_markup_or_overlong_text(self):
-        secret = 'PRIVATE_TOKEN=hunter2'
-        result = self.parse(f'#1 [secret-stage 1/2] RUN <img src=x onerror=alert(1)> {secret}\n'
-                            '#1 DONE 1s\n'
-                            '#2 [internal] ' + ('x' * 200) + '\n#2 DONE 1s\n')
+    def test_operation_titles_preserve_arguments_markup_and_long_text(self):
+        title = '[secret-stage 1/2] RUN <img src=x onerror=alert(1)> PRIVATE_TOKEN=hunter2'
+        long_title = '[internal] ' + 'x' * 200
+        result = self.parse(f'#1 {title}\n#1 DONE 1s\n#2 {long_title}\n#2 DONE 1s\n')
         operations = [n for n in result['evidence'] if n['kind']=='operation']
-        self.assertEqual(operations[0]['source_label'], {
-            'state':'redacted', 'text':'[stage 1/2] RUN [redacted]',
-            'origin':'buildkit_header', 'lines':{'start':1, 'end':1}})
-        self.assertEqual(operations[1]['source_label'], {
-            'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None})
-        payload = json.dumps(result)
-        for unsafe in (secret, '<img', 'secret-stage', 'x' * 129):
-            self.assertNotIn(unsafe, payload)
+        for node, text, line in zip(operations, (title, long_title), (1, 3)):
+            self.assertEqual(node['source_label'], {
+                'state':'original', 'text':text, 'origin':'buildkit_header',
+                'lines':{'start':line, 'end':line}})
 
     def test_identity_and_source_step_ids_have_physical_provenance(self):
         result = self.parse('#0 building with "default" instance using docker driver\n'
@@ -222,10 +220,10 @@ class TraceTests(unittest.TestCase):
                             '#16 unpacking to registry.example:5000/group/service:tag 1s done\n#16 DONE 3s\n')
         image = result['evidence'][0]
         self.assertEqual(image['identity'], {'state':'known','name':'service','origin':'buildkit_naming',
-                                           'step_id':16,'lines':{'start':4,'end':4}})
+                                           'step_id':16,'lines':{'start':4,'end':4},
+                                           'reference':'registry.example:5000/group/service:tag'})
         self.assertTrue(all(n['buildkit']=={'step_id':16} for n in result['evidence'][1:]))
-        self.assertNotIn('registry.example', json.dumps(result))
-        self.assertNotIn(':tag', json.dumps(result))
+        self.assertIn('registry.example:5000/group/service:tag', json.dumps(result))
 
     def test_identical_banners_and_ids_are_new_builds_after_completion(self):
         build = ('#0 building with "default" instance using docker driver\n'
@@ -251,7 +249,7 @@ class TraceTests(unittest.TestCase):
         result = self.parse('#1 [1/1] RUN arbitrary\n#1 DONE 2s\n#1 DONE 5s\n')
         self.assertEqual(result['state'], 'partial')
 
-    def test_unknown_conflicting_and_sensitive_identities_are_not_invented(self):
+    def test_unknown_conflicting_and_literal_identities_have_source_provenance(self):
         unknown=self.parse('#1 [1/1] FROM example/base\n#1 DONE 1s\n')['evidence'][0]
         self.assertEqual(unknown['identity']['state'], 'unknown')
         self.assertIsNone(unknown['identity']['name'])
@@ -264,8 +262,9 @@ class TraceTests(unittest.TestCase):
                        'example/access_token_abcdef:latest', 'example/image:SECRET_TAG']:
             with self.subTest(target=target):
                 result=self.parse(f'#2 exporting to image\n#2 naming to {target} done\n#2 DONE 1s\n')
-                self.assertIsNone(result['evidence'][0]['identity']['name'])
-                self.assertNotIn(target, json.dumps(result))
+                self.assertEqual(result['evidence'][0]['identity']['state'], 'known')
+                self.assertEqual(result['evidence'][0]['identity']['reference'], target)
+                self.assertIn(target, json.dumps(result))
         malformed=self.parse('#2 exporting to image\n#2 naming to example/service:tag done secret\n#2 DONE 1s\n')
         self.assertEqual(malformed['evidence'][0]['identity']['state'], 'unknown')
 
@@ -285,7 +284,7 @@ class TraceTests(unittest.TestCase):
                           '#1 [1/1] RUN command\n#1 CANCELED\n')
         self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']), 2)
         self.assertEqual(result['state'], 'partial')
-        self.assertNotIn('private', json.dumps(result))
+        self.assertIn(b'private output', base64.b64decode(result['source']['raw_base64']))
 
     def test_limit_still_processes_closures_and_identity_of_admitted_nodes(self):
         from unittest.mock import patch
@@ -399,14 +398,16 @@ class TraceTests(unittest.TestCase):
 
     def test_large_evidence_is_bounded_without_losing_whole_source_hash(self):
         raw = ''.join(f'section_start:{100+i*2}:step_script\nsection_end:{101+i*2}:step_script\n'
-                      for i in range(2000))
+                      for i in range(parser.MAX_EVIDENCE_NODES + 1))
         result = self.parse(raw)
-        self.assertLess(len(json.dumps(result, indent=2).encode()), 128 * 1024)
+        self.assertLessEqual(len(contract.encoded(result)), parser.MAX_SUMMARY_BYTES)
         self.assertEqual(result['state'], 'partial')
         self.assertEqual(result['reason_code'], 'evidence_limit')
         self.assertFalse(result['coverage']['truncated'])
         self.assertFalse(result['coverage']['complete'])
         self.assertEqual(result['sha256'], hashlib.sha256(raw.encode()).hexdigest())
+        self.assertEqual(result['coverage']['evidence_limit'], {
+            'reason':'node_limit', 'first_omitted_line':2 * parser.MAX_EVIDENCE_NODES + 1})
 
     def test_timestamp_wrapper_does_not_invalidate_coarse_section_epoch(self):
         result = self.parse('1970-01-01T00:01:40.125Z 00O section_start:100:step_script\r\n'
@@ -474,31 +475,35 @@ class TraceTests(unittest.TestCase):
         self.assertEqual(len([n for n in result['evidence'] if n['kind']=='image']),1)
         self.assertEqual(result['evidence'][0]['identity']['lines'],{'start':9,'end':14})
 
-    def test_maximum_named_summary_stays_under_serialized_byte_budget(self):
-        name='a'*128
-        build=('#0 building with "default" instance using docker driver\n'
-               '#2147483647 exporting to image\n'
-               f'#2147483647 naming to example/{name}:tag done\n#2147483647 DONE 3.14159265s\n')
-        result=self.parse(build*(parser.MAX_EVIDENCE_NODES//2))
+    def test_maximum_named_summary_and_explicit_serialized_byte_limit(self):
+        from unittest.mock import patch
+        name = 'a' * 200
+        build = ('#0 building with "default" instance using docker driver\n'
+                 '#2147483647 exporting to image\n'
+                 f'#2147483647 naming to example/{name}:tag done\n#2147483647 DONE 3.14159265s\n')
+        raw = build * (parser.MAX_EVIDENCE_NODES // 2)
+        result = self.parse(raw)
         self.assertEqual(len(result['evidence']), parser.MAX_EVIDENCE_NODES)
-        self.assertEqual(result['state'],'available')
-        self.assertLess(len(contract.encoded(result)),128*1024)
-        for job_id in (999_999_999_999, 9_223_372_036_854_775_807):
-            with self.subTest(job_id=job_id):
-                # Later source lines increase several provenance fields too.
-                padding='unrecognized\n'*10_000 if job_id>999_999_999_999 else ''
-                limited=self.parse(padding+build*(parser.MAX_EVIDENCE_NODES//2), job_id=job_id)
-                self.assertEqual(limited['reason_code'],'evidence_limit')
-                self.assertEqual(limited['state'],'partial')
-                self.assertFalse(limited['coverage']['complete'])
-                self.assertLess(len(limited['evidence']),parser.MAX_EVIDENCE_NODES)
-                self.assertLessEqual(len(contract.encoded(limited)),128*1024)
-                ids={node['id'] for node in limited['evidence']}
-                self.assertTrue(all(node['parent_id'] is None or node['parent_id'] in ids
-                                    for node in limited['evidence']))
-        over_limit=self.parse(build*(parser.MAX_EVIDENCE_NODES//2+1))
-        self.assertEqual(over_limit['reason_code'],'evidence_limit')
-        self.assertLessEqual(len(contract.encoded(over_limit)),128*1024)
+        self.assertEqual(result['state'], 'available')
+        self.assertLessEqual(len(contract.encoded(result)), parser.MAX_SUMMARY_BYTES)
+        small_raw = build * 4
+        full = self.parse(small_raw)
+        budget = len(contract.encoded(full)) - 1024
+        with patch.object(parser, 'MAX_SUMMARY_BYTES', budget):
+            limited = self.parse(small_raw, job_id=9_223_372_036_854_775_807)
+        self.assertEqual(limited['reason_code'], 'evidence_limit')
+        self.assertEqual(limited['state'], 'partial')
+        self.assertFalse(limited['coverage']['complete'])
+        self.assertEqual(limited['coverage']['evidence_limit']['reason'], 'summary_bytes')
+        self.assertGreater(limited['coverage']['evidence_limit']['first_omitted_line'], 0)
+        self.assertLess(len(limited['evidence']), len(full['evidence']))
+        self.assertLessEqual(len(contract.encoded(limited)), budget)
+        ids = {node['id'] for node in limited['evidence']}
+        self.assertTrue(all(node['parent_id'] is None or node['parent_id'] in ids
+                            for node in limited['evidence']))
+        over_limit = self.parse(build * (parser.MAX_EVIDENCE_NODES // 2 + 1))
+        self.assertEqual(over_limit['coverage']['evidence_limit']['reason'], 'node_limit')
+        self.assertLessEqual(len(contract.encoded(over_limit)), parser.MAX_SUMMARY_BYTES)
 
     def test_part_without_known_parent_bounds_keeps_unknown_positions(self):
         result = self.parse('2026-10-04T00:00:00Z #1 exporting to docker image\n'

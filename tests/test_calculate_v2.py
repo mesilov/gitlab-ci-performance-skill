@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import copy
 import importlib
 import sys
@@ -36,12 +38,16 @@ def node(identifier, start, end, code='export_local_unpack', parent=None, cached
 
 
 def trace(job_id, evidence):
+    raw = b'synthetic timing evidence\n' * 10
     return {'job_id': job_id, 'state': 'available', 'reason_code': 'recognized',
-            'sha256': 'a'*64, 'prefix_sha256': None, 'bytes_read': 100,
-            'line_count': 10, 'parser_version': '1.2.0', 'fetched_at': AT,
+            'sha256': hashlib.sha256(raw).hexdigest(), 'prefix_sha256': None, 'bytes_read': len(raw),
+            'line_count': 10, 'parser_version': '2.0.0', 'fetched_at': AT,
             'analyzed_at': AT, 'cached': False,
             'coverage': {'recognized_lines': 10, 'total_lines': 10,
-                         'truncated': False, 'complete': True}, 'evidence': evidence}
+                         'truncated': False, 'complete': True, 'evidence_limit': None},
+            'source': {'encoding':'base64', 'raw_base64':base64.b64encode(raw).decode(),
+                       'display_transform':'utf8-replacement-ansi-csi-strip-outer-cr'},
+            'evidence': evidence}
 
 
 class CalculationTests(unittest.TestCase):
@@ -63,7 +69,7 @@ class CalculationTests(unittest.TestCase):
         self.assertNotIn(s['jobs'][0]['id'], typ['baseline']['attempt_ids'])
         self.assertEqual(len(typ['baseline']['attempt_ids']), 10)
         self.assertEqual([(w['size'],w['page'],len(w['attempt_ids'])) for w in r['windows']],
-                         [(32,0,32),(32,1,13),(64,0,45)])
+                         [(16,0,16),(16,1,16),(16,2,13),(32,0,32),(32,1,13)])
         self.assertEqual(typ['baseline']['metrics']['total']['median_seconds'], 105)
         self.assertEqual(typ['baseline']['deltas']['total']['delta_seconds'], 100)
 
@@ -287,13 +293,10 @@ class CalculationTests(unittest.TestCase):
         sample=categories['export_local_unpack']['samples'][0]
         self.assertEqual(sample['intervals'],[[10.0,15.0]])
         self.assertEqual(len(sample['interval_ids']),1)
-        changed=copy.deepcopy(s)
-        for trace_item in changed['traces']:
-            for evidence in trace_item['evidence']:
-                if evidence['kind']=='operation' and evidence['code']=='context_application_copy':
-                    evidence['source_label']={'state':'redacted','text':'[stage] COPY [redacted]',
-                                              'origin':'buildkit_header',
-                                              'lines':copy.deepcopy(evidence['source_label']['lines'])}
+        changed = copy.deepcopy(s)
+        relabeled_raw = raw.replace(b'COPY app .', b'COPY app-with-literal-arguments .')
+        changed['traces'] = [parse_trace(j['id'], relabeled_raw, fetched_at=AT, analyzed_at=AT)
+                             for j in changed['jobs']]
         relabeled=self.report(changed)
         self.assertEqual(relabeled['job_types'],r['job_types'])
         self.assertEqual(relabeled['windows'],r['windows'])
@@ -320,7 +323,7 @@ class CalculationTests(unittest.TestCase):
         s['jobs'][0]['queued_seconds']=100
         next(j for j in s['jobs'] if j['id']==13)['queued_seconds']=7
         r=self.report(s)
-        older=r['windows'][1]
+        older=next(w for w in r['windows'] if w['size']==32 and w['page']==1)
         self.assertEqual(older['anchor_attempt_id'],13)
         self.assertEqual(older['findings']['queue_spike']['latest_seconds'],7)
         self.assertEqual(older['findings']['queue_spike']['state'],'normal')

@@ -15,8 +15,9 @@ class ContractV2Tests(unittest.TestCase):
         self.c=importlib.import_module('report_contract')
     def test_source_and_unknown_versions(self):
         self.c.validate(sample())
-        s=sample();s['schema_version']='9.0.0'
-        with self.assertRaisesRegex(ValueError,'version'):self.c.validate(s)
+        for version in ('2.2.0', '9.0.0'):
+            s=sample();s['schema_version']=version
+            with self.subTest(version=version), self.assertRaisesRegex(ValueError,'version'):self.c.validate(s)
     def test_negative_nonfinite_and_unknown_fields(self):
         for mutate in [lambda s:s['jobs'][0].update(duration_seconds=-1),lambda s:s['jobs'][0].update(duration_seconds=float('nan')),lambda s:s.update(raw_log='secret')]:
             s=sample();mutate(s)
@@ -26,8 +27,10 @@ class ContractV2Tests(unittest.TestCase):
             s=sample();mutate(s)
             with self.assertRaises(ValueError):self.c.validate(s)
     def test_impossible_evidence_intervals_and_parents(self):
-        s=sample();t=s['traces'][0];t.update(state='available',reason_code='parsed',sha256='a'*64,bytes_read=10,line_count=2)
-        t['coverage'].update(recognized_lines=2,total_lines=2,complete=True)
+        from report_trace import parse_trace
+        s=sample();t=s['traces'][0]
+        t.update(parse_trace(t['job_id'], b'section_start:100:step_script\nsection_end:101:step_script\n',
+                             fetched_at=t['fetched_at'], analyzed_at=t['analyzed_at']))
         n={'id':'phase-1','kind':'phase','code':'step_script','parent_id':None,'timing':{'duration_seconds':1,'start_seconds':0,'end_seconds':1,'origin':'section','quality':'exact','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown','buildkit':None,'identity':None,'source_label':None}
         t['evidence']=[n];self.c.validate(s)
         for mutate in [lambda n:n['timing'].update(end_seconds=-1),lambda n:n.update(parent_id='missing'),lambda n:n['timing'].update(origin='api_execution'),lambda n:n.update(parent_id='phase-1')]:
@@ -64,8 +67,10 @@ class ReviewRegressionTests(unittest.TestCase):
         with self.assertRaises(ValueError):validate(c)
     def test_buildkit_inferred_width_matches_reported_duration(self):
         from report_contract import check_trace
-        t=sample()['traces'][0];t.update(state='available',sha256='a'*64,bytes_read=10,line_count=2)
-        t['coverage'].update(recognized_lines=2,total_lines=2,complete=True)
+        from report_trace import parse_trace
+        t=sample()['traces'][0]
+        t.update(parse_trace(t['job_id'], b'#1 exporting to image\n#1 DONE 2s\n',
+                             fetched_at=t['fetched_at'], analyzed_at=t['analyzed_at']))
         t['evidence']=[{'id':'op','kind':'operation','code':'export_local_unpack','parent_id':None,'timing':{'duration_seconds':100,'start_seconds':0,'end_seconds':2,'origin':'buildkit_reported','quality':'inferred','precision_seconds':1},'cached':False,'complete':True,'lines':{'start':1,'end':2},'push_coverage':'unknown','buildkit':{'step_id':1},'identity':None,'source_label':{'state':'original','text':'exporting to image','origin':'buildkit_header','lines':{'start':1,'end':1}}}]
         with self.assertRaises(ValueError):check_trace(t)
     def test_filtered_canonical_attempt_can_export_with_external_type(self):
@@ -84,7 +89,7 @@ class BudgetAndInputTests(unittest.TestCase):
         s=sample();s['jobs'][0]['name']='x'*MAX_PAYLOAD_BYTES
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'too-large.json'
-            with self.assertRaisesRegex(ValueError,'16 MiB'):save(p,s)
+            with self.assertRaisesRegex(ValueError,'64 MiB'):save(p,s)
             self.assertFalse(p.exists())
     def test_cross_ref_input_rejects_before_transport(self):
         from report_collect import collect

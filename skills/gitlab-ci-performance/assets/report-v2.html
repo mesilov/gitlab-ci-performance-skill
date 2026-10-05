@@ -17,17 +17,19 @@ main{max-width:1200px}.run-summary{display:grid;grid-template-columns:repeat(5,m
 @media(max-width:650px){.run-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.timeline-row{grid-template-columns:minmax(80px,110px) minmax(0,1fr) 65px;gap:8px;min-height:44px}.timeline-axis{margin-left:118px;margin-right:73px}.timeline-duration{font-size:11px}.timeline-heading{font-size:16px}.timeline-axis-label{text-align:left;margin-left:118px}.evidence-block{padding:12px}.run-drilldown>summary{font-size:16px}}
 .priority-panel{border:1px solid var(--line);border-radius:6px;padding:20px;margin:20px 0 24px;background:var(--soft)}.priority-panel h2{font-size:20px}.priority-panel #scope{margin:5px 0 12px}.priority-lead{font-size:15px;max-width:950px;margin-bottom:16px}.priority-list{grid-template-columns:1fr;gap:0;margin:0 0 8px;padding-left:22px}.priority{border-top:1px solid var(--line);padding:14px 0}.priority-header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}.priority h3{font-size:14px;margin:0;font-weight:600;text-indent:-18px;padding-left:0}.priority .cost{font-size:13px;white-space:nowrap;font-weight:400}.priority .priority-action{font-size:13px;max-width:850px;margin:6px 0;color:var(--muted)}.priority .priority-evidence{font-size:12px;color:var(--muted);margin:0}.priority-evidence .evidence-link{border:0;border-radius:0;background:none;padding:0;min-height:0;text-decoration:underline;text-underline-offset:3px;font-size:12px;color:var(--fg);display:inline}.priority .priority-evidence a{display:inline;margin:0;font-size:12px}.priority-panel #priority-caution{font-size:11px;margin:8px 0 0}.priority-method{margin-top:10px;color:var(--muted);font-size:11px}.priority-method>summary{font-size:11px;padding:3px 0}.priority-method .priority-summary{margin:10px 0}.priority-method .priority-summary strong{font-size:15px}.priority-method .priority-summary span{font-size:11px}#priority-uncertainty p{font-size:11px;margin:6px 0}
 @media(max-width:650px){.priority-panel{padding:16px}.priority-lead{font-size:14px}.priority-list{padding-left:18px}.priority h3{font-size:13px;text-indent:-16px}.priority .cost{font-size:12px}.priority-header{gap:4px}.priority .priority-action{font-size:12px}}
+.source-fragment{white-space:pre-wrap;overflow-wrap:anywhere;max-height:440px;overflow:auto;padding:12px;border:1px solid var(--line);background:var(--bg);font:12px/1.6 ui-monospace,monospace;tab-size:4;user-select:text}.source-title{white-space:pre-wrap;overflow-wrap:anywhere}.source-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.source-view{min-width:0;max-width:100%}.source-view details{margin-top:10px}.source-view summary{cursor:pointer}.source-view .caption{overflow-wrap:anywhere}pre:focus-visible{outline:2px solid var(--focus)}
+.timeline-label{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;max-height:3em}#step-evidence-title{white-space:pre-wrap;max-height:6em;overflow:auto}.source-title{max-height:240px;overflow:auto}
 </style></head><body><main>
 <div class="top"><a id="project"></a><small id="freshness" class="muted"></small></div>
 <h1 id="title"></h1><p id="situation" class="intro"></p><p id="scope-note" class="caption"></p>
 <section class="priority-panel" aria-labelledby="priority-heading"><h2 id="priority-heading"></h2><p id="scope" class="scope"></p><p id="priority-lead" class="priority-lead"></p><div id="findings" class="priority-list"></div><p id="priority-caution" class="caption"></p><details id="priority-method" class="priority-method"><summary id="priority-method-heading"></summary><div id="metrics" class="priority-summary"></div><p id="spike" class="spike"></p><div id="priority-uncertainty"></div></details></section>
 <section class="overview" aria-labelledby="jobs-heading"><h2 id="jobs-heading"></h2><div id="jobs" class="cards"></div></section>
 <section id="job-detail" class="section" aria-labelledby="selected-name"><div class="section-top"><h2 id="selected-name"></h2><span id="selected-stage" class="scope"></span></div><p id="description" class="description"></p><div id="purpose-provenance" class="caption"></div>
-<div class="controls"><label><span id="window-label"></span><select id="size"><option value="32">32</option><option value="64">64</option></select></label><div class="pager"><button id="older"></button><button id="newer"></button><button id="latest"></button></div><span id="window-period" class="scope"></span></div><p id="coverage" class="caption"></p><div id="legend" class="legend"></div><div id="chart"></div><p id="chart-help" class="caption"></p>
+<div class="controls"><label><span id="window-label"></span><select id="size"><option value="16">16</option><option value="32">32</option></select></label><div class="pager"><button id="older"></button><button id="newer"></button><button id="latest"></button></div><span id="window-period" class="scope"></span></div><p id="coverage" class="caption"></p><div id="legend" class="legend"></div><div id="chart"></div><p id="chart-help" class="caption"></p>
 <details id="attempt-history"><summary id="history-heading"></summary><div class="table-wrap"><table class="attempts"><thead id="history-head"></thead><tbody id="history"></tbody></table></div></details></section>
 <section id="detail" class="section" aria-labelledby="detail-title" hidden><div class="section-top"><h2 id="detail-title"></h2><div id="attempt-links" class="small"></div></div><dl id="attempt-summary" class="run-summary"></dl>
 <details id="detail-metadata"><summary id="metadata-heading"></summary><dl id="attempt-detail" class="metadata"></dl><div id="trace-state" class="caption"></div></details>
-<div id="evidence"><details id="run-drilldown" class="run-drilldown" open><summary id="drill-summary"></summary><p id="drill-note" class="drill-note"></p>
+<details id="trace-source-block" class="source-view"><summary id="trace-source-heading"></summary><div id="trace-source-content"></div></details><div id="evidence"><details id="run-drilldown" class="run-drilldown" open><summary id="drill-summary"></summary><p id="drill-note" class="drill-note"></p>
 <details id="runner-phases"><summary id="phase-heading"></summary><table><thead id="phase-head"></thead><tbody id="phase-rows"></tbody></table></details>
 <h3 id="drill-group-title" class="timeline-heading"></h3><div id="image-timeline"></div><div id="image-axis" class="timeline-axis"><span id="image-axis-start"></span><span id="image-axis-end"></span></div><p id="image-axis-label" class="timeline-axis-label"></p>
 <p id="group-evidence-note" class="caption"></p>
@@ -155,7 +157,7 @@ function evidenceLabel(n,nodes){
  if(n.kind==='command')return L('Command interval ','Интервал команды ')+ordinal;
  if(n.kind==='operation'||n.kind==='part'){
   const prefix=n.buildkit?'#'+n.buildkit.step_id+' ':ordinal+'. ',label=n.source_label;
-  if(label?.state==='original'||label?.state==='redacted')return prefix+label.text;
+  if(label?.state==='original')return prefix+label.text;
   return prefix+L('Source title unavailable · ','Исходное название недоступно · ')+codeLabel(n.code);
  }
  return codeLabel(n.code);
@@ -163,11 +165,11 @@ function evidenceLabel(n,nodes){
 function sourceLabelProvenance(n){
  const label=n.source_label;if(!label)return '';
  if(label.state==='unavailable')return L('Original BuildKit title unavailable; category fallback shown','Оригинальное название BuildKit недоступно; показана категория');
- const state=label.state==='redacted'?L('Sensitive arguments redacted','Чувствительные аргументы скрыты'):L('Original BuildKit title','Оригинальное название BuildKit');
+ const state=L('Original BuildKit title','Оригинальное название BuildKit');
  return state+' · '+(label.origin==='buildkit_header'?L('header','заголовок'):L('progress suboperation','подоперация прогресса'))+' · '+L('lines ','строки ')+label.lines.start+'–'+label.lines.end;
 }
 function identityProvenance(identity){
- const states={known:L('Name confirmed','Имя подтверждено'),unknown:L('Image identity unknown','Идентичность образа неизвестна'),conflicting:L('Conflicting image names','Противоречивые имена образа'),redacted:L('Image identity redacted','Идентичность образа скрыта')};
+ const states={known:L('Name confirmed','Имя подтверждено'),unknown:L('Image identity unknown','Идентичность образа неизвестна'),conflicting:L('Conflicting image names','Противоречивые имена образа')};
  return states[identity.state]+(identity.lines?' · '+(identity.origin==='buildkit_naming'?L('Naming','Присвоение имени'):L('Unpacking','Распаковка'))+' #'+identity.step_id+' · '+L('lines ','строки ')+identity.lines.start+'–'+identity.lines.end:'');
 }
 function durationLabel(n){return n.cached?L('Cached','Из кэша'):fmt(n.timing.duration_seconds,selectedWindow()?.display_unit);}
@@ -180,8 +182,59 @@ function timelineRow(n,nodes,origin,span,selected,callback){
  track.title=positioned?L('Inferred logged position','Положение восстановлено по логу'):n.cached?L('Cached; duration is not measured','Из кэша; длительность не измерена'):L('Interval position is unknown','Положение интервала неизвестно');row.append(track,el('span',durationLabel(n),'timeline-duration'));row.title=evidenceLabel(n,nodes)+' · '+durationLabel(n)+' · '+track.title;row.addEventListener('click',callback);return row;
 }
 function axis(prefix,span){$(prefix+'-start').textContent=fmt(0,selectedWindow()?.display_unit);$(prefix+'-end').textContent=fmt(span,selectedWindow()?.display_unit);$(prefix+'-end').dataset.seconds=span;}
+// Source bytes remain opaque data. Only textContent is used for their display.
+const decodedSources=new Map();
+function sourceBytes(a){
+ if(!decodedSources.has(a.id)){
+  const binary=atob(a.trace.source.raw_base64),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),ranges=[];
+  let start=0;for(let i=0;i<bytes.length;i++)if(bytes[i]===10){ranges.push([start,i+1]);start=i+1;}if(start<bytes.length)ranges.push([start,bytes.length]);
+  decodedSources.set(a.id,{bytes,ranges});
+ }
+ return decodedSources.get(a.id);
+}
+function fragment(a,n){
+ const {bytes,ranges}=sourceBytes(a);if(!n)return {bytes,lines:ranges.map((_,i)=>i+1)};
+ const picked=[];for(let i=n.lines.start-1;i<n.lines.end;i++){
+  const range=ranges[i];if(!range)continue;
+  if(n.buildkit){const text=new TextDecoder('utf-8',{ignoreBOM:true}).decode(bytes.subarray(...range)).replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'').replace(/^\r+|\r+$/g,'');
+   // Associate interleaved physical frames with their saved BuildKit step.
+   const m=text.match(/^(?:\[?\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)\]?\s*(?:\d\d[OE]\s*)?)?#(\d+)\s/);if(!m||Number(m[1])!==n.buildkit.step_id)continue;
+  }
+  picked.push(i);
+ }
+ const chunks=picked.map(i=>bytes.subarray(...ranges[i])),result=new Uint8Array(chunks.reduce((sum,c)=>sum+c.length,0));let offset=0;for(const c of chunks){result.set(c,offset);offset+=c.length;}
+ return {bytes:result,lines:picked.map(i=>i+1)};
+}
+async function copyText(text,status){
+ try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);else{
+  const input=el('textarea'),active=document.activeElement;input.value=text;input.style.position='fixed';input.style.opacity='0';
+  // textarea.value normalizes CR/LF. Override the clipboard payload with the
+  // original decoded string instead of copying that normalized value.
+  const onCopy=e=>{e.preventDefault();e.clipboardData.setData('text/plain',text);};
+  document.addEventListener('copy',onCopy);
+  try{document.body.append(input);input.select();if(!document.execCommand('copy'))throw Error('copy');}
+  finally{document.removeEventListener('copy',onCopy);input.remove();active?.focus({preventScroll:true});}
+ }status.textContent=L('Copied','Скопировано');}catch{status.textContent=L('Select the source text and copy it manually.','Выделите исходный текст и скопируйте вручную.');}
+}
+function physicalRanges(lines){
+ const ranges=[];for(let i=0;i<lines.length;i++){const first=lines[i];while(i+1<lines.length&&lines[i+1]===lines[i]+1)i++;ranges.push(first===lines[i]?String(first):first+'–'+lines[i]);}return ranges.join(', ');
+}
+function sourceView(a,n){
+ const data=fragment(a,n),text=new TextDecoder('utf-8',{ignoreBOM:true}).decode(data.bytes),view=el('div',null,'source-view'),controls=el('div',null,'source-controls'),status=el('span',null,'caption'),copy=el('button',L('Copy original text','Копировать исходный текст'),'copy-source');copy.type='button';status.setAttribute('aria-live','polite');copy.addEventListener('click',()=>copyText(text,status));
+ const download=el('button',L('Save original bytes','Сохранить исходные байты'),'save-source');download.type='button';download.addEventListener('click',()=>{const url=URL.createObjectURL(new Blob([data.bytes],{type:'application/octet-stream'})),link=el('a');link.href=url;link.download='job-'+a.id+(n?'-'+n.id:'')+'.log';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);});controls.append(copy,download,status);view.append(controls);
+ const prov=el('p',L('Job #','Job №')+a.id+' · '+(n?n.id+' · ':'')+L('Physical lines: ','Физические строки: ')+(physicalRanges(data.lines)||'—')+' · SHA-256 '+(a.trace.sha256||a.trace.prefix_sha256),'caption');prov.dataset.jobId=a.id;prov.dataset.traceHash=a.trace.sha256||a.trace.prefix_sha256;view.append(prov);
+ const pre=el('pre',text,'source-fragment');pre.tabIndex=0;pre.setAttribute('aria-label',L('Original received source text','Исходный полученный текст'));view.append(pre);
+ const readable=el('details'),summary=el('summary',L('Readable view (ANSI CSI and outer CR removed)','Читаемый вид (удалены ANSI CSI и внешние CR)')),display=el('pre',text.split('\n').map(line=>line.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'').replace(/^\r+|\r+$/g,'')).join('\n'),'source-readable source-fragment');readable.append(summary,display);view.append(readable);
+ try{new TextDecoder('utf-8',{fatal:true}).decode(data.bytes);}catch{view.append(el('p',L('Invalid UTF-8 is replaced only in text views. Save original bytes for lossless source.','Невалидный UTF-8 заменён только в текстовом представлении. Сохраните исходные байты без потерь.'),'caption'));}
+ if(a.trace.coverage.truncated)view.append(el('p',L('Only the received prefix is stored; its hash is shown.','Сохранён только полученный префикс; указан его хеш.'),'caption'));
+ if(a.trace.coverage.evidence_limit)view.append(el('p',L('Evidence limit: ','Лимит измерений: ')+a.trace.coverage.evidence_limit.reason+' · '+L('first omitted line ','первая пропущенная строка ')+a.trace.coverage.evidence_limit.first_omitted_line,'caption'));
+ return view;
+}
 function renderDrilldown(a){
  const nodes=a.trace?.evidence||[],images=nodes.filter(n=>n.kind==='image'),commands=nodes.filter(n=>n.kind==='command'),rootOps=nodes.filter(n=>n.kind==='operation'&&!n.parent_id),groups=images.length?images:[...commands,...rootOps],extra=images.length?[...commands,...rootOps]:[],phases=nodes.filter(n=>n.kind==='phase'),u=selectedWindow()?.display_unit;
+ $('trace-source-block').hidden=!a.trace?.bytes_read;
+ $('trace-source-heading').textContent=L('Complete received log / prefix','Полный полученный лог / префикс');
+ $('trace-source-content').replaceChildren();if(a.trace?.bytes_read)$('trace-source-content').append(sourceView(a,null));
  $('run-drilldown').hidden=!nodes.length;$('drill-unavailable').hidden=!!nodes.length;$('evidence-selection').textContent='';
  if(!nodes.length){$('drill-unavailable').textContent=(a.trace?codeLabel(a.trace.state)+' · '+(traceReasons[a.trace.reason_code]||''):L('No log collected','Журнал не собран'))+' · '+L('Supported timing evidence was not found.','Поддерживаемые измерения времени не найдены.');for(const id of ['phase-rows','image-timeline','step-timeline','command-timeline','step-evidence'])$(id).replaceChildren();return;}
  const candidate=longest(nodes.filter(n=>n.kind==='operation'&&groups.some(g=>g.id===n.parent_id)));
@@ -190,7 +243,7 @@ function renderDrilldown(a){
  if(!ops.some(n=>n.id===activeStepId))activeStepId=longest(ops)?.id||null;
  if(!nodes.some(n=>n.id===activeEvidenceId))activeEvidenceId=activeStepId||group?.id||phases[0]?.id;
  $('drill-summary').textContent=L('Detailed breakdown · job #','Подробный разбор · джоба №')+a.id+' · '+(images.length?images.length+L(' image builds',' сборок образов'):rootOps.length?groups.length+L(' recorded groups',' групп измерений'):commands.length?commands.length+L(' command intervals',' интервалов команд'):phases.length+L(' runner phases',' этапов раннера'));
- $('drill-note').textContent=images.length?L('Select an image build, then an operation to inspect its source. Names are confirmed destination basenames; unknown identities are explicit. BuildKit numbers and safe source titles come from the log; sensitive arguments are marked redacted. Operations may overlap; their durations must not be added.','Выберите сборку образа, затем операцию, чтобы увидеть источник замера. Имена — подтверждённые короткие имена назначения; неизвестная идентичность указана явно. Номера BuildKit и безопасные исходные названия взяты из лога; чувствительные аргументы помечены как скрытые. Операции могут пересекаться; их длительности нельзя складывать.'):rootOps.length?L('Select a recorded group, then its operation to inspect the source. Nested measurements explain their parents and are not added to parent durations.','Выберите группу измерений, затем операцию для разбора источника. Вложенные измерения объясняют родителя и не прибавляются к его длительности.'):L('Select a command to inspect its logged interval. These intervals are estimates, not separately profiled command durations.','Выберите команду для разбора её интервала в логе. Это оценки интервалов, а не отдельные замеры выполнения команд.');
+ $('drill-note').textContent=images.length?L('Select an image build, then an operation to inspect its source. Short names label image builds; complete references, titles and original log fragments are available below. Operations may overlap; their durations must not be added.','Выберите сборку образа, затем операцию, чтобы увидеть источник замера. Короткие имена подписывают сборки; полные references, названия и исходные фрагменты лога доступны ниже. Операции могут пересекаться; их длительности нельзя складывать.'):rootOps.length?L('Select a recorded group, then its operation to inspect the source. Nested measurements explain their parents and are not added to parent durations.','Выберите группу измерений, затем операцию для разбора источника. Вложенные измерения объясняют родителя и не прибавляются к его длительности.'):L('Select a command to inspect its logged interval. These intervals are estimates, not separately profiled command durations.','Выберите команду для разбора её интервала в логе. Это оценки интервалов, а не отдельные замеры выполнения команд.');
  $('phase-rows').replaceChildren();$('runner-phases').hidden=!phases.length;
  for(const n of phases){const tr=el('tr'),td=el('td'),b=el('button',codeLabel(n.code),'phase-button evidence-button');markEvidence(tr,n);b.setAttribute('aria-pressed',String(n.id===activeEvidenceId));b.addEventListener('click',()=>{activateEvidence(a,n.id);renderDrilldown(a);focusEvidence(n.id,'phase-rows');});td.append(b);tr.append(td,el('td',durationLabel(n)));$('phase-rows').append(tr);}
  $('drill-group-title').textContent=images.length?L('Image builds','Сборка образов'):rootOps.length?L('Recorded operations','Записанные операции'):L('Job script','Скрипт джобы');$('drill-group-title').hidden=$('image-axis').hidden=$('image-axis-label').hidden=!groups.length;$('image-timeline').replaceChildren();
@@ -207,6 +260,9 @@ function renderDrilldown(a){
  const selected=nodes.find(n=>n.id===activeEvidenceId);$('step-evidence-block').hidden=!selected;
  if(selected){$('step-evidence-block').dataset.selectedEvidence=selected.id;$('step-evidence-title').textContent=(selected.parent_id?evidenceLabel(nodes.find(n=>n.id===selected.parent_id),nodes)+' / ':'')+evidenceLabel(selected,nodes);$('step-evidence-note').textContent=L('Source log lines ','Строки исходного лога ')+selected.lines.start+'–'+selected.lines.end+' · '+codeLabel(selected.timing.origin)+' · '+codeLabel(selected.timing.quality)+(selected.source_label?' · '+L('Category: ','Категория: ')+codeLabel(selected.code)+' · '+sourceLabelProvenance(selected):'');$('step-evidence-note').dataset.lineStart=selected.lines.start;$('step-evidence-note').dataset.lineEnd=selected.lines.end;
   $('step-evidence').replaceChildren(el('code',durationLabel(selected)),el('p',L('Push coverage: ','Покрытие отправки: ')+codeLabel(selected.push_coverage)+' · '+(selected.complete?L('Complete evidence','Полные данные'):L('Partial evidence','Частичные данные'))));
+  if(selected.source_label?.text!=null){const title=el('pre',selected.source_label.text,'source-title');title.id='source-title';$('step-evidence').append(title);}
+  const groupIdentity=(selected.kind==='image'?selected:group)?.identity;if(groupIdentity?.reference)$('step-evidence').append(el('pre',groupIdentity.reference,'source-title'));
+  $('step-evidence').append(sourceView(a,selected));
   const parent=selected.kind==='part'?nodes.find(n=>n.id===selected.parent_id):selected,parts=nodes.filter(n=>n.parent_id===parent.id);
   if(parts.length){$('step-evidence').append(el('p',L('Nested measurements (not added to the parent):','Вложенные измерения (не прибавляются к родителю):')));for(const n of parts){const b=el('button',evidenceLabel(n,nodes)+' · '+durationLabel(n)+' · '+L('Lines ','Строки ')+n.lines.start+'–'+n.lines.end,'part-button evidence-button');markEvidence(b,n);b.setAttribute('aria-pressed',String(n.id===activeEvidenceId));b.addEventListener('click',()=>{activateEvidence(a,n.id);renderDrilldown(a);focusEvidence(n.id,'step-evidence');});$('step-evidence').append(b);}}
   $('step-source-link').replaceWith(Object.assign(link(L('Open source log in GitLab','Открыть исходный лог в GitLab'),a.metadata.web_url+'/trace'),{id:'step-source-link'}));$('evidence-selection').textContent=selected.id+' · '+L('Source lines ','Строки источника ')+selected.lines.start+'–'+selected.lines.end;

@@ -1,5 +1,6 @@
-"""Synthetic offline browser evidence: known/unknown/redacted/long image names."""
+"""Synthetic offline browser evidence: known/unknown/literal/long image names."""
 import argparse
+import base64
 from pathlib import Path
 import sys
 
@@ -37,14 +38,18 @@ def generate(output):
         add(start+4, f'#{step} DONE 4s')
     raw = ('\n'.join(lines)+'\n').encode()
     source['traces'] = [parse_trace(j['id'], raw, fetched_at=AT, analyzed_at=AT) for j in source['jobs']]
-    assert b'SECRET_TOKEN' not in encoded(source)
-    assert b'PRIVATE_TOKEN' not in encoded(source)
-    assert b'<img' not in encoded(source)
+    assert all(base64.b64decode(t['source']['raw_base64'])==raw for t in source['traces'])
+    assert b'SECRET_TOKEN' in encoded(source)
+    assert b'PRIVATE_TOKEN' in encoded(source)
+    assert b'<img' in encoded(source)
     save(output/'jobs.json', source)
     report = build_report(source, generated_at=AT)
     save(output/'report.json', report)
     for language in ('en', 'ru'):
-        render(report, output/f'report-{language}.html', language)
+        path=output/f'report-{language}.html'
+        render(report, path, language)
+        assert '<img src=x' not in path.read_text()
+        assert r'\u003cimg' in path.read_text()
 
 
 if __name__ == '__main__':

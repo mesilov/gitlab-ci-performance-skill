@@ -357,10 +357,9 @@ def build_report(snapshot, baseline=None, *, catalog=None, guidance=None, langua
                             'retained_count': len(history), 'fresh_count': sum(a['metadata']['metadata_fresh'] for a in history),
                             'trace_count': sum(a['trace'] is not None and a['trace']['state'] in {'available','partial','empty'} for a in history)},
                'window_ids': []}
-        specifications = [(32,0,filtered[:32])]
-        if len(filtered)>32:
-            specifications.append((32,1,filtered[32:64]))
-        specifications.append((64,0,filtered[:64]))
+        specifications = [(size, page, filtered[page*size:(page+1)*size])
+                          for size in (16, 32)
+                          for page in range((len(filtered)+size-1)//size)]
         type_windows = []
         for size,page,members in specifications:
             date_from,date_to = _bounds(members)
@@ -378,9 +377,13 @@ def build_report(snapshot, baseline=None, *, catalog=None, guidance=None, langua
                       'inferential': {'attempt_ids':[a['id'] for a in inferential], 'metrics':_metrics(inferential)}}
             window['findings'] = _findings(window,members,members[0] if members else latest,guide)
             type_windows.append(window)
-        if len(type_windows)==3:
-            type_windows[0].update(older_window_id=type_windows[1]['id'],has_older=True)
-            type_windows[1].update(newer_window_id=type_windows[0]['id'],has_newer=True)
+        for size in (16, 32):
+            pages = [w for w in type_windows if w['size']==size]
+            for page, window in enumerate(pages):
+                if page+1 < len(pages):
+                    window.update(older_window_id=pages[page+1]['id'],has_older=True)
+                if page > 0:
+                    window.update(newer_window_id=pages[page-1]['id'],has_newer=True)
         typ['window_ids'] = [w['id'] for w in type_windows]
         job_types.append(typ)
         windows.extend(type_windows)

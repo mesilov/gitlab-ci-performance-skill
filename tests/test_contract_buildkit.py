@@ -1,4 +1,6 @@
-"""The canonical BuildKit contract retains bounded, safe source identity only."""
+"""The canonical BuildKit contract retains original source text with bounded evidence."""
+import base64
+import hashlib
 import copy
 from pathlib import Path
 import sys
@@ -19,16 +21,28 @@ from report_cli import render
 
 def current_source():
     value = sample(1)
-    value['schema_version'] = '2.2.0'
-    value['traces'][0]['parser_version'] = '1.2.0'
+    value['schema_version'] = '3.0.0'
+    value['traces'][0]['parser_version'] = '2.0.0'
     return value
+
+
+def set_raw_source(trace, raw):
+    trace['source'] = {'encoding':'base64', 'raw_base64':base64.b64encode(raw).decode(),
+                       'display_transform':'utf8-replacement-ansi-csi-strip-outer-cr'}
+    trace.update(sha256=hashlib.sha256(raw).hexdigest(), bytes_read=len(raw),
+                 line_count=len(raw.splitlines()))
 
 
 def evidence_source():
     value = current_source()
     trace = value['traces'][0]
-    trace.update(state='available', reason_code='parsed', sha256='a'*64,
-                 bytes_read=100, line_count=8)
+    trace.update(state='available', reason_code='parsed')
+    set_raw_source(trace, (b'#0 building with default instance using docker driver\n'
+                           b'#12 exporting to image\n#12 exporting layers 3s done\n'
+                           b'#12 naming to example/safe-image:tag done\n'
+                           b'#12 exporting manifest sha256:fixture done\n'
+                           b'#12 exporting config sha256:fixture done\n'
+                           b'#12 exporting attestation manifest sha256:fixture done\n#12 DONE 6s\n'))
     trace['coverage'].update(recognized_lines=8, total_lines=8, complete=True)
     timing = {'duration_seconds': 6, 'start_seconds': 0, 'end_seconds': 6,
               'origin': 'inferred', 'quality': 'inferred', 'precision_seconds': .001}
@@ -39,7 +53,8 @@ def evidence_source():
              'source_label': None,
              'identity': {'state': 'known', 'name': 'safe-image',
                           'origin': 'buildkit_naming', 'step_id': 12,
-                          'lines': {'start': 4, 'end': 4}}}
+                          'lines': {'start': 4, 'end': 4},
+                          'reference':'example/safe-image:tag'}}
     operation = copy.deepcopy(image)
     operation.update(id='export', kind='operation', code='export_local_unpack',
                      parent_id='image', lines={'start': 2, 'end': 8},
@@ -51,7 +66,7 @@ def evidence_source():
     part = copy.deepcopy(operation)
     part.update(id='layers', kind='part', parent_id='export',
                 lines={'start': 3, 'end': 6},
-                source_label={'state':'original', 'text':'exporting layers',
+                source_label={'state':'original', 'text':'exporting layers 3s done',
                               'origin':'buildkit_progress',
                               'lines':{'start':3, 'end':3}})
     part['timing'].update(duration_seconds=3, end_seconds=3)
@@ -66,7 +81,7 @@ class BuildKitContractTests(unittest.TestCase):
         validate(source)
         report = build_report(source, generated_at=AT)
         self.assertEqual((report['schema_version'], report['calculation_version'],
-                          report['trace_parser_version']), ('2.2.0', '2.2.0', '1.2.0'))
+                          report['trace_parser_version']), ('3.0.0', '3.0.0', '2.0.0'))
         canonical = encoded(report)
         compact = export_report(report, attempt_ids=[1])
         self.assertEqual(compact['attempts'][0]['trace']['evidence'],
@@ -79,7 +94,7 @@ class BuildKitContractTests(unittest.TestCase):
         self.assertEqual(encoded(report), canonical)
 
     def test_old_source_requires_new_collection_for_calculation(self):
-        for schema, parser in (('2.0.0','1.0.0'), ('2.1.0','1.1.0')):
+        for schema, parser in (('2.0.0','1.0.0'), ('2.1.0','1.1.0'), ('2.2.0','1.2.0')):
             source = current_source()
             source['schema_version'] = schema
             source['traces'][0]['parser_version'] = parser
@@ -88,7 +103,7 @@ class BuildKitContractTests(unittest.TestCase):
 
     def test_old_reports_reject_render_and_export_without_writes(self):
         report = build_report(evidence_source(), generated_at=AT)
-        for version in ('1.0.0', '1.1.0', '2.0.0', '2.1.0'):
+        for version in ('1.0.0', '1.1.0', '2.0.0', '2.1.0', '2.2.0'):
             with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
                 old = copy.deepcopy(report)
                 old['schema_version'] = version
@@ -103,7 +118,7 @@ class BuildKitContractTests(unittest.TestCase):
 
     def test_current_report_rejects_incompatible_calculation_and_parser_versions(self):
         report = build_report(evidence_source(), generated_at=AT)
-        for field, value in (('calculation_version', '2.0.0'), ('trace_parser_version', '1.0.0')):
+        for field, value in (('calculation_version', '2.0.0'), ('trace_parser_version', '1.0.0'), ('calculation_version', '2.2.0'), ('trace_parser_version', '1.2.0')):
             bad = copy.deepcopy(report)
             bad[field] = value
             with self.assertRaises(ValueError):
@@ -111,7 +126,7 @@ class BuildKitContractTests(unittest.TestCase):
 
     def test_old_resume_and_cache_reject_before_transport(self):
         source = current_source()
-        source['schema_version'] = '2.0.0'
+        source['schema_version'] = '2.2.0'
         for key in ('resume', 'cache'):
             with self.subTest(key=key), patch('report_collect.GlabTransport') as transport:
                 with self.assertRaisesRegex(ValueError, 'Unsupported schema version'):
@@ -122,12 +137,12 @@ class BuildKitContractTests(unittest.TestCase):
         source = evidence_source()
         job = source['jobs'][0]
         trace = source['traces'][0]
-        trace['parser_version'] = '1.0.0'
+        trace['parser_version'] = '1.2.0'
         self.assertIsNone(_cache_trace(job, {1: job}, {1: trace}, AT, 86400, 4194304, 50000))
 
     def test_current_schema_rejects_incompatible_trace_parser(self):
         source = current_source()
-        source['traces'][0]['parser_version'] = '1.0.0'
+        source['traces'][0]['parser_version'] = '1.2.0'
         with self.assertRaises(ValueError):
             validate(source)
 
@@ -143,6 +158,8 @@ class BuildKitContractTests(unittest.TestCase):
             for node in source['traces'][0]['evidence'][1:]:
                 node['buildkit']['step_id'] = step
             source['traces'][0]['evidence'][0]['identity']['step_id'] = step
+            raw=base64.b64decode(source['traces'][0]['source']['raw_base64']).replace(b'#12 ', f'#{step} '.encode())
+            set_raw_source(source['traces'][0], raw)
             validate(source)
         source = evidence_source()
         source['traces'][0]['evidence'][1]['buildkit']['raw_header'] = 'arbitrary'
@@ -156,7 +173,7 @@ class BuildKitContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source step'):
                 validate(source)
 
-    def test_source_labels_are_closed_bounded_and_line_provenanced(self):
+    def test_source_labels_are_closed_and_match_physical_lines(self):
         allowed = evidence_source()
         validate(allowed)
         mutations = [
@@ -199,7 +216,7 @@ class BuildKitContractTests(unittest.TestCase):
                 'state':'unavailable', 'text':None, 'origin':'unknown', 'lines':None}
         source['traces'][0]['evidence'][0]['identity'] = {
             'state': 'unknown', 'name': None, 'origin': 'unknown',
-            'step_id': None, 'lines': None}
+            'step_id': None, 'lines': None, 'reference': None}
         validate(source)
 
     def test_identity_source_step_resolves_to_direct_image_operation(self):
@@ -230,16 +247,18 @@ class BuildKitContractTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(source)
 
-    def test_known_identity_requires_safe_leaf_and_complete_provenance(self):
-        for name in ('registry.example/safe-image', 'safe-image:tag', 'safe-image@sha256:a',
-                     'https://safe-image', 'UpperCase', '../safe-image', 'a'*129, '',
-                     'safe-image\n'):
+    def test_known_identity_preserves_literal_name_and_requires_provenance(self):
+        from report_trace import parse_trace
+        for name in ('UpperCase', 'a' * 200, '$ENV', 'image?token=abc'):
             with self.subTest(name=name):
-                source = evidence_source()
-                source['traces'][0]['evidence'][0]['identity']['name'] = name
-                with self.assertRaises(ValueError):
-                    validate(source)
-        for changes in ({'origin': 'unknown'}, {'step_id': None}, {'lines': None}, {'name': None}):
+                source = current_source()
+                raw = f'#12 exporting to image\n#12 naming to example/{name}:tag done\n#12 DONE 1s\n'.encode()
+                source['traces'] = [parse_trace(1, raw, fetched_at=AT, analyzed_at=AT)]
+                validate(source)
+                self.assertEqual(source['traces'][0]['evidence'][0]['identity']['name'], name)
+                self.assertEqual(source['traces'][0]['evidence'][0]['identity']['reference'], f'example/{name}:tag')
+        for changes in ({'origin':'unknown'}, {'step_id':None}, {'lines':None},
+                        {'name':None}, {'reference':None}):
             source = evidence_source()
             source['traces'][0]['evidence'][0]['identity'].update(changes)
             with self.assertRaises(ValueError):
@@ -248,7 +267,7 @@ class BuildKitContractTests(unittest.TestCase):
     def test_unknown_identity_has_no_invented_provenance(self):
         source = evidence_source()
         identity = {'state': 'unknown', 'name': None, 'origin': 'unknown',
-                    'step_id': None, 'lines': None}
+                    'step_id': None, 'lines': None, 'reference': None}
         source['traces'][0]['evidence'][0]['identity'] = identity
         validate(source)
         for field, value in (('name', 'safe-image'), ('origin', 'buildkit_naming'),
@@ -258,8 +277,8 @@ class BuildKitContractTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(bad)
 
-    def test_conflicting_and_redacted_names_remain_null(self):
-        for state in ('conflicting', 'redacted'):
+    def test_conflicting_names_remain_null_and_redacted_state_is_rejected(self):
+        for state in ('conflicting',):
             source = evidence_source()
             identity = source['traces'][0]['evidence'][0]['identity']
             identity.update(state=state, name=None)
@@ -267,6 +286,10 @@ class BuildKitContractTests(unittest.TestCase):
             identity['name'] = 'safe-image'
             with self.assertRaises(ValueError):
                 validate(source)
+        source = evidence_source()
+        source['traces'][0]['evidence'][0]['identity'].update(state='redacted', name=None)
+        with self.assertRaises(ValueError):
+            validate(source)
 
     def test_identity_lines_stay_within_image_source_lines(self):
         for lines in ({'start': 0, 'end': 4}, {'start': 4, 'end': 3},

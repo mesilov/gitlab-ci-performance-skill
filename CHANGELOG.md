@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — canonical contract 3.0.0 / parser 2.0.0
+
+- Raise canonical serialized UTF-8 JSON to 64 MiB inclusive; HTML has no JSON cap.
+- Materialize all 16/32 pages (default 16) within retention 64 and independent baseline 10.
+- Preserve original log bytes/titles/stages/arguments/references and provenance.
+- Add inert offline source viewing, copying and lossless byte downloads.
+- Expose admission/coverage boundaries and reject older masked canonical artifacts.
+
+
 ## 0.1.0 — Unreleased
 
 The initial milestone is in development. The changes below are grouped by

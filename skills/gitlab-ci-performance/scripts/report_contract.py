@@ -1,4 +1,6 @@
 """Local Draft 2020-12 contracts, semantic checks and exclusive artifact writes."""
+import base64
+import binascii
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -11,30 +13,12 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '2.2.0'
+VERSION = '3.0.0'
 SKILL_VERSION = (ROOT/'VERSION').read_text(encoding='utf-8').strip()
-PARSER_VERSION = '1.2.0'
-MAX_PAYLOAD_BYTES = 16 * 1024 * 1024
+PARSER_VERSION = '2.0.0'
+MAX_PAYLOAD_BYTES = 64 * 1024 * 1024
 KINDS = {'gitlab_job_performance_source':'jobs','gitlab_job_performance_report':'report',
          'gitlab_job_performance_compact':'compact'}
-SAFE_ORIGINAL_SOURCE_LABELS = frozenset((
-    '[internal] load build definition from Dockerfile',
-    '[internal] load .dockerignore',
-    '[internal] load build context',
-    'exporting to image',
-    'exporting to docker image format',
-    'exporting to oci image format',
-    'preparing build cache for export',
-    'exporting layers',
-    'sending tarball',
-    'pushing layers',
-    'pushing manifest',
-))
-SAFE_REDACTED_SOURCE_LABEL = re.compile(
-    r'^(?:(?:\[internal\]|\[\d+/\d+\]|\[stage(?: \d+/\d+)?\]) )?'
-    r'(?:(?:FROM|RUN|COPY|ADD|ENV|ARG|WORKDIR|USER|SHELL|CMD|ENTRYPOINT|LABEL|EXPOSE|VOLUME|STOPSIGNAL|HEALTHCHECK|ONBUILD) \[redacted\]|load metadata for \[redacted\])$'
-    r'|^importing cache manifest from \[redacted\]$'
-    r'|^unpacking to \[redacted\]$')
 
 
 def now():
@@ -63,7 +47,12 @@ def type_id(project, stage, name):
 def load(path):
     def reject(value):
         raise ValueError('Non-finite JSON value')
-    return json.loads(Path(path).read_text(encoding='utf-8'),parse_constant=reject)
+    with Path(path).open('rb') as handle:
+        raw = handle.read(MAX_PAYLOAD_BYTES + 1)
+    require(len(raw)<=MAX_PAYLOAD_BYTES, 'JSON input exceeds 64 MiB (67108864 UTF-8 bytes)')
+    value = json.loads(raw.decode('utf-8'),parse_constant=reject)
+    require(len(encoded(value))<=MAX_PAYLOAD_BYTES, 'Serialized JSON exceeds 64 MiB (67108864 UTF-8 bytes)')
+    return value
 
 
 def require(condition, message):
@@ -94,6 +83,23 @@ def check_dates(item):
 def check_trace(t):
     require(t['parser_version']==PARSER_VERSION,'Unsupported trace parser version; collect fresh trace evidence')
     c=t['coverage'];nodes=unique(t['evidence'])
+    try:
+        raw=base64.b64decode(t['source']['raw_base64'], validate=True)
+    except (ValueError, binascii.Error):
+        raise ValueError('Invalid original log base64') from None
+    require(base64.b64encode(raw).decode('ascii')==t['source']['raw_base64'], 'Noncanonical original log base64')
+    require(len(raw)==t['bytes_read'], 'Original log bytes differ from trace provenance')
+    physical=raw.split(b'\n') if raw else []
+    if physical and physical[-1]==b'': physical.pop()
+    require(len(physical)==t['line_count'], 'Original log physical lines differ from trace provenance')
+    expected=t['prefix_sha256'] if c['truncated'] else t['sha256']
+    if expected is not None:
+        require(hashlib.sha256(raw).hexdigest()==expected, 'Original log hash differs from trace provenance')
+    limit=c['evidence_limit']
+    if limit is not None:
+        require(1<=limit['first_omitted_line']<=t['line_count'] and not c['complete'] and t['state']=='partial',
+                'Invalid evidence-limit provenance')
+    require(not c['complete'] or c['recognized_lines']==t['line_count'], 'Unparsed source marked complete')
     require(c['recognized_lines']<=c['total_lines']==t['line_count'],'Contradictory trace line coverage')
     if t['state'] in {'unavailable','erased','permission_denied','not_run'}:
         require(t['bytes_read']==0 and not nodes and t['sha256'] is None and t['prefix_sha256'] is None,
@@ -149,9 +155,6 @@ def check_trace(t):
             visited.add(parent);parent=nodes[parent]['parent_id']
         identity=n['identity']
         if identity is not None:
-            if identity['name'] is not None:
-                require(re.fullmatch(r'[a-z0-9]+(?:[._-][a-z0-9]+)*',identity['name']) is not None,
-                        'Unsafe image identity basename')
             source_lines=identity['lines']
             if source_lines is not None:
                 require(lines['start']<=source_lines['start']<=source_lines['end']<=lines['end'],
@@ -161,6 +164,18 @@ def check_trace(t):
                          p['buildkit']['step_id']==identity['step_id']]
                 require(any(p['lines']['start']<=source_lines['start']<=source_lines['end']<=p['lines']['end']
                             for p in sources),'Image identity source does not resolve inside its BuildKit operation')
+                from report_trace import ANSI, FRAME, NAME_FRAME, _stamp, _image_name
+                text=ANSI.sub('',physical[source_lines['start']-1].decode('utf-8',errors='replace')).strip('\r')
+                frame=FRAME.match(_stamp(text)[2])
+                name_frame=NAME_FRAME.fullmatch(frame[2]) if frame else None
+                require(name_frame is not None and int(frame[1])==identity['step_id'] and
+                        name_frame[2]==identity['reference'],
+                        'Image reference differs from physical log line')
+                require(identity['origin']==('buildkit_naming' if name_frame[1]=='naming to' else 'buildkit_unpack'),
+                        'Image reference origin differs from physical log line')
+                if identity['state']=='known':
+                    require(identity['name']==_image_name(identity['reference']),
+                            'Image caption differs from original reference')
         label=n['source_label']
         require((label is not None)==(n['kind'] in {'operation','part'}),
                 'Source title is only valid for BuildKit operation evidence')
@@ -173,14 +188,11 @@ def check_trace(t):
                 source_lines=label['lines']
                 require(lines['start']<=source_lines['start']<=source_lines['end']<=lines['end'],
                         'Source title lines exceed evidence node range')
-                if label['state']=='original':
-                    require(label['text'] in SAFE_ORIGINAL_SOURCE_LABELS,
-                            'Unsafe or unsupported original source title')
-                else:
-                    require(SAFE_REDACTED_SOURCE_LABEL.fullmatch(label['text']) is not None,
-                            'Redacted source title is outside the closed grammar')
-                require(not re.match(r'^#\d+\s',label['text']),
-                        'Source title duplicates its BuildKit step ID')
+                from report_trace import ANSI, FRAME, _stamp
+                text=ANSI.sub('',physical[source_lines['start']-1].decode('utf-8',errors='replace')).strip('\r')
+                frame=FRAME.match(_stamp(text)[2])
+                require(frame is not None and int(frame[1])==n['buildkit']['step_id'] and
+                        frame[2]==label['text'], 'Original source title differs from physical log line')
 
 
 def check_source(s):
@@ -220,7 +232,7 @@ def check_source(s):
         if t['state']=='erased':require(j['erased_at'] is not None,'Erased state lacks metadata evidence')
         if t['state']=='not_run':require(j['started_at'] is None and j['status'] in {'created','pending','manual','skipped','waiting_for_resource'},'Not-run state contradicts job metadata')
         require(t['bytes_read']<=info['budgets']['trace_bytes'] and t['line_count']<=info['budgets']['trace_lines'],'Trace input budget exceeded')
-        require(len(encoded(t))<=128*1024,'Trace summary exceeds 128 KiB; lower evidence budget')
+        require(len(encoded(t))<=16*1024*1024,'Trace with original source exceeds 16 MiB; lower explicit trace byte budget')
 
 
 def check_attempt(a, host):
@@ -255,6 +267,7 @@ def check_derived(value, compact=False):
         for jid in jt['retained_attempt_ids']+jt['baseline']['attempt_ids']:
             resolves('attempts',jid,attempts)
         if jt['latest_attempt_id'] is not None:resolves('attempts',jt['latest_attempt_id'],attempts)
+        require(len(jt['window_ids'])==len(set(jt['window_ids'])),'Duplicate job type window reference')
         for wid in jt['window_ids']:resolves('windows',wid,windows)
         if jt['purpose']['status']=='verified':
             require(jt['purpose']['source_url'] is not None and jt['purpose']['verified_at'] is not None,'Verified purpose requires evidence')
@@ -268,7 +281,15 @@ def check_derived(value, compact=False):
         require(w['findings']['scope']['attempt_ids']==w['attempt_ids'] and w['findings']['scope']['window_id']==w['id'],'Finding scope mismatch')
         for direction in ('older','newer'):
             wid=w[direction+'_window_id'];require(w['has_'+direction]==(wid is not None),'Navigation flag mismatch')
-            if wid is not None:resolves('windows',wid,windows)
+            if wid is not None:
+                resolves('windows',wid,windows)
+                if wid in windows:
+                    neighbor=windows[wid]
+                    require(all(neighbor[k]==w[k] for k in ('type_id','comparison_mode','refs','size')) and
+                            neighbor['page']==w['page']+(1 if direction=='older' else -1),
+                            'Window navigation must target an adjacent page of the same size/scope')
+                    require(neighbor[('newer' if direction=='older' else 'older')+'_window_id']==w['id'],
+                            'Window navigation must be reciprocal')
         stacks=[sum(x for x in (attempts[j]['timing']['queue']['value_seconds'],attempts[j]['timing']['execution']['value_seconds']) if x is not None) for j in w['attempt_ids'] if j in attempts]
         if len(stacks)==len(w['attempt_ids']):require(w['display_unit']==('minutes' if max(stacks,default=0)>300 else 'seconds'),'Display unit contradicts recorded policy')
         for category in w['findings']['categories']:
@@ -289,6 +310,26 @@ def check_derived(value, compact=False):
                 if g['status']=='verified':require(g['verified_at'] is not None,'Verified guidance requires verification date')
     selected=env['selection']['job_type_id']
     if selected is not None:resolves('job_types',selected,types)
+    window_keys=[(w['type_id'],w['comparison_mode'],tuple(w['refs']),w['size'],w['page']) for w in windows.values()]
+    require(len(window_keys)==len(set(window_keys)),'Duplicate window page')
+    if not compact or value['scope']['kind']=='overview':
+        for jt in types.values():
+            retained=[attempts[i] for i in jt['retained_attempt_ids']]
+            refs=(env['policies']['refs'] if env['policies']['comparison_mode']=='cross_ref' else
+                  [attempts[jt['latest_attempt_id']]['metadata']['ref']])
+            count=sum(a['metadata']['ref'] in refs for a in retained)
+            pages=[w for w in windows.values() if w['type_id']==jt['id']]
+            expected=[(size,page) for size in (16,32) for page in range((count+size-1)//size)]
+            require([(w['size'],w['page']) for w in pages]==expected,'Window pages are incomplete or out of order')
+            require(jt['window_ids']==[w['id'] for w in pages],'Job type window references mismatch')
+            for size in (16,32):
+                sized=[w for w in pages if w['size']==size]
+                for page,w in enumerate(sized):
+                    require(w['comparison_mode']==env['policies']['comparison_mode'] and w['refs']==refs,
+                            'Window scope differs from retained selection')
+                    require(w['older_window_id']==(sized[page+1]['id'] if page+1<len(sized) else None) and
+                            w['newer_window_id']==(sized[page-1]['id'] if page>0 else None),
+                            'Window navigation differs from complete page sequence')
     check_measurements(value,env,attempts,types,windows,external,compact)
     if compact:
         require(env['report_id']==value['canonical_report_id'],'Compact canonical identity mismatch')
@@ -366,10 +407,10 @@ def check_measurements(value,env,attempts,types,windows,external,compact):
         require(w['inferential']=={'attempt_ids':[a['id'] for a in eligible],'metrics':_metrics(eligible)},'Inferential cohort/aggregates mismatch')
         f=w['findings'];require(f['metrics']==_metrics(eligible) and f['eligible_successful_n']==len(eligible),'Finding sample statistics mismatch')
         require(f['trace_known_n']+f['trace_missing_n']==len(eligible),'Finding trace coverage mismatch')
-        if w['type_id'] in types:
+        if w['type_id'] in types and all(i in attempts for i in types[w['type_id']]['retained_attempt_ids']):
             jt=types[w['type_id']]
             ids=[i for i in jt['retained_attempt_ids'] if i in attempts and attempts[i]['metadata']['ref'] in w['refs']]
-            require(w['attempt_ids']==ids[w['page']*32:w['page']*32+w['size']],'Window bounds differ from retained selection')
+            require(w['attempt_ids']==ids[w['page']*w['size']:(w['page']+1)*w['size']],'Window bounds differ from retained selection')
         for c in f['categories']:
             require(c['id']=='finding-'+digest([w['id'],c['code']])[:20],'Category ID mismatch')
             require([s['attempt_id'] for s in c['samples']]==[a['id'] for a in eligible],'Category sample membership mismatch')
@@ -393,11 +434,11 @@ def validate(value, kind=None):
     from jsonschema import Draft202012Validator, FormatChecker
     from referencing import Registry, Resource
     if kind != 'trace':
-        require(value.get('schema_version')==VERSION,'Unsupported schema version; collect a fresh 2.2.0 source')
+        require(value.get('schema_version')==VERSION,'Unsupported schema version; collect a fresh 3.0.0 source; earlier masked evidence cannot recover original logs')
     artifact=KINDS.get(value.get('kind'))
     if kind=='trace':artifact='trace'
     require(artifact is not None,'Unknown artifact kind')
-    data=encoded(value);require(len(data)<=MAX_PAYLOAD_BYTES,'Payload exceeds 16 MiB; narrow job selection')
+    data=encoded(value);require(len(data)<=MAX_PAYLOAD_BYTES,'Serialized JSON exceeds 64 MiB (67108864 UTF-8 bytes)')
     schema_name={'jobs':'source-contract-v2','report':'report-contract-v2'}.get(artifact,artifact)
     schema=load(ROOT/'schemas'/f'{schema_name}.schema.json');common=load(ROOT/'schemas/common.schema.json')
     Draft202012Validator.check_schema(common)
