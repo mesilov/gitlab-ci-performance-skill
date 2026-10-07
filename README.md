@@ -2,13 +2,15 @@
 
 # GitLab CI Performance Analyzer
 
-Find where GitLab CI jobs spend time. This agent skill compares runs, separates
-runner waiting time from execution, and helps you inspect slow build steps.
-It reads GitLab data without changing CI configuration or runners.
+Find slow jobs in GitLab CI. This agent skill compares runs and shows where each
+job spends time. It separates runner waiting time from execution time.
+It reads GitLab data without changes to CI configuration or runners.
 
-Get an offline HTML report or JSON for an LLM. The interface supports English,
-Russian, light and dark themes, and keyboard navigation. Download the HTML and
-open it locally; no server or other files are needed.
+The skill creates an HTML report for offline use and exports JSON for an LLM.
+The report supports English, Russian, light and dark themes, and keyboard
+navigation.
+
+Download the HTML file. Open it locally. The report needs no server or other files.
 
 ```mermaid
 flowchart LR
@@ -18,46 +20,54 @@ flowchart LR
     C --> E[JSON for an LLM]
 ```
 
-Try the synthetic [canonical report](examples/v2/report.html), or the reviewed
-report in [English](examples/reviewed/report.html) or
+Try the [canonical report](examples/v2/report.html), or the reviewed report in
+[English](examples/reviewed/report.html) or
 [Russian](examples/reviewed/report-ru.html). Download the HTML file to view it.
-These examples contain no real project data.
+
+All examples use synthetic data. They contain no real project data.
 
 ![Reviewed report with synthetic data](docs/report.png)
 
 ## Terms used in the report
 
-- **Job:** a CI task, such as building an image or running tests.
+- **Job:** a CI task, such as an image build or a test run.
 - **Pipeline:** a set of CI jobs started together.
 - **Attempt:** one job run. A retry has its own job ID.
 - **Ref:** the Git branch or tag associated with a run.
 - **Baseline:** earlier comparable successful runs used for comparison.
 - **Provenance:** the source of a value, such as a job ID, log line or file hash.
 
-## Choose a report route
+## Choose a report
 
 | What you need | CLI | History shown | Log content in the report |
 | --- | --- | --- | --- |
-| Job timings with original BuildKit steps and logs | `report_cli.py` (canonical) | 16 or 32 attempts per page; default 16; retains up to 64 per job type | Original text and received bytes, with copy and download controls |
-| Job timings with extracted evidence | `ci_report.py` (reviewed) | 32 or 64 attempts per page; default 32; retains up to 64 per job type | Extracted timings and source line references; no raw logs |
-| A verified release or test workflow across jobs | `ci_report.py` with `--workflow-window` | 32 or 64 pipeline runs; default 32 | Job metadata; this mode does not request logs |
+| Job timings with original BuildKit steps and logs | `report_cli.py` (canonical) | 16 or 32 attempts per page. Default: 16. Retains up to 64 per job type. | Original text and received bytes. Copy and download controls. |
+| Job timings with extracted evidence | `ci_report.py` (reviewed) | 32 or 64 attempts per page. Default: 32. Retains up to 64 per job type. | Extracted timings and source line references. No raw logs. |
+| A checked release or test workflow across jobs | `ci_report.py` with `--workflow-window` | 32 or 64 pipeline runs. Default: 32. | Job metadata. This mode does not request logs. |
 
-A job type is a `(stage, name)` pair. Job reports select the baseline independently
-of the display page. Canonical comparisons use up to 10 earlier eligible successes.
-Workflow baselines stay within the selected pipeline window. Each route has its
-own file format; keep their files separate.
+A job type is a `(stage, name)` pair. Job reports select the baseline separately
+from the page of history. Canonical comparisons use up to 10 earlier successful
+runs that meet the comparison rules. Workflow baselines use only runs in the
+selected pipeline window.
 
-## Install or update
+Each report route uses its own file format.
+
+Keep files from different routes separate.
+
+## Install the skill
 
 You need Python 3.10+ and the Python dependencies in
 [requirements.txt](skills/gitlab-ci-performance/requirements.txt). GitLab collection
-also requires `glab` authenticated for your GitLab host; local `--help` and offline
+also requires `glab` authentication for your GitLab host. Local `--help` and offline
 commands need no GitLab authentication.
 
-1. Use the official upstream repository below. The clone selects its current
-   default branch. For a pinned version, select the required tag or commit before
-   copying. Verify its origin and record the commit printed by `rev-parse`.
-   From your target project directory, copy the skill and create the agent links:
+1. Use the official upstream repository in the clone command.
+   The clone selects the current default branch.
+
+   For a pinned version, select the required tag or commit before you copy the skill.
+   Make sure that the clone origin matches the repository URL.
+   Record the commit that `rev-parse` prints.
+   From your target project directory, run these commands:
 
    ```sh
    git clone --depth 1 \
@@ -69,7 +79,7 @@ commands need no GitLab authentication.
    ln -s ../../.agents/skills/gitlab-ci-performance .claude/skills/gitlab-ci-performance
    ```
 
-2. Prepare a Python environment. The CLI examples below run from this clone:
+2. Create a Python environment in the clone:
 
    ```sh
    cd /tmp/ci-skill
@@ -77,46 +87,74 @@ commands need no GitLab authentication.
    .venv/bin/python -m pip install --only-binary=:all: -r skills/gitlab-ci-performance/requirements.txt
    ```
 
-3. In your target project, invoke `$gitlab-ci-performance` in Codex or
-   `/gitlab-ci-performance` in Claude Code. Follow the project's instructions.
-   Give the agent the Python interpreter path if it cannot find the dependencies.
+   The CLI examples use this clone and Python environment.
 
-To update, move the old `.agents/skills/gitlab-ci-performance` directory to an
-unused backup location. Keep reports, private caches and customizations there.
-Copy the new skill into its place; existing links still work. Do not overlay old
-modules. Check that the installed files match the selected upstream commit and
-that dependencies are available. For installation/update only, run the selected
-installed helper with `--help` (for example,
-`python <skill-dir>/scripts/report_cli.py --help`), then report the installed
-directory and resolved commit. This local check confirms CLI startup without a
-GitLab project, saved report inputs or GitLab transport. Do not request those
-inputs or collect solely to verify installation. Run the report route through
-that copy only when a report is also requested; `--help` does not verify
-end-to-end report behavior. Installing a ready version is not skill development
-or release verification; do not obtain the whole repository just to rerun tests.
+3. In your target project, run `$gitlab-ci-performance` in Codex or
+   `/gitlab-ci-performance` in Claude Code.
+   Obey the project instructions.
+   If the agent cannot find the dependencies, give it the Python interpreter path.
+
+## Update the skill
+
+1. Move the old `.agents/skills/gitlab-ci-performance` directory to an unused backup location.
+2. Keep reports, private caches and customizations in that backup.
+3. Copy the new skill into the original location.
+4. Do not copy new modules over old modules.
+5. Make sure that the installed files match the selected upstream commit.
+6. Make sure that the Python environment contains the dependencies.
+
+The existing agent links still work after the update.
+
+### Check an installation or update
+
+If the task is only an installation or update, run the installed helper with `--help`.
+For example, run `python <skill-dir>/scripts/report_cli.py --help`.
+Then report the installed directory and resolved commit.
+
+This local check shows that the CLI starts. It needs no GitLab project, saved
+report inputs or GitLab connection. The `--help` command does not check a complete
+report run.
+
+Do not request report inputs for an installation check.
+Do not collect GitLab data only to check an installation.
+If the task also requests a report, create that report through the installed copy.
+Do not obtain the whole repository only to repeat tests for a ready version.
+
+An installation or update of a ready version is separate from skill development
+and release checks.
 
 ## Report use and checks
 
-For a requested report, run the documented commands with compatible inputs and keep built-in validation
-enabled. For offline regeneration, reuse saved data. Finish with a report link.
-Do not repeat a successful built-in check with a separate validation command.
+For a requested report, run the documented commands with compatible inputs.
+Keep the built-in checks enabled.
+For an offline report, reuse saved data.
+Finish with a report link.
+Do not repeat a successful built-in check with a separate check command.
 
 Routine reports and ready updates do not require the full unit/CLI suite, browser
 QA or install/update regression tests. Do not add scripts that recheck numbers,
 headings or every detail view. New logs, regenerated files, a schema change or a
-large report alone do not justify a full test run.
+large report alone do not require a full test run.
 
-Additional checks during use need a testing request, a failed command, a concrete
-data contradiction or a new unsupported edge case. Start with the smallest
-reproduction. Add new edge cases to repository regression tests and check the fix
-in the affected workflow. See [execution rules](skills/gitlab-ci-performance/SKILL.md#execution-modes-and-check-scope).
+Additional checks during use require one of these reasons:
+
+- The user requests tests.
+- A command fails.
+- The data contains a concrete contradiction.
+- A new edge case lacks support.
+
+Start with the smallest reproduction.
+Add new edge cases to the repository regression tests.
+Run the affected workflow to check the fix.
+See [execution rules](skills/gitlab-ci-performance/SKILL.md#execution-modes-and-check-scope).
 
 ## Create your first job report
 
-Use the canonical route for original build steps and log inspection. From
-`/tmp/ci-skill`, run the commands below. Replace the host, project and
-`build/image_build` with your GitLab host, project path and `stage/name`.
-Repeat `--job` to select more job types. For names containing `/`, use
+Use the canonical route for original build steps and logs.
+From `/tmp/ci-skill`, run the commands in this section.
+Replace the host, project and `build/image_build` with your GitLab host, project
+path and `stage/name`.
+Repeat `--job` to select more job types. For names that contain `/`, use
 [`--job-config`](skills/gitlab-ci-performance/references/contract-v2.md#collection-coverage-and-budgets).
 
 ```sh
@@ -131,23 +169,27 @@ Repeat `--job` to select more job types. For names containing `/`, use
   --report reports/run-001/report.json --scope overview --output reports/run-001/overview.json
 ```
 
-Open `reports/run-001/report.html`. Use `--language ru` for Russian.
-Defaults: UTC time zone and English saved report language.
+Open `reports/run-001/report.html`.
+For Russian, use `--language ru`.
+
+The default time zone is UTC. The default language for a saved report is English.
 
 Only `collect` contacts GitLab. Calculation, export and rendering use saved data
-and work offline. Each command creates new output files; choose a new directory
-for another run. The commands validate their inputs and outputs. Use
-`report_cli.py validate artifact.json` when checking a separately obtained artifact.
+and work offline. Each command creates new output files. The commands check
+their inputs and outputs.
 
-**Sharing:** canonical JSON and HTML contain original logs, which can include
-sensitive values. Review them before sharing. The overview export omits logs,
-but still includes project and job information. See the
+For another run, choose a new output directory.
+For an artifact from another source, run `report_cli.py validate artifact.json`.
+
+**Before you share a report, inspect its contents.** Canonical JSON and HTML
+contain original logs. Those logs can contain sensitive values. The overview
+export omits logs, but still includes project and job information. See the
 [log and format contract](skills/gitlab-ci-performance/references/contract-v2.md).
 
 ## Create a reviewed job report
 
-Use this route when you need extracted timings rather than raw logs. From the
-same clone and Python environment:
+If you need extracted timings without raw logs, use the reviewed route.
+From the same clone and Python environment, run these commands:
 
 ```sh
 .venv/bin/python skills/gitlab-ci-performance/scripts/ci_report.py collect \
@@ -163,45 +205,59 @@ same clone and Python environment:
 ```
 
 `collect` reads job metadata. `collect-details` refreshes the latest 64 attempts
-per job type and analyzes their logs. Repeated `--job NAME` and `--stage STAGE`
-options restrict detail collection; `--no-traces` disables log analysis.
-Reports still contain project and job names and URLs. An optional raw-log cache
-is private and must not be published. See [trace and cache rules](skills/gitlab-ci-performance/references/trace-analysis.md).
+per job type and analyzes their logs. The `--no-traces` flag disables log analysis.
+Reports still contain project and job names and URLs.
+
+Repeat `--job NAME` and `--stage STAGE` to restrict detail collection.
+Do not publish the optional raw-log cache.
+See [trace and cache rules](skills/gitlab-ci-performance/references/trace-analysis.md).
 
 ## Analyze a workflow across jobs
 
 ![Workflow report with synthetic data](docs/workflow-report.png)
 
-Analyze a release chain, test flow or independent operation. Verify the resolved
-CI configuration, then define jobs and dependencies with `define-workflows`.
+Analyze a release chain, test flow or independent operation.
+Make sure that the resolved CI configuration matches the workflow.
+Then define jobs and dependencies with `define-workflows`.
 Use the [workflow model](skills/gitlab-ci-performance/assets/workflow-model.json)
 and [workflow guide](skills/gitlab-ci-performance/references/workflows.md).
 
-Collect with `--workflow-window` for 32 pipeline runs or `--workflow-window 64`
-for 64. Every retained job attempt in those pipelines remains available.
-Calculate with `report --workflows workflows.json`, then use `render` and,
-if needed, `export-llm`. These are pipeline windows, not job-attempt page sizes.
-Missing historical configuration is reported explicitly. Chains across separate
-pipelines are unsupported.
+For 32 pipeline runs, collect with `--workflow-window`.
+For 64 pipeline runs, collect with `--workflow-window 64`.
+Calculate the report with `report --workflows workflows.json`.
+Then use `render` to create the HTML report.
+For JSON output for an LLM, use `export-llm`.
+
+These limits select pipeline windows. They do not select page sizes for job
+attempts. Every retained job attempt in those pipelines remains available.
+The report marks missing historical configuration. Chains across separate
+pipelines lack support.
 
 ## Read the results
 
-Select a job to see history, comparisons and timing evidence. Waiting and execution
-are separate; failed, canceled and retried jobs stay visible. Inspect runner phases,
-BuildKit builds, operations and source lines when available. Missing or partial
-logs are marked explicitly.
+Select a job to see its history, comparisons and timing evidence.
+If the report contains timing evidence, inspect the runner phases, BuildKit builds,
+operations and source lines.
 
-A comparison needs enough comparable successful runs. Read the sample count and
-coverage before drawing conclusions. Unknown time is not zero. Parallel steps and
-nested operations overlap; their durations are not added as promised savings.
-A long duration alone does not identify its cause. Comparisons across refs are
-exploratory and do not prove a regression.
+The report separates waiting time from execution time. It keeps failed, canceled
+and retried jobs visible. It marks missing or partial logs.
 
-Canonical collection limits each log to 4 MiB or 50,000 lines and marks incomplete
-data. Serialized canonical JSON can be up to 64 MiB; this is not an HTML or process
-memory limit. Older masked canonical files are rejected. Collect fresh data or
-reprocess saved original logs. See [the contract](skills/gitlab-ci-performance/references/contract-v2.md)
-for versions, limits and compatibility.
+A comparison needs enough comparable successful runs.
+
+Read the sample count and coverage before you draw conclusions.
+
+Unknown time is not zero. Parallel steps and nested operations overlap.
+Their combined durations do not represent promised savings.
+A long duration alone does not identify its cause. Comparisons across refs help
+explore differences, but do not prove a regression.
+
+Canonical collection limits each log to 4 MiB or 50,000 lines. It marks incomplete
+data. Serialized canonical JSON can be up to 64 MiB. This limit does not apply
+to HTML size or process memory. The canonical route rejects older masked files.
+
+For older masked files, collect fresh data or reprocess saved original logs.
+See [the contract](skills/gitlab-ci-performance/references/contract-v2.md) for
+versions, limits and compatibility.
 
 ## Further reading
 
@@ -209,22 +265,23 @@ for versions, limits and compatibility.
 - [Reviewed trace precision, limits and caches](skills/gitlab-ci-performance/references/trace-analysis.md).
 - [Canonical formats, logs, exports and compatibility](skills/gitlab-ci-performance/references/contract-v2.md).
 - [Workflow definitions and pipeline comparisons](skills/gitlab-ci-performance/references/workflows.md).
-- [Job catalog example](examples/reviewed/catalog.json): pass `report --catalog catalog.json` to add verified job purposes. Current configuration evidence does not describe every historical run.
+- [Job catalog example](examples/reviewed/catalog.json): pass `report --catalog catalog.json` to add checked job purposes. Current configuration evidence does not describe every historical run.
 - [Reviewed release comparisons](skills/gitlab-ci-performance/references/release-history.md) with `--release-refs` and `--baseline`.
 - [Changelog](CHANGELOG.md).
 
 ## Development
 
-For changes to the skill, run the relevant checks. The full Python suite is:
+For changes to the skill, run the relevant checks.
+For the full Python suite, run:
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-Synthetic generators and browser checks are documented in the
-[CI workflow](.github/workflows/check.yml). Browser checks use Playwright and cover
+The [CI workflow](.github/workflows/check.yml) documents synthetic generators and
+browser checks. Browser checks use Playwright and cover
 both languages, mobile layouts, themes, keyboard access and offline use.
-Building another report with the published skill does not require the full local
-test or browser suite.
+Another report from the published skill does not require the full local test
+or browser suite.
 
 MIT — [license](LICENSE).
