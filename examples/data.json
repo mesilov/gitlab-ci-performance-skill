@@ -1,0 +1,2600 @@
+{
+ "host": "gitlab.example.com",
+ "project": "example/shop",
+ "project_url": "https://gitlab.example.com/example/shop",
+ "ref": "main",
+ "source": null,
+ "collected_at": "2026-11-13T10:00:00Z",
+ "pipelines": [
+  {
+   "id": 829,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-12T09:05:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/829",
+   "jobs": [
+    {
+     "id": 5178,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-12T09:05:08.008Z",
+     "finished_at": "2026-11-12T09:06:39.180Z",
+     "duration": 91.17239536728326,
+     "queued_duration": 8.008142957856949,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5178"
+    },
+    {
+     "id": 5179,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-12T09:06:48.461Z",
+     "finished_at": "2026-11-12T09:07:51.527Z",
+     "duration": 63.06596055799138,
+     "queued_duration": 9.281143181860745,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5179"
+    },
+    {
+     "id": 5180,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-12T09:06:50.219Z",
+     "finished_at": "2026-11-12T09:12:47.471Z",
+     "duration": 357.251885066269,
+     "queued_duration": 11.039424783376923,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5180"
+    },
+    {
+     "id": 5181,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-12T09:07:29.354Z",
+     "finished_at": "2026-11-12T09:12:41.477Z",
+     "duration": 312.1225647383214,
+     "queued_duration": 50.17455331853908,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5181"
+    },
+    {
+     "id": 5182,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-12T09:12:59.031Z",
+     "finished_at": "2026-11-12T09:19:29.745Z",
+     "duration": 390.7143898670982,
+     "queued_duration": 11.560015704427363,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5182"
+    },
+    {
+     "id": 5183,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-12T09:19:34.261Z",
+     "finished_at": "2026-11-12T09:20:14.531Z",
+     "duration": 40.26915026527172,
+     "queued_duration": 4.5168991995813155,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5183"
+    }
+   ]
+  },
+  {
+   "id": 828,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-11T09:16:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/828",
+   "jobs": [
+    {
+     "id": 5172,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-11T09:16:06.029Z",
+     "finished_at": "2026-11-11T09:17:43.542Z",
+     "duration": 97.51238446584642,
+     "queued_duration": 6.029739139578043,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5172"
+    },
+    {
+     "id": 5173,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-11T09:17:51.115Z",
+     "finished_at": "2026-11-11T09:19:01.029Z",
+     "duration": 69.91379269366472,
+     "queued_duration": 7.573913096286168,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5173"
+    },
+    {
+     "id": 5174,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-11T09:17:50.831Z",
+     "finished_at": "2026-11-11T09:23:43.366Z",
+     "duration": 352.5346821364255,
+     "queued_duration": 7.289339524702992,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5174"
+    },
+    {
+     "id": 5175,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-11T09:20:13.542Z",
+     "finished_at": "2026-11-11T09:25:35.525Z",
+     "duration": 321.98350211626456,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5175"
+    },
+    {
+     "id": 5176,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-11T09:25:42.625Z",
+     "finished_at": "2026-11-11T09:32:38.436Z",
+     "duration": 415.8114084817213,
+     "queued_duration": 7.10006419235395,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5176"
+    },
+    {
+     "id": 5177,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-11T09:32:43.511Z",
+     "finished_at": "2026-11-11T09:33:18.680Z",
+     "duration": 35.16831723112162,
+     "queued_duration": 5.075693694899968,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5177"
+    }
+   ]
+  },
+  {
+   "id": 827,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-10T09:07:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/827",
+   "jobs": [
+    {
+     "id": 5166,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-10T09:07:08.925Z",
+     "finished_at": "2026-11-10T09:08:49.962Z",
+     "duration": 101.03708278536612,
+     "queued_duration": 8.925416220670495,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5166"
+    },
+    {
+     "id": 5167,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-10T09:08:59.820Z",
+     "finished_at": "2026-11-10T09:10:03.496Z",
+     "duration": 63.676473508365305,
+     "queued_duration": 9.858479793235372,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5167"
+    },
+    {
+     "id": 5168,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-10T09:08:56.820Z",
+     "finished_at": "2026-11-10T09:14:42.889Z",
+     "duration": 346.06888112767984,
+     "queued_duration": 6.858949906404638,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5168"
+    },
+    {
+     "id": 5169,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-10T09:09:53.331Z",
+     "finished_at": "2026-11-10T09:14:54.149Z",
+     "duration": 300.8178439008524,
+     "queued_duration": 63.36992290203676,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5169"
+    },
+    {
+     "id": 5170,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-10T09:15:00.926Z",
+     "finished_at": "2026-11-10T09:21:37.816Z",
+     "duration": 396.89016725110645,
+     "queued_duration": 6.777333355834064,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5170"
+    },
+    {
+     "id": 5171,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-10T09:21:45.461Z",
+     "finished_at": "2026-11-10T09:22:28.651Z",
+     "duration": 43.189789797812814,
+     "queued_duration": 7.645655264734436,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5171"
+    }
+   ]
+  },
+  {
+   "id": 826,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-09T09:10:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/826",
+   "jobs": [
+    {
+     "id": 5159,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-09T09:10:07.531Z",
+     "finished_at": "2026-11-09T09:11:51.448Z",
+     "duration": 103.91701657487803,
+     "queued_duration": 7.531617761832543,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5159"
+    },
+    {
+     "id": 5160,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-09T09:11:58.467Z",
+     "finished_at": "2026-11-09T09:13:07.207Z",
+     "duration": 68.7404235834771,
+     "queued_duration": 7.019048755583023,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5160"
+    },
+    {
+     "id": 5161,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-09T09:11:58.944Z",
+     "finished_at": "2026-11-09T09:17:46.433Z",
+     "duration": 347.4892387054717,
+     "queued_duration": 7.496303552610271,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5161"
+    },
+    {
+     "id": 5162,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-11-09T09:12:42.426Z",
+     "finished_at": "2026-11-09T09:15:59.325Z",
+     "duration": 196.89898429589354,
+     "queued_duration": 50.978575427714645,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5162"
+    },
+    {
+     "id": 5163,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-09T09:16:53.085Z",
+     "finished_at": "2026-11-09T09:22:11.211Z",
+     "duration": 318.1260550076014,
+     "queued_duration": 53.76012305329549,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5163"
+    },
+    {
+     "id": 5164,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-09T09:22:19.517Z",
+     "finished_at": "2026-11-09T09:29:00.214Z",
+     "duration": 400.6973542642376,
+     "queued_duration": 8.306067347444499,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5164"
+    },
+    {
+     "id": 5165,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-09T09:29:05.395Z",
+     "finished_at": "2026-11-09T09:29:50.003Z",
+     "duration": 44.60774712743542,
+     "queued_duration": 5.181816444166371,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5165"
+    }
+   ]
+  },
+  {
+   "id": 825,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-08T09:49:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/825",
+   "jobs": [
+    {
+     "id": 5153,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-08T09:49:04.772Z",
+     "finished_at": "2026-11-08T09:50:44.797Z",
+     "duration": 100.02567835903474,
+     "queued_duration": 4.77223311884346,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5153"
+    },
+    {
+     "id": 5154,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-08T09:50:53.098Z",
+     "finished_at": "2026-11-08T09:51:57.385Z",
+     "duration": 64.28766396678779,
+     "queued_duration": 8.301282575956854,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5154"
+    },
+    {
+     "id": 5155,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-08T09:50:55.976Z",
+     "finished_at": "2026-11-08T09:57:07.100Z",
+     "duration": 371.12370913199237,
+     "queued_duration": 11.179829835599527,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5155"
+    },
+    {
+     "id": 5156,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-08T09:51:31.384Z",
+     "finished_at": "2026-11-08T09:56:59.484Z",
+     "duration": 328.10016515675943,
+     "queued_duration": 46.58763492405759,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5156"
+    },
+    {
+     "id": 5157,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-08T09:57:15.489Z",
+     "finished_at": "2026-11-08T10:03:54.979Z",
+     "duration": 399.49043099963524,
+     "queued_duration": 8.389541248303631,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5157"
+    },
+    {
+     "id": 5158,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-08T10:04:02.938Z",
+     "finished_at": "2026-11-08T10:04:46.262Z",
+     "duration": 43.324446694829476,
+     "queued_duration": 7.9594858189771465,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5158"
+    }
+   ]
+  },
+  {
+   "id": 824,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-07T09:16:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/824",
+   "jobs": [
+    {
+     "id": 5147,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-07T09:16:08.613Z",
+     "finished_at": "2026-11-07T09:17:51.112Z",
+     "duration": 102.49856918458445,
+     "queued_duration": 8.61392106710053,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5147"
+    },
+    {
+     "id": 5148,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-07T09:17:57.124Z",
+     "finished_at": "2026-11-07T09:19:06.285Z",
+     "duration": 69.16045154775792,
+     "queued_duration": 6.0129426360130225,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5148"
+    },
+    {
+     "id": 5149,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-07T09:17:59.028Z",
+     "finished_at": "2026-11-07T09:23:54.622Z",
+     "duration": 355.59383822185686,
+     "queued_duration": 7.916459395374012,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5149"
+    },
+    {
+     "id": 5150,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-07T09:18:40.591Z",
+     "finished_at": "2026-11-07T09:23:57.437Z",
+     "duration": 316.84621788282357,
+     "queued_duration": 49.479393826249115,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5150"
+    },
+    {
+     "id": 5151,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-07T09:24:06.007Z",
+     "finished_at": "2026-11-07T09:30:34.514Z",
+     "duration": 388.50759198351864,
+     "queued_duration": 8.570032063415084,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5151"
+    },
+    {
+     "id": 5152,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-07T09:30:39.725Z",
+     "finished_at": "2026-11-07T09:31:15.948Z",
+     "duration": 36.22349887319106,
+     "queued_duration": 5.211120301006318,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5152"
+    }
+   ]
+  },
+  {
+   "id": 823,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-06T09:04:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/823",
+   "jobs": [
+    {
+     "id": 5141,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-06T09:04:06.216Z",
+     "finished_at": "2026-11-06T09:05:44.791Z",
+     "duration": 98.57539038082244,
+     "queued_duration": 6.2162419678871945,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5141"
+    },
+    {
+     "id": 5142,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-06T09:05:52.318Z",
+     "finished_at": "2026-11-06T09:07:02.513Z",
+     "duration": 70.1945835589651,
+     "queued_duration": 7.527765654256108,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5142"
+    },
+    {
+     "id": 5143,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-06T09:05:54.640Z",
+     "finished_at": "2026-11-06T09:11:51.853Z",
+     "duration": 357.21333639115255,
+     "queued_duration": 9.849117017837603,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5143"
+    },
+    {
+     "id": 5144,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-06T09:08:14.791Z",
+     "finished_at": "2026-11-06T09:13:26.122Z",
+     "duration": 311.33141750316685,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5144"
+    },
+    {
+     "id": 5145,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-06T09:13:34.990Z",
+     "finished_at": "2026-11-06T09:20:32.650Z",
+     "duration": 417.66004510154005,
+     "queued_duration": 8.86821790819251,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5145"
+    },
+    {
+     "id": 5146,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-06T09:20:39.446Z",
+     "finished_at": "2026-11-06T09:21:23.212Z",
+     "duration": 43.765354817805935,
+     "queued_duration": 6.796871528721143,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5146"
+    }
+   ]
+  },
+  {
+   "id": 822,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-05T09:46:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/822",
+   "jobs": [
+    {
+     "id": 5134,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-05T09:46:04.601Z",
+     "finished_at": "2026-11-05T09:47:35.466Z",
+     "duration": 90.8645740193408,
+     "queued_duration": 4.601683056223229,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5134"
+    },
+    {
+     "id": 5135,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-05T09:47:43.877Z",
+     "finished_at": "2026-11-05T09:48:54.369Z",
+     "duration": 70.49162167971633,
+     "queued_duration": 8.411656823692795,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5135"
+    },
+    {
+     "id": 5136,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-05T09:47:43.843Z",
+     "finished_at": "2026-11-05T09:53:49.808Z",
+     "duration": 365.96523271400446,
+     "queued_duration": 8.377409096732045,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5136"
+    },
+    {
+     "id": 5137,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-11-05T09:48:41.962Z",
+     "finished_at": "2026-11-05T09:51:44.803Z",
+     "duration": 182.8411285014802,
+     "queued_duration": 66.49683443314495,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5137"
+    },
+    {
+     "id": 5138,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-05T09:52:30.542Z",
+     "finished_at": "2026-11-05T09:57:22.230Z",
+     "duration": 291.68795578845175,
+     "queued_duration": 45.739183934833946,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5138"
+    },
+    {
+     "id": 5139,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-05T09:57:28.816Z",
+     "finished_at": "2026-11-05T10:04:06.903Z",
+     "duration": 398.0870370750813,
+     "queued_duration": 6.586471639918416,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5139"
+    },
+    {
+     "id": 5140,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-05T10:04:11.014Z",
+     "finished_at": "2026-11-05T10:04:54.954Z",
+     "duration": 43.9401207799083,
+     "queued_duration": 4.111463032960687,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5140"
+    }
+   ]
+  },
+  {
+   "id": 821,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-04T09:33:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/821",
+   "jobs": [
+    {
+     "id": 5128,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-04T09:33:06.103Z",
+     "finished_at": "2026-11-04T09:34:48.951Z",
+     "duration": 102.8480951807973,
+     "queued_duration": 6.103141353545325,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5128"
+    },
+    {
+     "id": 5129,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-04T09:34:56.459Z",
+     "finished_at": "2026-11-04T09:36:06.968Z",
+     "duration": 70.50919939897494,
+     "queued_duration": 7.508244705601157,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5129"
+    },
+    {
+     "id": 5130,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-04T09:34:57.615Z",
+     "finished_at": "2026-11-04T09:40:43.120Z",
+     "duration": 345.50503143344633,
+     "queued_duration": 8.664546099110165,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5130"
+    },
+    {
+     "id": 5131,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-04T09:35:42.154Z",
+     "finished_at": "2026-11-04T09:40:39.479Z",
+     "duration": 297.32431549088795,
+     "queued_duration": 53.2037473715483,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5131"
+    },
+    {
+     "id": 5132,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-04T09:40:49.143Z",
+     "finished_at": "2026-11-04T09:47:41.110Z",
+     "duration": 411.96681801968884,
+     "queued_duration": 6.023594890953852,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5132"
+    },
+    {
+     "id": 5133,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-04T09:47:45.799Z",
+     "finished_at": "2026-11-04T09:48:25.534Z",
+     "duration": 39.734929324619564,
+     "queued_duration": 4.689386848853795,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5133"
+    }
+   ]
+  },
+  {
+   "id": 820,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-03T09:13:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/820",
+   "jobs": [
+    {
+     "id": 5122,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-03T09:13:04.139Z",
+     "finished_at": "2026-11-03T09:14:37.118Z",
+     "duration": 92.97891709284137,
+     "queued_duration": 4.13996862813215,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5122"
+    },
+    {
+     "id": 5123,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-03T09:14:44.623Z",
+     "finished_at": "2026-11-03T09:15:58.842Z",
+     "duration": 74.21887655096498,
+     "queued_duration": 7.505809599181242,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5123"
+    },
+    {
+     "id": 5124,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-03T09:14:44.399Z",
+     "finished_at": "2026-11-03T09:20:44.097Z",
+     "duration": 359.69752466912075,
+     "queued_duration": 7.281925155338298,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5124"
+    },
+    {
+     "id": 5125,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-03T09:15:42.143Z",
+     "finished_at": "2026-11-03T09:20:34.580Z",
+     "duration": 292.43618098199875,
+     "queued_duration": 65.02584989318407,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5125"
+    },
+    {
+     "id": 5126,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-03T09:20:54.536Z",
+     "finished_at": "2026-11-03T09:27:50.444Z",
+     "duration": 415.90816004817515,
+     "queued_duration": 10.43953229578364,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5126"
+    },
+    {
+     "id": 5127,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-03T09:27:57.093Z",
+     "finished_at": "2026-11-03T09:28:40.244Z",
+     "duration": 43.15047032418078,
+     "queued_duration": 6.649899321298264,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5127"
+    }
+   ]
+  },
+  {
+   "id": 819,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-02T09:30:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/819",
+   "jobs": [
+    {
+     "id": 5116,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-02T09:30:07.286Z",
+     "finished_at": "2026-11-02T09:31:42.192Z",
+     "duration": 94.90570517020504,
+     "queued_duration": 7.2863414636801,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5116"
+    },
+    {
+     "id": 5117,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-02T09:31:49.935Z",
+     "finished_at": "2026-11-02T09:32:54.031Z",
+     "duration": 64.0957416321512,
+     "queued_duration": 7.743300219933896,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5117"
+    },
+    {
+     "id": 5118,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-02T09:31:47.291Z",
+     "finished_at": "2026-11-02T09:36:08.534Z",
+     "duration": 261.24314460818186,
+     "queued_duration": 5.099700567092739,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5118"
+    },
+    {
+     "id": 5119,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-02T09:32:41.682Z",
+     "finished_at": "2026-11-02T09:37:52.745Z",
+     "duration": 311.06324188396223,
+     "queued_duration": 59.49024009021492,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5119"
+    },
+    {
+     "id": 5120,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-02T09:38:04.346Z",
+     "finished_at": "2026-11-02T09:44:41.699Z",
+     "duration": 397.3523774702994,
+     "queued_duration": 11.60174883034456,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5120"
+    },
+    {
+     "id": 5121,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-02T09:44:49.185Z",
+     "finished_at": "2026-11-02T09:45:32.447Z",
+     "duration": 43.261552518152214,
+     "queued_duration": 7.486971711957617,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5121"
+    }
+   ]
+  },
+  {
+   "id": 818,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-11-01T09:25:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/818",
+   "jobs": [
+    {
+     "id": 5110,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-11-01T09:25:06.315Z",
+     "finished_at": "2026-11-01T09:26:46.722Z",
+     "duration": 100.40693795126049,
+     "queued_duration": 6.315802700869248,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5110"
+    },
+    {
+     "id": 5111,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-01T09:26:52.146Z",
+     "finished_at": "2026-11-01T09:27:56.688Z",
+     "duration": 64.54169680714651,
+     "queued_duration": 5.424596247255752,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5111"
+    },
+    {
+     "id": 5112,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-01T09:26:58.673Z",
+     "finished_at": "2026-11-01T09:30:55.390Z",
+     "duration": 236.71627011842963,
+     "queued_duration": 11.951786494920167,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5112"
+    },
+    {
+     "id": 5113,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-11-01T09:29:16.722Z",
+     "finished_at": "2026-11-01T09:34:30.354Z",
+     "duration": 313.63249209667805,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5113"
+    },
+    {
+     "id": 5114,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-11-01T09:34:39.146Z",
+     "finished_at": "2026-11-01T09:41:25.380Z",
+     "duration": 406.2343275982661,
+     "queued_duration": 8.792123294167308,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5114"
+    },
+    {
+     "id": 5115,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-11-01T09:41:31.826Z",
+     "finished_at": "2026-11-01T09:42:12.784Z",
+     "duration": 40.95870256277218,
+     "queued_duration": 6.4462933488640335,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5115"
+    }
+   ]
+  },
+  {
+   "id": 817,
+   "status": "failed",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-31T09:24:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/817",
+   "jobs": [
+    {
+     "id": 5104,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-31T09:24:07.911Z",
+     "finished_at": "2026-10-31T09:25:48.413Z",
+     "duration": 100.50196643762642,
+     "queued_duration": 7.91151442049045,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5104"
+    },
+    {
+     "id": 5105,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-31T09:25:55.803Z",
+     "finished_at": "2026-10-31T09:27:00.659Z",
+     "duration": 64.85634749340117,
+     "queued_duration": 7.3901637229700015,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5105"
+    },
+    {
+     "id": 5106,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-31T09:25:58.936Z",
+     "finished_at": "2026-10-31T09:30:03.582Z",
+     "duration": 244.64544719647986,
+     "queued_duration": 10.523948017141935,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5106"
+    },
+    {
+     "id": 5107,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-10-31T09:26:52.437Z",
+     "finished_at": "2026-10-31T09:30:41.020Z",
+     "duration": 228.58286444910792,
+     "queued_duration": 64.02470706690073,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5107"
+    },
+    {
+     "id": 5108,
+     "name": "build-image",
+     "stage": "package",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5108"
+    },
+    {
+     "id": 5109,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5109"
+    }
+   ]
+  },
+  {
+   "id": 816,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-30T09:14:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/816",
+   "jobs": [
+    {
+     "id": 5098,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-30T09:14:04.510Z",
+     "finished_at": "2026-10-30T09:15:41.091Z",
+     "duration": 96.58111975158667,
+     "queued_duration": 4.5107857371436735,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5098"
+    },
+    {
+     "id": 5099,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-30T09:15:47.779Z",
+     "finished_at": "2026-10-30T09:16:57.502Z",
+     "duration": 69.72245283413724,
+     "queued_duration": 6.688687399192652,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5099"
+    },
+    {
+     "id": 5100,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-30T09:15:52.987Z",
+     "finished_at": "2026-10-30T09:20:04.854Z",
+     "duration": 251.8668158192286,
+     "queued_duration": 11.896742979453194,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5100"
+    },
+    {
+     "id": 5101,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-30T09:16:21.148Z",
+     "finished_at": "2026-10-30T09:21:47.516Z",
+     "duration": 326.36796791940276,
+     "queued_duration": 40.05724939990194,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5101"
+    },
+    {
+     "id": 5102,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-30T09:21:55.580Z",
+     "finished_at": "2026-10-30T09:28:41.305Z",
+     "duration": 405.72532388114286,
+     "queued_duration": 8.064041411860753,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5102"
+    },
+    {
+     "id": 5103,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-30T09:28:48.643Z",
+     "finished_at": "2026-10-30T09:29:24.842Z",
+     "duration": 36.19903630836138,
+     "queued_duration": 7.338595231192876,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5103"
+    }
+   ]
+  },
+  {
+   "id": 815,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-29T09:31:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/815",
+   "jobs": [
+    {
+     "id": 5092,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-29T09:31:05.777Z",
+     "finished_at": "2026-10-29T09:32:36.183Z",
+     "duration": 90.40572211037912,
+     "queued_duration": 5.7778127167747915,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5092"
+    },
+    {
+     "id": 5093,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-29T09:32:41.322Z",
+     "finished_at": "2026-10-29T09:33:47.793Z",
+     "duration": 66.47069662478448,
+     "queued_duration": 5.139685377110323,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5093"
+    },
+    {
+     "id": 5094,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-29T09:32:42.997Z",
+     "finished_at": "2026-10-29T09:36:57.002Z",
+     "duration": 254.00557048420322,
+     "queued_duration": 6.8142205428742955,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5094"
+    },
+    {
+     "id": 5095,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-29T09:33:44.878Z",
+     "finished_at": "2026-10-29T09:38:52.767Z",
+     "duration": 307.88910711066893,
+     "queued_duration": 68.69545229024013,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5095"
+    },
+    {
+     "id": 5096,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-29T09:39:04.389Z",
+     "finished_at": "2026-10-29T09:46:03.910Z",
+     "duration": 419.52152232811443,
+     "queued_duration": 11.622127207657453,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5096"
+    },
+    {
+     "id": 5097,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-29T09:46:11.730Z",
+     "finished_at": "2026-10-29T09:46:50.376Z",
+     "duration": 38.64635885361866,
+     "queued_duration": 7.820002525285332,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5097"
+    }
+   ]
+  },
+  {
+   "id": 814,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-28T09:49:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/814",
+   "jobs": [
+    {
+     "id": 5086,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-28T09:49:05.113Z",
+     "finished_at": "2026-10-28T09:50:42.695Z",
+     "duration": 97.58193971892274,
+     "queued_duration": 5.113963780276194,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5086"
+    },
+    {
+     "id": 5087,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-28T09:50:50.208Z",
+     "finished_at": "2026-10-28T09:52:02.391Z",
+     "duration": 72.18307080543538,
+     "queued_duration": 7.513485116126574,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5087"
+    },
+    {
+     "id": 5088,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-28T09:50:51.987Z",
+     "finished_at": "2026-10-28T09:55:08.485Z",
+     "duration": 256.49838086670695,
+     "queued_duration": 9.292597559694787,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5088"
+    },
+    {
+     "id": 5089,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-28T09:51:45.444Z",
+     "finished_at": "2026-10-28T09:56:43.250Z",
+     "duration": 297.8058412093158,
+     "queued_duration": 62.74967272265899,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5089"
+    },
+    {
+     "id": 5090,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-28T09:56:50.686Z",
+     "finished_at": "2026-10-28T10:03:26.713Z",
+     "duration": 396.02737478610067,
+     "queued_duration": 7.436326048597676,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5090"
+    },
+    {
+     "id": 5091,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-28T10:03:33.926Z",
+     "finished_at": "2026-10-28T10:04:10.925Z",
+     "duration": 36.999179833951494,
+     "queued_duration": 7.2133042581897815,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5091"
+    }
+   ]
+  },
+  {
+   "id": 813,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-27T09:33:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/813",
+   "jobs": [
+    {
+     "id": 5079,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-27T09:33:04.115Z",
+     "finished_at": "2026-10-27T09:34:47.429Z",
+     "duration": 103.31379802024583,
+     "queued_duration": 4.115478605226241,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5079"
+    },
+    {
+     "id": 5080,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-27T09:34:55.070Z",
+     "finished_at": "2026-10-27T09:35:59.415Z",
+     "duration": 64.34564062238545,
+     "queued_duration": 7.641286975210624,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5080"
+    },
+    {
+     "id": 5081,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-27T09:34:56.231Z",
+     "finished_at": "2026-10-27T09:38:52.934Z",
+     "duration": 236.70310477697637,
+     "queued_duration": 8.8022069811748,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5081"
+    },
+    {
+     "id": 5082,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-10-27T09:37:17.429Z",
+     "finished_at": "2026-10-27T09:40:43.834Z",
+     "duration": 206.40547204691532,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5082"
+    },
+    {
+     "id": 5083,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-27T09:41:53.189Z",
+     "finished_at": "2026-10-27T09:47:17.722Z",
+     "duration": 324.53300121158674,
+     "queued_duration": 69.35503728156918,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5083"
+    },
+    {
+     "id": 5084,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-27T09:47:27.899Z",
+     "finished_at": "2026-10-27T09:53:58.343Z",
+     "duration": 390.44460788917445,
+     "queued_duration": 10.177180715446811,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5084"
+    },
+    {
+     "id": 5085,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-27T09:54:03.809Z",
+     "finished_at": "2026-10-27T09:54:40.480Z",
+     "duration": 36.670420345343366,
+     "queued_duration": 5.466799167044716,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5085"
+    }
+   ]
+  },
+  {
+   "id": 812,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-26T09:22:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/812",
+   "jobs": [
+    {
+     "id": 5073,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-26T09:22:07.011Z",
+     "finished_at": "2026-10-26T09:23:43.649Z",
+     "duration": 96.63812048524463,
+     "queued_duration": 7.011395944810041,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5073"
+    },
+    {
+     "id": 5074,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-26T09:23:49.225Z",
+     "finished_at": "2026-10-26T09:24:59.034Z",
+     "duration": 69.80908894456657,
+     "queued_duration": 5.576767580544089,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5074"
+    },
+    {
+     "id": 5075,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-26T09:23:55.493Z",
+     "finished_at": "2026-10-26T09:28:03.984Z",
+     "duration": 248.49027272000686,
+     "queued_duration": 11.844761001035021,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5075"
+    },
+    {
+     "id": 5076,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-26T09:24:33.004Z",
+     "finished_at": "2026-10-26T09:29:28.769Z",
+     "duration": 295.7646996087395,
+     "queued_duration": 49.35556942654058,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5076"
+    },
+    {
+     "id": 5077,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-26T09:29:39.267Z",
+     "finished_at": "2026-10-26T09:36:28.881Z",
+     "duration": 409.6140489771238,
+     "queued_duration": 10.498043522654585,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5077"
+    },
+    {
+     "id": 5078,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-26T09:36:34.795Z",
+     "finished_at": "2026-10-26T09:37:16.716Z",
+     "duration": 41.92056768845309,
+     "queued_duration": 5.914487774039965,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5078"
+    }
+   ]
+  },
+  {
+   "id": 811,
+   "status": "canceled",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-25T09:01:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/811",
+   "jobs": [
+    {
+     "id": 5068,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-25T09:01:04.351Z",
+     "finished_at": "2026-10-25T09:02:37.262Z",
+     "duration": 92.91133755890255,
+     "queued_duration": 4.351577880767449,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5068"
+    },
+    {
+     "id": 5069,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-25T09:02:44.143Z",
+     "finished_at": "2026-10-25T09:03:56.293Z",
+     "duration": 72.15055325654241,
+     "queued_duration": 6.881146809032205,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5069"
+    },
+    {
+     "id": 5070,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "canceled",
+     "started_at": "2026-10-25T09:02:44.262Z",
+     "finished_at": "2026-10-25T09:04:24.262Z",
+     "duration": 100,
+     "queued_duration": 7,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5070"
+    },
+    {
+     "id": 5071,
+     "name": "build-image",
+     "stage": "package",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5071"
+    },
+    {
+     "id": 5072,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5072"
+    }
+   ]
+  },
+  {
+   "id": 810,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-24T09:25:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/810",
+   "jobs": [
+    {
+     "id": 5062,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-24T09:25:04.517Z",
+     "finished_at": "2026-10-24T09:26:43.397Z",
+     "duration": 98.88005391959993,
+     "queued_duration": 4.517685468551622,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5062"
+    },
+    {
+     "id": 5063,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-24T09:26:48.708Z",
+     "finished_at": "2026-10-24T09:27:51.785Z",
+     "duration": 63.0775618534884,
+     "queued_duration": 5.311239108093438,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5063"
+    },
+    {
+     "id": 5064,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-24T09:26:49.858Z",
+     "finished_at": "2026-10-24T09:30:50.078Z",
+     "duration": 240.21988288207453,
+     "queued_duration": 6.461342298123151,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5064"
+    },
+    {
+     "id": 5065,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-24T09:27:33.598Z",
+     "finished_at": "2026-10-24T09:32:25.701Z",
+     "duration": 292.1030241556107,
+     "queued_duration": 50.201609566970305,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5065"
+    },
+    {
+     "id": 5066,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-24T09:32:31.702Z",
+     "finished_at": "2026-10-24T09:38:57.752Z",
+     "duration": 386.0505972911771,
+     "queued_duration": 6.00139969140814,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5066"
+    },
+    {
+     "id": 5067,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-24T09:39:02.157Z",
+     "finished_at": "2026-10-24T09:39:40.793Z",
+     "duration": 38.63609922034571,
+     "queued_duration": 4.405857472090386,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5067"
+    }
+   ]
+  },
+  {
+   "id": 809,
+   "status": "failed",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-23T09:39:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/809",
+   "jobs": [
+    {
+     "id": 5056,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-23T09:39:07.274Z",
+     "finished_at": "2026-10-23T09:40:47.631Z",
+     "duration": 100.35698646870182,
+     "queued_duration": 7.274832318581644,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5056"
+    },
+    {
+     "id": 5057,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-23T09:40:54.914Z",
+     "finished_at": "2026-10-23T09:42:10.849Z",
+     "duration": 75.93567201852434,
+     "queued_duration": 7.283218611014374,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5057"
+    },
+    {
+     "id": 5058,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-23T09:40:59.294Z",
+     "finished_at": "2026-10-23T09:45:12.989Z",
+     "duration": 253.69495262760447,
+     "queued_duration": 11.663203545820656,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5058"
+    },
+    {
+     "id": 5059,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-10-23T09:41:44.409Z",
+     "finished_at": "2026-10-23T09:45:04.312Z",
+     "duration": 199.90348152778253,
+     "queued_duration": 56.778152225698285,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5059"
+    },
+    {
+     "id": 5060,
+     "name": "build-image",
+     "stage": "package",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5060"
+    },
+    {
+     "id": 5061,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "skipped",
+     "started_at": null,
+     "finished_at": null,
+     "duration": null,
+     "queued_duration": null,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5061"
+    }
+   ]
+  },
+  {
+   "id": 808,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-22T09:14:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/808",
+   "jobs": [
+    {
+     "id": 5050,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-22T09:14:07.292Z",
+     "finished_at": "2026-10-22T09:15:37.461Z",
+     "duration": 90.16888283781319,
+     "queued_duration": 7.292583384861651,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5050"
+    },
+    {
+     "id": 5051,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-22T09:15:46.616Z",
+     "finished_at": "2026-10-22T09:16:51.533Z",
+     "duration": 64.91748598369915,
+     "queued_duration": 9.155467807841433,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5051"
+    },
+    {
+     "id": 5052,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-22T09:15:44.434Z",
+     "finished_at": "2026-10-22T09:19:44.222Z",
+     "duration": 239.7875862039075,
+     "queued_duration": 6.973515056287164,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5052"
+    },
+    {
+     "id": 5053,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-22T09:18:07.461Z",
+     "finished_at": "2026-10-22T09:23:18.844Z",
+     "duration": 311.38363849200414,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5053"
+    },
+    {
+     "id": 5054,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-22T09:23:28.502Z",
+     "finished_at": "2026-10-22T09:30:01.247Z",
+     "duration": 392.74446724447546,
+     "queued_duration": 9.658874611541982,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5054"
+    },
+    {
+     "id": 5055,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-22T09:30:05.748Z",
+     "finished_at": "2026-10-22T09:30:49.340Z",
+     "duration": 43.59201949205186,
+     "queued_duration": 4.501966049983908,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5055"
+    }
+   ]
+  },
+  {
+   "id": 807,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-21T09:10:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/807",
+   "jobs": [
+    {
+     "id": 5044,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-21T09:10:06.245Z",
+     "finished_at": "2026-10-21T09:11:43.938Z",
+     "duration": 97.69215872801652,
+     "queued_duration": 6.245937004746654,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5044"
+    },
+    {
+     "id": 5045,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-21T09:11:53.354Z",
+     "finished_at": "2026-10-21T09:13:08.463Z",
+     "duration": 75.10847740537186,
+     "queued_duration": 9.416919132207562,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5045"
+    },
+    {
+     "id": 5046,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-21T09:11:54.985Z",
+     "finished_at": "2026-10-21T09:15:58.224Z",
+     "duration": 243.23894767736132,
+     "queued_duration": 11.047891287889605,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5046"
+    },
+    {
+     "id": 5047,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-21T09:12:36.396Z",
+     "finished_at": "2026-10-21T09:17:40.747Z",
+     "duration": 304.350846613265,
+     "queued_duration": 52.45889551635096,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5047"
+    },
+    {
+     "id": 5048,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-21T09:17:52.052Z",
+     "finished_at": "2026-10-21T09:24:50.361Z",
+     "duration": 418.3092481585596,
+     "queued_duration": 11.305156963189301,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5048"
+    },
+    {
+     "id": 5049,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-21T09:24:54.964Z",
+     "finished_at": "2026-10-21T09:25:31.726Z",
+     "duration": 36.7621772849037,
+     "queued_duration": 4.603683623164436,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5049"
+    }
+   ]
+  },
+  {
+   "id": 806,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-20T09:24:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/806",
+   "jobs": [
+    {
+     "id": 5038,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-20T09:24:08.435Z",
+     "finished_at": "2026-10-20T09:25:43.293Z",
+     "duration": 94.85807357963832,
+     "queued_duration": 8.43520146119046,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5038"
+    },
+    {
+     "id": 5039,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-20T09:25:52.996Z",
+     "finished_at": "2026-10-20T09:27:00.683Z",
+     "duration": 67.68742575264554,
+     "queued_duration": 9.703242833230469,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5039"
+    },
+    {
+     "id": 5040,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-20T09:25:52.569Z",
+     "finished_at": "2026-10-20T09:30:01.405Z",
+     "duration": 248.8360178584815,
+     "queued_duration": 9.276436804381538,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5040"
+    },
+    {
+     "id": 5041,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-20T09:26:29.839Z",
+     "finished_at": "2026-10-20T09:31:31.336Z",
+     "duration": 301.49727705995446,
+     "queued_duration": 46.54623324459038,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5041"
+    },
+    {
+     "id": 5042,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-20T09:31:41.766Z",
+     "finished_at": "2026-10-20T09:38:17.682Z",
+     "duration": 395.9159071418493,
+     "queued_duration": 10.430180277568764,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5042"
+    },
+    {
+     "id": 5043,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-20T09:38:25.349Z",
+     "finished_at": "2026-10-20T09:39:05.314Z",
+     "duration": 39.96506699029962,
+     "queued_duration": 7.667264904720246,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5043"
+    }
+   ]
+  },
+  {
+   "id": 805,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-19T09:31:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/805",
+   "jobs": [
+    {
+     "id": 5032,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-19T09:31:06.899Z",
+     "finished_at": "2026-10-19T09:32:43.286Z",
+     "duration": 96.38687463821978,
+     "queued_duration": 6.899476021412461,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5032"
+    },
+    {
+     "id": 5033,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-19T09:32:52.485Z",
+     "finished_at": "2026-10-19T09:34:09.600Z",
+     "duration": 77.114897521727,
+     "queued_duration": 9.199838902562707,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5033"
+    },
+    {
+     "id": 5034,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-19T09:32:51.604Z",
+     "finished_at": "2026-10-19T09:37:04.872Z",
+     "duration": 253.26795734234153,
+     "queued_duration": 8.318688361937511,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5034"
+    },
+    {
+     "id": 5035,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-19T09:33:25.106Z",
+     "finished_at": "2026-10-19T09:38:43.165Z",
+     "duration": 318.05968085217694,
+     "queued_duration": 41.82008282791659,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5035"
+    },
+    {
+     "id": 5036,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-19T09:38:53.047Z",
+     "finished_at": "2026-10-19T09:45:52.771Z",
+     "duration": 419.7238375786654,
+     "queued_duration": 9.882773127166013,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5036"
+    },
+    {
+     "id": 5037,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-19T09:46:00.058Z",
+     "finished_at": "2026-10-19T09:46:37.904Z",
+     "duration": 37.84595532094149,
+     "queued_duration": 7.287699146438859,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5037"
+    }
+   ]
+  },
+  {
+   "id": 804,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-18T09:18:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/804",
+   "jobs": [
+    {
+     "id": 5025,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-18T09:18:07.044Z",
+     "finished_at": "2026-10-18T09:19:38.069Z",
+     "duration": 91.02481214443536,
+     "queued_duration": 7.0447950951820175,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5025"
+    },
+    {
+     "id": 5026,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-18T09:19:45.628Z",
+     "finished_at": "2026-10-18T09:20:50.268Z",
+     "duration": 64.63939365829717,
+     "queued_duration": 7.559664153237746,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5026"
+    },
+    {
+     "id": 5027,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-18T09:19:45.463Z",
+     "finished_at": "2026-10-18T09:24:05.728Z",
+     "duration": 260.2650255166966,
+     "queued_duration": 7.394390643119005,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5027"
+    },
+    {
+     "id": 5028,
+     "name": "e2e",
+     "stage": "test",
+     "status": "failed",
+     "started_at": "2026-10-18T09:20:30.719Z",
+     "finished_at": "2026-10-18T09:24:18.820Z",
+     "duration": 228.1009541706055,
+     "queued_duration": 52.65095063430233,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5028"
+    },
+    {
+     "id": 5029,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-18T09:25:01.148Z",
+     "finished_at": "2026-10-18T09:30:13.471Z",
+     "duration": 312.323030106135,
+     "queued_duration": 42.32861446542387,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5029"
+    },
+    {
+     "id": 5030,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-18T09:30:24.205Z",
+     "finished_at": "2026-10-18T09:37:16.939Z",
+     "duration": 412.7341336946927,
+     "queued_duration": 10.734565028942129,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5030"
+    },
+    {
+     "id": 5031,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-18T09:37:22.299Z",
+     "finished_at": "2026-10-18T09:38:00.801Z",
+     "duration": 38.501783877191684,
+     "queued_duration": 5.360489448764782,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5031"
+    }
+   ]
+  },
+  {
+   "id": 803,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-17T09:49:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/803",
+   "jobs": [
+    {
+     "id": 5019,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-17T09:49:05.570Z",
+     "finished_at": "2026-10-17T09:50:43.768Z",
+     "duration": 98.19786608910694,
+     "queued_duration": 5.570735851883958,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5019"
+    },
+    {
+     "id": 5020,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-17T09:50:51.033Z",
+     "finished_at": "2026-10-17T09:51:57.830Z",
+     "duration": 66.79627194981892,
+     "queued_duration": 7.265921881853877,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5020"
+    },
+    {
+     "id": 5021,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-17T09:50:54.328Z",
+     "finished_at": "2026-10-17T09:55:08.502Z",
+     "duration": 254.17385527696885,
+     "queued_duration": 10.560656370657437,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5021"
+    },
+    {
+     "id": 5022,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-17T09:53:13.768Z",
+     "finished_at": "2026-10-17T09:58:13.531Z",
+     "duration": 299.7638604288861,
+     "queued_duration": 150,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5022"
+    },
+    {
+     "id": 5023,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-17T09:58:22.977Z",
+     "finished_at": "2026-10-17T10:05:03.985Z",
+     "duration": 401.0078601524581,
+     "queued_duration": 9.446542261552025,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5023"
+    },
+    {
+     "id": 5024,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-17T10:05:11.485Z",
+     "finished_at": "2026-10-17T10:05:53.780Z",
+     "duration": 42.29445289439218,
+     "queued_duration": 7.500549982293716,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5024"
+    }
+   ]
+  },
+  {
+   "id": 802,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-16T09:07:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/802",
+   "jobs": [
+    {
+     "id": 5013,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-16T09:07:06.854Z",
+     "finished_at": "2026-10-16T09:08:44.698Z",
+     "duration": 97.84360187817938,
+     "queued_duration": 6.854568448233672,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5013"
+    },
+    {
+     "id": 5014,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-16T09:08:53.108Z",
+     "finished_at": "2026-10-16T09:09:56.756Z",
+     "duration": 63.648891399097465,
+     "queued_duration": 8.410013473806023,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5014"
+    },
+    {
+     "id": 5015,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-16T09:08:53.696Z",
+     "finished_at": "2026-10-16T09:12:54.581Z",
+     "duration": 240.88464669646572,
+     "queued_duration": 8.998430739882545,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5015"
+    },
+    {
+     "id": 5016,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-16T09:09:27.620Z",
+     "finished_at": "2026-10-16T09:14:46.105Z",
+     "duration": 318.48443062984614,
+     "queued_duration": 42.922917279842004,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5016"
+    },
+    {
+     "id": 5017,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-16T09:14:55.491Z",
+     "finished_at": "2026-10-16T09:21:40.251Z",
+     "duration": 404.76038372694217,
+     "queued_duration": 9.38620975880032,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5017"
+    },
+    {
+     "id": 5018,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-16T09:21:46.236Z",
+     "finished_at": "2026-10-16T09:22:26.553Z",
+     "duration": 40.317202465801856,
+     "queued_duration": 5.985657980453967,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5018"
+    }
+   ]
+  },
+  {
+   "id": 801,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-15T09:03:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/801",
+   "jobs": [
+    {
+     "id": 5007,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-15T09:03:08.134Z",
+     "finished_at": "2026-10-15T09:04:39.867Z",
+     "duration": 91.73322745609504,
+     "queued_duration": 8.134260623360191,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5007"
+    },
+    {
+     "id": 5008,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-15T09:04:45.983Z",
+     "finished_at": "2026-10-15T09:05:58.022Z",
+     "duration": 72.03893155848942,
+     "queued_duration": 6.116194823035073,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5008"
+    },
+    {
+     "id": 5009,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-15T09:04:51.500Z",
+     "finished_at": "2026-10-15T09:09:02.505Z",
+     "duration": 251.00467666405495,
+     "queued_duration": 11.63396259719904,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5009"
+    },
+    {
+     "id": 5010,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-15T09:05:31.767Z",
+     "finished_at": "2026-10-15T09:11:00.817Z",
+     "duration": 329.05020422371683,
+     "queued_duration": 51.90041423952341,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5010"
+    },
+    {
+     "id": 5011,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-15T09:11:07.096Z",
+     "finished_at": "2026-10-15T09:18:01.435Z",
+     "duration": 414.3387383619472,
+     "queued_duration": 6.279496083706538,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5011"
+    },
+    {
+     "id": 5012,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-15T09:18:06.593Z",
+     "finished_at": "2026-10-15T09:18:43.035Z",
+     "duration": 36.44255083357437,
+     "queued_duration": 5.158437145326705,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5012"
+    }
+   ]
+  },
+  {
+   "id": 800,
+   "status": "success",
+   "source": "push",
+   "ref": "main",
+   "created_at": "2026-10-14T09:20:00.000Z",
+   "web_url": "https://gitlab.example.com/example/shop/-/pipelines/800",
+   "jobs": [
+    {
+     "id": 5001,
+     "name": "composer-install",
+     "stage": "build",
+     "status": "success",
+     "started_at": "2026-10-14T09:20:08.739Z",
+     "finished_at": "2026-10-14T09:21:44.266Z",
+     "duration": 95.52752894992443,
+     "queued_duration": 8.739326803045316,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5001"
+    },
+    {
+     "id": 5002,
+     "name": "phpstan",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-14T09:21:49.507Z",
+     "finished_at": "2026-10-14T09:23:04.647Z",
+     "duration": 75.14038867186093,
+     "queued_duration": 5.241432118134062,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5002"
+    },
+    {
+     "id": 5003,
+     "name": "phpunit",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-14T09:21:49.924Z",
+     "finished_at": "2026-10-14T09:26:01.077Z",
+     "duration": 251.15248815348724,
+     "queued_duration": 5.658910293577778,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5003"
+    },
+    {
+     "id": 5004,
+     "name": "e2e",
+     "stage": "test",
+     "status": "success",
+     "started_at": "2026-10-14T09:22:51.557Z",
+     "finished_at": "2026-10-14T09:27:50.145Z",
+     "duration": 298.58792723342646,
+     "queued_duration": 67.29112189429307,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5004"
+    },
+    {
+     "id": 5005,
+     "name": "build-image",
+     "stage": "package",
+     "status": "success",
+     "started_at": "2026-10-14T09:27:56.660Z",
+     "finished_at": "2026-10-14T09:34:33.387Z",
+     "duration": 396.7268860548304,
+     "queued_duration": 6.51568340213503,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5005"
+    },
+    {
+     "id": 5006,
+     "name": "deploy-staging",
+     "stage": "deploy",
+     "status": "success",
+     "started_at": "2026-10-14T09:34:38.349Z",
+     "finished_at": "2026-10-14T09:35:18.860Z",
+     "duration": 40.510472537913856,
+     "queued_duration": 4.9626520005081005,
+     "web_url": "https://gitlab.example.com/example/shop/-/jobs/5006"
+    }
+   ]
+  }
+ ],
+ "logs": {
+  "5182": {
+   "sections": [
+    {
+     "name": "prepare_executor",
+     "seconds": 6
+    },
+    {
+     "name": "prepare_script",
+     "seconds": 2
+    },
+    {
+     "name": "get_sources",
+     "seconds": 9
+    },
+    {
+     "name": "restore_cache",
+     "seconds": 7
+    },
+    {
+     "name": "step_script",
+     "seconds": 357
+    },
+    {
+     "name": "archive_cache",
+     "seconds": 5
+    },
+    {
+     "name": "upload_artifacts_on_success",
+     "seconds": 3
+    },
+    {
+     "name": "cleanup_file_variables",
+     "seconds": 1
+    }
+   ],
+   "steps": [
+    {
+     "name": "[internal] load build definition from Dockerfile",
+     "seconds": 0.1
+    },
+    {
+     "name": "[internal] load metadata for docker.io/library/php:8.3-fpm",
+     "seconds": 1.4
+    },
+    {
+     "name": "[internal] load build context",
+     "seconds": 6.2
+    },
+    {
+     "name": "[2/6] RUN apt-get update && apt-get install -y libicu-dev libzip-dev",
+     "seconds": 48.3
+    },
+    {
+     "name": "[3/6] RUN docker-php-ext-install intl zip opcache pdo_mysql",
+     "seconds": 92.7
+    },
+    {
+     "name": "[4/6] COPY composer.json composer.lock ./",
+     "seconds": 0.4
+    },
+    {
+     "name": "[5/6] RUN composer install --no-dev --optimize-autoloader",
+     "seconds": 71.9
+    },
+    {
+     "name": "[6/6] COPY . .",
+     "seconds": 11.8
+    },
+    {
+     "name": "exporting layers",
+     "seconds": 38.2
+    },
+    {
+     "name": "pushing layers",
+     "seconds": 64.0
+    }
+   ],
+   "cut": false
+  },
+  "5181": {
+   "sections": [
+    {
+     "name": "prepare_executor",
+     "seconds": 6
+    },
+    {
+     "name": "prepare_script",
+     "seconds": 2
+    },
+    {
+     "name": "get_sources",
+     "seconds": 9
+    },
+    {
+     "name": "restore_cache",
+     "seconds": 7
+    },
+    {
+     "name": "step_script",
+     "seconds": 279
+    },
+    {
+     "name": "archive_cache",
+     "seconds": 5
+    },
+    {
+     "name": "upload_artifacts_on_success",
+     "seconds": 3
+    },
+    {
+     "name": "cleanup_file_variables",
+     "seconds": 1
+    }
+   ],
+   "steps": [
+    {
+     "name": "$ npm ci",
+     "seconds": 50.2
+    },
+    {
+     "name": "$ npx playwright install --with-deps chromium",
+     "seconds": 45.4
+    },
+    {
+     "name": "$ npx playwright test",
+     "seconds": 183.0
+    }
+   ],
+   "cut": false
+  },
+  "5180": {
+   "sections": [
+    {
+     "name": "prepare_executor",
+     "seconds": 6
+    },
+    {
+     "name": "prepare_script",
+     "seconds": 2
+    },
+    {
+     "name": "get_sources",
+     "seconds": 9
+    },
+    {
+     "name": "restore_cache",
+     "seconds": 7
+    },
+    {
+     "name": "step_script",
+     "seconds": 324
+    },
+    {
+     "name": "archive_cache",
+     "seconds": 5
+    },
+    {
+     "name": "upload_artifacts_on_success",
+     "seconds": 3
+    },
+    {
+     "name": "cleanup_file_variables",
+     "seconds": 1
+    }
+   ],
+   "steps": [
+    {
+     "name": "$ composer install --no-interaction --prefer-dist",
+     "seconds": 39.2
+    },
+    {
+     "name": "$ php bin/console doctrine:migrations:migrate --no-interaction --env=test",
+     "seconds": 36.3
+    },
+    {
+     "name": "$ php vendor/bin/phpunit --testsuite unit",
+     "seconds": 61.2
+    },
+    {
+     "name": "$ php vendor/bin/phpunit --testsuite integration",
+     "seconds": 187.0
+    }
+   ],
+   "cut": false
+  },
+  "5178": {
+   "sections": [
+    {
+     "name": "prepare_executor",
+     "seconds": 6
+    },
+    {
+     "name": "prepare_script",
+     "seconds": 2
+    },
+    {
+     "name": "get_sources",
+     "seconds": 9
+    },
+    {
+     "name": "restore_cache",
+     "seconds": 7
+    },
+    {
+     "name": "step_script",
+     "seconds": 58
+    },
+    {
+     "name": "archive_cache",
+     "seconds": 5
+    },
+    {
+     "name": "upload_artifacts_on_success",
+     "seconds": 3
+    },
+    {
+     "name": "cleanup_file_variables",
+     "seconds": 1
+    }
+   ],
+   "steps": [
+    {
+     "name": "$ composer install --no-interaction --prefer-dist",
+     "seconds": 54.0
+    },
+    {
+     "name": "$ composer dump-autoload --optimize",
+     "seconds": 4.0
+    }
+   ],
+   "cut": false
+  },
+  "5179": {
+   "sections": [
+    {
+     "name": "prepare_executor",
+     "seconds": 6
+    },
+    {
+     "name": "prepare_script",
+     "seconds": 2
+    },
+    {
+     "name": "get_sources",
+     "seconds": 9
+    },
+    {
+     "name": "restore_cache",
+     "seconds": 7
+    },
+    {
+     "name": "step_script",
+     "seconds": 30
+    },
+    {
+     "name": "archive_cache",
+     "seconds": 5
+    },
+    {
+     "name": "upload_artifacts_on_success",
+     "seconds": 3
+    },
+    {
+     "name": "cleanup_file_variables",
+     "seconds": 1
+    }
+   ],
+   "steps": [
+    {
+     "name": "$ php vendor/bin/phpstan analyse --memory-limit=1G",
+     "seconds": 29.5
+    }
+   ],
+   "cut": false
+  }
+ }
+}

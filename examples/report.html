@@ -1,0 +1,920 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CI speed · example/shop</title><style>
+:root{color-scheme:light dark;--bg:#f9f9f7;--card:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--mute:#898781;
+--line:#e1e0d9;--axis:#c3c2b7;--ok:#2a78d6;--bad:#d03b3b;--wait:#c3c2b7;--good:#006300}
+@media(prefers-color-scheme:dark){:root{--bg:#0d0d0d;--card:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;
+--line:#2c2c2a;--axis:#383835;--ok:#3987e5;--bad:#e66767;--wait:#6b6a66;--good:#0ca30c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:960px;margin:0 auto;padding:28px 16px 56px}
+a{color:inherit}
+header{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between;color:var(--ink2);font-size:13px}
+h1{font-size:28px;line-height:1.2;margin:14px 0 6px}
+h2{font-size:18px;margin:40px 0 10px}
+h3{font-size:13px;font-weight:600;margin:18px 0 6px;color:var(--ink2)}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.lead{font-size:17px;margin:0 0 20px;max-width:46em}
+.note{color:var(--ink2);font-size:13px;margin:8px 0 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.card b{display:block;font-size:24px;font-weight:600;line-height:1.3}
+.card span{display:block;font-size:13px}
+.card small{color:var(--ink2);font-size:12px}
+.up{color:var(--bad);font-weight:600}.down{color:var(--good);font-weight:600}.quiet{color:var(--mute)}
+.first{margin:0;padding-left:22px}.first li{margin:6px 0;max-width:46em}
+.chart{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 8px}
+.axis{display:flex;flex-direction:column;justify-content:space-between;text-align:right;
+font-size:12px;line-height:1;color:var(--mute);font-variant-numeric:tabular-nums}
+.plot{position:relative;display:flex;gap:2px;border-bottom:1px solid var(--axis)}
+.plot>i{position:absolute;left:0;right:0;border-top:1px solid var(--line);pointer-events:none}
+.plot>i.median{border-top:1.5px dashed var(--ink2);z-index:1}
+.bar{position:relative;flex:1 1 0;max-width:40px;min-width:1px;display:flex;flex-direction:column;
+justify-content:flex-end;z-index:2}
+.bar:hover,.bar:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent);outline:0;z-index:3}
+.bar b{display:block;min-height:1px}.bar b:first-child{border-radius:3px 3px 0 0}
+.bar b.wait{margin-bottom:2px}
+.success{background:var(--ok)}.failed{background:var(--bad)}.wait{background:var(--wait)}
+.other{box-shadow:inset 0 0 0 1.5px var(--mute)}
+[data-tip]:hover::after,[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;
+bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:pre;background:var(--ink);
+color:var(--bg);font:12px/1.45 system-ui,sans-serif;padding:6px 9px;border-radius:6px;z-index:9;
+pointer-events:none}
+.l[data-tip]::after{left:0;transform:none}.r[data-tip]::after{left:auto;right:0;transform:none}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--ink2);font-size:12px;margin:10px 0 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+.legend i.median{width:16px;height:0;border-top:1.5px dashed var(--ink2);border-radius:0;vertical-align:middle}
+.row{position:relative;display:grid;grid-template-columns:minmax(80px,230px) minmax(0,1fr) 88px;gap:10px;
+align-items:center;padding:3px 0;text-decoration:none;font-size:13px}
+a.row:hover,a.row:focus-visible{background:color-mix(in srgb,var(--ink) 6%,transparent);outline:0}
+.name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track{position:relative;height:12px}
+.track i{position:absolute;top:0;bottom:0;min-width:2px;border-radius:3px}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.jobs{border-top:1px solid var(--line)}
+.head,.job summary{display:grid;grid-template-columns:minmax(0,1fr) 104px 84px 168px 84px 72px;gap:12px;
+align-items:baseline;padding:8px 6px}
+.head{color:var(--ink2);font-size:12px}
+.job{border-bottom:1px solid var(--line)}
+.job summary{cursor:pointer;list-style:none}.job summary::-webkit-details-marker{display:none}
+.job summary:hover{background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.job summary .name::before{content:"▸";display:inline-block;width:16px;color:var(--mute)}
+.job[open] summary .name::before{content:"▾"}
+.job small{color:var(--mute)}
+.body{padding:2px 6px 18px 22px}
+.steps .row{grid-template-columns:minmax(0,1fr) 160px 84px}
+.steps .sub .name{padding-left:18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.how{color:var(--ink2);font-size:13px;padding-left:20px;max-width:56em}.how li{margin:4px 0}
+@media(max-width:640px){.head,.job summary{grid-template-columns:minmax(0,1fr) 84px 104px;gap:8px}.s{display:none}
+.job summary .num{white-space:normal}.row{grid-template-columns:minmax(70px,120px) minmax(0,1fr) 76px}
+.steps .row{grid-template-columns:minmax(0,1fr) 48px 76px}.steps .name{white-space:normal;overflow-wrap:anywhere}}
+</style></head><body><main>
+<header><span><a href="https://gitlab.example.com/example/shop">example/shop</a> · <code>main</code></span><span>collected 2026-11-13 10:00</span></header>
+<h1>CI speed</h1><p class="lead">A pipeline runs for about 15 min 6 s (median of 27 successful runs out of 30). No notable change in the last 10.</p><div class="cards">
+<div class="card"><b>15 min 6 s</b><span>Pipeline run time</span><small>median of successful runs</small></div><div class="card"><b>+13 s (+1%)</b><span>Change</span><small>last 10 against 17 earlier</small></div><div class="card"><b>8 s</b><span>Runner wait</span><small>median per job · 9% of job time</small></div><div class="card"><b>90%</b><span>Successful pipelines</span><small>27 of 30</small></div>
+</div>
+<h2>Where to look first</h2><ol class="first"><li>Slowest job: <a href="#job-0"><b>build-image</b></a> — 6 min 41 s (median). Longest step in its log: <code>[3/6] RUN docker-php-ext-install intl zip opcache pdo_mysql</code> — 1 min 33 s.</li><li><a href="#job-2"><b>phpunit</b></a> got slower: 4 min 11 s → 5 min 56 s (+1 min 45 s, +42%) over its last 10 successful runs.</li><li><a href="#job-1"><b>e2e</b></a> waits 54 s for a runner (median). Waiting is 9% of all job time.</li><li><a href="#job-1"><b>e2e</b></a> fails in 18% of runs (6 of 33). The failed runs took 20 min 43 s.</li></ol>
+<h2>Pipeline history</h2><div class="chart"><div class="axis"><span>24 min</span><span>12 min</span><span>0</span></div><div class="plot" style="height:130px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:62.9%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/800" data-tip="#800 · success · push
+14 min 53 s
+2026-10-14 09:20" aria-label="#800 · success · push
+14 min 53 s
+2026-10-14 09:20"><b class="success" style="height:62.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/801" data-tip="#801 · success · push
+15 min 17 s
+2026-10-15 09:03" aria-label="#801 · success · push
+15 min 17 s
+2026-10-15 09:03"><b class="success" style="height:63.7%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/802" data-tip="#802 · success · push
+14 min 56 s
+2026-10-16 09:07" aria-label="#802 · success · push
+14 min 56 s
+2026-10-16 09:07"><b class="success" style="height:62.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/803" data-tip="#803 · success · push
+16 min 24 s
+2026-10-17 09:49" aria-label="#803 · success · push
+16 min 24 s
+2026-10-17 09:49"><b class="success" style="height:68.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/804" data-tip="#804 · success · push
+18 min 48 s
+2026-10-18 09:18" aria-label="#804 · success · push
+18 min 48 s
+2026-10-18 09:18"><b class="success" style="height:78.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/805" data-tip="#805 · success · push
+15 min 6 s
+2026-10-19 09:31" aria-label="#805 · success · push
+15 min 6 s
+2026-10-19 09:31"><b class="success" style="height:62.9%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/806" data-tip="#806 · success · push
+14 min 30 s
+2026-10-20 09:24" aria-label="#806 · success · push
+14 min 30 s
+2026-10-20 09:24"><b class="success" style="height:60.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/807" data-tip="#807 · success · push
+15 min
+2026-10-21 09:10" aria-label="#807 · success · push
+15 min
+2026-10-21 09:10"><b class="success" style="height:62.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/808" data-tip="#808 · success · push
+16 min 21 s
+2026-10-22 09:14" aria-label="#808 · success · push
+16 min 21 s
+2026-10-22 09:14"><b class="success" style="height:68.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/pipelines/809" data-tip="#809 · failed · push
+5 min 58 s
+2026-10-23 09:39" aria-label="#809 · failed · push
+5 min 58 s
+2026-10-23 09:39"><b class="failed" style="height:24.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/810" data-tip="#810 · success · push
+14 min 21 s
+2026-10-24 09:25" aria-label="#810 · success · push
+14 min 21 s
+2026-10-24 09:25"><b class="success" style="height:59.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/811" data-tip="#811 · canceled · push
+3 min 13 s
+2026-10-25 09:01" aria-label="#811 · canceled · push
+3 min 13 s
+2026-10-25 09:01"><b class="other" style="height:13.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/812" data-tip="#812 · success · push
+14 min 48 s
+2026-10-26 09:22" aria-label="#812 · success · push
+14 min 48 s
+2026-10-26 09:22"><b class="success" style="height:61.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/813" data-tip="#813 · success · push
+20 min 4 s
+2026-10-27 09:33" aria-label="#813 · success · push
+20 min 4 s
+2026-10-27 09:33"><b class="success" style="height:83.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/814" data-tip="#814 · success · push
+14 min 44 s
+2026-10-28 09:49" aria-label="#814 · success · push
+14 min 44 s
+2026-10-28 09:49"><b class="success" style="height:61.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/815" data-tip="#815 · success · push
+15 min 20 s
+2026-10-29 09:31" aria-label="#815 · success · push
+15 min 20 s
+2026-10-29 09:31"><b class="success" style="height:63.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/816" data-tip="#816 · success · push
+14 min 58 s
+2026-10-30 09:14" aria-label="#816 · success · push
+14 min 58 s
+2026-10-30 09:14"><b class="success" style="height:62.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/817" data-tip="#817 · failed · push
+6 min 26 s
+2026-10-31 09:24" aria-label="#817 · failed · push
+6 min 26 s
+2026-10-31 09:24"><b class="failed" style="height:26.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/818" data-tip="#818 · success · push
+16 min 46 s
+2026-11-01 09:25" aria-label="#818 · success · push
+16 min 46 s
+2026-11-01 09:25"><b class="success" style="height:69.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/pipelines/819" data-tip="#819 · success · push
+15 min 1 s
+2026-11-02 09:30" aria-label="#819 · success · push
+15 min 1 s
+2026-11-02 09:30"><b class="success" style="height:62.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/820" data-tip="#820 · success · push
+15 min 12 s
+2026-11-03 09:13" aria-label="#820 · success · push
+15 min 12 s
+2026-11-03 09:13"><b class="success" style="height:63.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/821" data-tip="#821 · success · push
+15 min 1 s
+2026-11-04 09:33" aria-label="#821 · success · push
+15 min 1 s
+2026-11-04 09:33"><b class="success" style="height:62.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/822" data-tip="#822 · success · push
+18 min 31 s
+2026-11-05 09:46" aria-label="#822 · success · push
+18 min 31 s
+2026-11-05 09:46"><b class="success" style="height:77.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/823" data-tip="#823 · success · push
+16 min 54 s
+2026-11-06 09:04" aria-label="#823 · success · push
+16 min 54 s
+2026-11-06 09:04"><b class="success" style="height:70.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/824" data-tip="#824 · success · push
+14 min 48 s
+2026-11-07 09:16" aria-label="#824 · success · push
+14 min 48 s
+2026-11-07 09:16"><b class="success" style="height:61.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/825" data-tip="#825 · success · push
+15 min 17 s
+2026-11-08 09:49" aria-label="#825 · success · push
+15 min 17 s
+2026-11-08 09:49"><b class="success" style="height:63.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/826" data-tip="#826 · success · push
+19 min 22 s
+2026-11-09 09:10" aria-label="#826 · success · push
+19 min 22 s
+2026-11-09 09:10"><b class="success" style="height:80.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/827" data-tip="#827 · success · push
+14 min 58 s
+2026-11-10 09:07" aria-label="#827 · success · push
+14 min 58 s
+2026-11-10 09:07"><b class="success" style="height:62.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/828" data-tip="#828 · success · push
+16 min 53 s
+2026-11-11 09:16" aria-label="#828 · success · push
+16 min 53 s
+2026-11-11 09:16"><b class="success" style="height:70.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/pipelines/829" data-tip="#829 · success · push
+14 min 41 s
+2026-11-12 09:05" aria-label="#829 · success · push
+14 min 41 s
+2026-11-12 09:05"><b class="success" style="height:61.2%"></b></a></div></div><p class="legend"><span><i class="success"></i>successful</span><span><i class="failed"></i>failed</span><span><i class="other"></i>canceled</span><span><i class="median"></i>median of successful</span></p><p class="note">30 pipelines, 2026-10-14 — 2026-11-12. One bar is one pipeline; open it with a click.</p>
+<h2>Latest successful pipeline <a href="https://gitlab.example.com/example/shop/-/pipelines/829">#829</a> · 14 min 41 s</h2><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5178" data-tip="#5178 · success
+run 1 min 31 s · wait 8 s
+2026-11-12 09:05"><span class="name">composer-install</span><span class="track"><i class="wait" style="left:0.00%;width:0.88%"></i><i class="success" style="left:0.88%;width:9.97%"></i></span><span class="num">1 min 31 s</span></a><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5181" data-tip="#5181 · success
+run 5 min 12 s · wait 50 s
+2026-11-12 09:07"><span class="name">e2e</span><span class="track"><i class="wait" style="left:10.84%;width:5.49%"></i><i class="success" style="left:16.33%;width:34.13%"></i></span><span class="num">5 min 12 s</span></a><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5180" data-tip="#5180 · success
+run 5 min 57 s · wait 11 s
+2026-11-12 09:06"><span class="name">phpunit</span><span class="track"><i class="wait" style="left:10.84%;width:1.21%"></i><i class="success" style="left:12.05%;width:39.06%"></i></span><span class="num">5 min 57 s</span></a><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5179" data-tip="#5179 · success
+run 1 min 3 s · wait 9 s
+2026-11-12 09:06"><span class="name">phpstan</span><span class="track"><i class="wait" style="left:10.84%;width:1.01%"></i><i class="success" style="left:11.86%;width:6.90%"></i></span><span class="num">1 min 3 s</span></a><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5182" data-tip="#5182 · success
+run 6 min 31 s · wait 12 s
+2026-11-12 09:12"><span class="name">build-image</span><span class="track"><i class="wait" style="left:51.12%;width:1.26%"></i><i class="success" style="left:52.38%;width:42.72%"></i></span><span class="num">6 min 31 s</span></a><a class="row" href="https://gitlab.example.com/example/shop/-/jobs/5183" data-tip="#5183 · success
+run 40 s · wait 5 s
+2026-11-12 09:19"><span class="name">deploy-staging</span><span class="track"><i class="wait" style="left:95.10%;width:0.49%"></i><i class="success" style="left:95.60%;width:4.40%"></i></span><span class="num">40 s</span></a><p class="legend"><span><i class="success"></i>successful</span><span><i class="failed"></i>failed</span><span><i class="other"></i>canceled</span><span><i class="wait"></i>runner wait</span></p><p class="note">One row is one job. Pauses when nothing was running are removed.</p>
+<h2>Jobs</h2><div class="jobs"><div class="head"><span>Job</span><span class="num">Run</span><span class="num s">Wait</span><span class="num">Change</span><span class="num s">Failed</span><span class="num s">Runs</span></div><details class="job" id="job-0"><summary><span class="name">build-image <small>package</small></span><span class="num">6 min 41 s</span><span class="num s">9 s</span><span class="num"><span class="quiet">−5 s (−1%)</span></span><span class="num s">—</span><span class="num s">27</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>8 min</span><span>4 min</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:83.5%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5005" data-tip="#5005 · success
+run 6 min 37 s · wait 7 s
+2026-10-14 09:27" aria-label="#5005 · success
+run 6 min 37 s · wait 7 s
+2026-10-14 09:27"><b class="wait" style="height:1.4%"></b><b class="success" style="height:82.7%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5011" data-tip="#5011 · success
+run 6 min 54 s · wait 6 s
+2026-10-15 09:11" aria-label="#5011 · success
+run 6 min 54 s · wait 6 s
+2026-10-15 09:11"><b class="wait" style="height:1.3%"></b><b class="success" style="height:86.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5017" data-tip="#5017 · success
+run 6 min 45 s · wait 9 s
+2026-10-16 09:14" aria-label="#5017 · success
+run 6 min 45 s · wait 9 s
+2026-10-16 09:14"><b class="wait" style="height:2.0%"></b><b class="success" style="height:84.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5023" data-tip="#5023 · success
+run 6 min 41 s · wait 9 s
+2026-10-17 09:58" aria-label="#5023 · success
+run 6 min 41 s · wait 9 s
+2026-10-17 09:58"><b class="wait" style="height:2.0%"></b><b class="success" style="height:83.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5030" data-tip="#5030 · success
+run 6 min 53 s · wait 11 s
+2026-10-18 09:30" aria-label="#5030 · success
+run 6 min 53 s · wait 11 s
+2026-10-18 09:30"><b class="wait" style="height:2.2%"></b><b class="success" style="height:86.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5036" data-tip="#5036 · success
+run 7 min · wait 10 s
+2026-10-19 09:38" aria-label="#5036 · success
+run 7 min · wait 10 s
+2026-10-19 09:38"><b class="wait" style="height:2.1%"></b><b class="success" style="height:87.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5042" data-tip="#5042 · success
+run 6 min 36 s · wait 10 s
+2026-10-20 09:31" aria-label="#5042 · success
+run 6 min 36 s · wait 10 s
+2026-10-20 09:31"><b class="wait" style="height:2.2%"></b><b class="success" style="height:82.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5048" data-tip="#5048 · success
+run 6 min 58 s · wait 11 s
+2026-10-21 09:17" aria-label="#5048 · success
+run 6 min 58 s · wait 11 s
+2026-10-21 09:17"><b class="wait" style="height:2.4%"></b><b class="success" style="height:87.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5054" data-tip="#5054 · success
+run 6 min 33 s · wait 10 s
+2026-10-22 09:23" aria-label="#5054 · success
+run 6 min 33 s · wait 10 s
+2026-10-22 09:23"><b class="wait" style="height:2.0%"></b><b class="success" style="height:81.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5066" data-tip="#5066 · success
+run 6 min 26 s · wait 6 s
+2026-10-24 09:32" aria-label="#5066 · success
+run 6 min 26 s · wait 6 s
+2026-10-24 09:32"><b class="wait" style="height:1.3%"></b><b class="success" style="height:80.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5077" data-tip="#5077 · success
+run 6 min 50 s · wait 10 s
+2026-10-26 09:29" aria-label="#5077 · success
+run 6 min 50 s · wait 10 s
+2026-10-26 09:29"><b class="wait" style="height:2.2%"></b><b class="success" style="height:85.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5084" data-tip="#5084 · success
+run 6 min 30 s · wait 10 s
+2026-10-27 09:47" aria-label="#5084 · success
+run 6 min 30 s · wait 10 s
+2026-10-27 09:47"><b class="wait" style="height:2.1%"></b><b class="success" style="height:81.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5090" data-tip="#5090 · success
+run 6 min 36 s · wait 7 s
+2026-10-28 09:56" aria-label="#5090 · success
+run 6 min 36 s · wait 7 s
+2026-10-28 09:56"><b class="wait" style="height:1.5%"></b><b class="success" style="height:82.5%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5096" data-tip="#5096 · success
+run 7 min · wait 12 s
+2026-10-29 09:39" aria-label="#5096 · success
+run 7 min · wait 12 s
+2026-10-29 09:39"><b class="wait" style="height:2.4%"></b><b class="success" style="height:87.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5102" data-tip="#5102 · success
+run 6 min 46 s · wait 8 s
+2026-10-30 09:21" aria-label="#5102 · success
+run 6 min 46 s · wait 8 s
+2026-10-30 09:21"><b class="wait" style="height:1.7%"></b><b class="success" style="height:84.5%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5114" data-tip="#5114 · success
+run 6 min 46 s · wait 9 s
+2026-11-01 09:34" aria-label="#5114 · success
+run 6 min 46 s · wait 9 s
+2026-11-01 09:34"><b class="wait" style="height:1.8%"></b><b class="success" style="height:84.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5120" data-tip="#5120 · success
+run 6 min 37 s · wait 12 s
+2026-11-02 09:38" aria-label="#5120 · success
+run 6 min 37 s · wait 12 s
+2026-11-02 09:38"><b class="wait" style="height:2.4%"></b><b class="success" style="height:82.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5126" data-tip="#5126 · success
+run 6 min 56 s · wait 10 s
+2026-11-03 09:20" aria-label="#5126 · success
+run 6 min 56 s · wait 10 s
+2026-11-03 09:20"><b class="wait" style="height:2.2%"></b><b class="success" style="height:86.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5132" data-tip="#5132 · success
+run 6 min 52 s · wait 6 s
+2026-11-04 09:40" aria-label="#5132 · success
+run 6 min 52 s · wait 6 s
+2026-11-04 09:40"><b class="wait" style="height:1.3%"></b><b class="success" style="height:85.8%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5139" data-tip="#5139 · success
+run 6 min 38 s · wait 7 s
+2026-11-05 09:57" aria-label="#5139 · success
+run 6 min 38 s · wait 7 s
+2026-11-05 09:57"><b class="wait" style="height:1.4%"></b><b class="success" style="height:82.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5145" data-tip="#5145 · success
+run 6 min 58 s · wait 9 s
+2026-11-06 09:13" aria-label="#5145 · success
+run 6 min 58 s · wait 9 s
+2026-11-06 09:13"><b class="wait" style="height:1.8%"></b><b class="success" style="height:87.0%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5151" data-tip="#5151 · success
+run 6 min 29 s · wait 9 s
+2026-11-07 09:24" aria-label="#5151 · success
+run 6 min 29 s · wait 9 s
+2026-11-07 09:24"><b class="wait" style="height:1.8%"></b><b class="success" style="height:80.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5157" data-tip="#5157 · success
+run 6 min 39 s · wait 8 s
+2026-11-08 09:57" aria-label="#5157 · success
+run 6 min 39 s · wait 8 s
+2026-11-08 09:57"><b class="wait" style="height:1.7%"></b><b class="success" style="height:83.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5164" data-tip="#5164 · success
+run 6 min 41 s · wait 8 s
+2026-11-09 09:22" aria-label="#5164 · success
+run 6 min 41 s · wait 8 s
+2026-11-09 09:22"><b class="wait" style="height:1.7%"></b><b class="success" style="height:83.5%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5170" data-tip="#5170 · success
+run 6 min 37 s · wait 7 s
+2026-11-10 09:15" aria-label="#5170 · success
+run 6 min 37 s · wait 7 s
+2026-11-10 09:15"><b class="wait" style="height:1.4%"></b><b class="success" style="height:82.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5176" data-tip="#5176 · success
+run 6 min 56 s · wait 7 s
+2026-11-11 09:25" aria-label="#5176 · success
+run 6 min 56 s · wait 7 s
+2026-11-11 09:25"><b class="wait" style="height:1.5%"></b><b class="success" style="height:86.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5182" data-tip="#5182 · success
+run 6 min 31 s · wait 12 s
+2026-11-12 09:12" aria-label="#5182 · success
+run 6 min 31 s · wait 12 s
+2026-11-12 09:12"><b class="wait" style="height:2.4%"></b><b class="success" style="height:81.4%"></b></a></div></div><h3>Where the time went in run <a href="https://gitlab.example.com/example/shop/-/jobs/5182">#5182</a></h3><div class="steps"><div class="row"><span class="name" title="Script">Script</span><span class="track"><i class="success" style="left:0;width:100.0%"></i></span><span class="num">5 min 57 s</span></div><div class="row sub"><span class="name" title="[3/6] RUN docker-php-ext-install intl zip opcache pdo_mysql">[3/6] RUN docker-php-ext-install intl zip opcache pdo_mysql</span><span class="track"><i class="success" style="left:0;width:26.0%"></i></span><span class="num">1 min 33 s</span></div><div class="row sub"><span class="name" title="[5/6] RUN composer install --no-dev --optimize-autoloader">[5/6] RUN composer install --no-dev --optimize-autoloader</span><span class="track"><i class="success" style="left:0;width:20.1%"></i></span><span class="num">1 min 12 s</span></div><div class="row sub"><span class="name" title="pushing layers">pushing layers</span><span class="track"><i class="success" style="left:0;width:17.9%"></i></span><span class="num">1 min 4 s</span></div><div class="row sub"><span class="name" title="[2/6] RUN apt-get update &amp;&amp; apt-get install -y libicu-dev libzip-dev">[2/6] RUN apt-get update &amp;&amp; apt-get install -y libicu-dev libzip-dev</span><span class="track"><i class="success" style="left:0;width:13.5%"></i></span><span class="num">48 s</span></div><div class="row sub"><span class="name" title="exporting layers">exporting layers</span><span class="track"><i class="success" style="left:0;width:10.7%"></i></span><span class="num">38 s</span></div><div class="row sub"><span class="name" title="[6/6] COPY . .">[6/6] COPY . .</span><span class="track"><i class="success" style="left:0;width:3.3%"></i></span><span class="num">12 s</span></div><div class="row sub"><span class="name" title="[internal] load build context">[internal] load build context</span><span class="track"><i class="success" style="left:0;width:1.7%"></i></span><span class="num">6 s</span></div><div class="row sub"><span class="name" title="[internal] load metadata for docker.io/library/php:8.3-fpm">[internal] load metadata for docker.io/library/php:8.3-fpm</span><span class="track"><i class="success" style="left:0;width:0.4%"></i></span><span class="num">1 s</span></div><div class="row"><span class="name" title="Get sources (git)">Get sources (git)</span><span class="track"><i class="success" style="left:0;width:2.5%"></i></span><span class="num">9 s</span></div><div class="row"><span class="name" title="Restore cache">Restore cache</span><span class="track"><i class="success" style="left:0;width:2.0%"></i></span><span class="num">7 s</span></div><div class="row"><span class="name" title="Prepare executor">Prepare executor</span><span class="track"><i class="success" style="left:0;width:1.7%"></i></span><span class="num">6 s</span></div><div class="row"><span class="name" title="Save cache">Save cache</span><span class="track"><i class="success" style="left:0;width:1.4%"></i></span><span class="num">5 s</span></div><div class="row"><span class="name" title="Upload artifacts">Upload artifacts</span><span class="track"><i class="success" style="left:0;width:0.8%"></i></span><span class="num">3 s</span></div><div class="row"><span class="name" title="Prepare environment">Prepare environment</span><span class="track"><i class="success" style="left:0;width:0.6%"></i></span><span class="num">2 s</span></div><div class="row"><span class="name" title="Cleanup">Cleanup</span><span class="track"><i class="success" style="left:0;width:0.3%"></i></span><span class="num">1 s</span></div></div></div></details><details class="job" id="job-1"><summary><span class="name">e2e <small>test</small></span><span class="num">5 min 11 s</span><span class="num s">54 s</span><span class="num"><span class="quiet">0 s</span></span><span class="num s">18% <small>6/33</small></span><span class="num s">33</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>8 min</span><span>4 min</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:64.9%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5004" data-tip="#5004 · success
+run 4 min 59 s · wait 1 min 7 s
+2026-10-14 09:22" aria-label="#5004 · success
+run 4 min 59 s · wait 1 min 7 s
+2026-10-14 09:22"><b class="wait" style="height:14.0%"></b><b class="success" style="height:62.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5010" data-tip="#5010 · success
+run 5 min 29 s · wait 52 s
+2026-10-15 09:05" aria-label="#5010 · success
+run 5 min 29 s · wait 52 s
+2026-10-15 09:05"><b class="wait" style="height:10.8%"></b><b class="success" style="height:68.6%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5016" data-tip="#5016 · success
+run 5 min 18 s · wait 43 s
+2026-10-16 09:09" aria-label="#5016 · success
+run 5 min 18 s · wait 43 s
+2026-10-16 09:09"><b class="wait" style="height:8.9%"></b><b class="success" style="height:66.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5022" data-tip="#5022 · success
+run 5 min · wait 2 min 30 s
+2026-10-17 09:53" aria-label="#5022 · success
+run 5 min · wait 2 min 30 s
+2026-10-17 09:53"><b class="wait" style="height:31.2%"></b><b class="success" style="height:62.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5028" data-tip="#5028 · failed
+run 3 min 48 s · wait 53 s
+2026-10-18 09:20" aria-label="#5028 · failed
+run 3 min 48 s · wait 53 s
+2026-10-18 09:20"><b class="wait" style="height:11.0%"></b><b class="failed" style="height:47.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5029" data-tip="#5029 · success
+run 5 min 12 s · wait 42 s
+2026-10-18 09:25" aria-label="#5029 · success
+run 5 min 12 s · wait 42 s
+2026-10-18 09:25"><b class="wait" style="height:8.8%"></b><b class="success" style="height:65.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5035" data-tip="#5035 · success
+run 5 min 18 s · wait 42 s
+2026-10-19 09:33" aria-label="#5035 · success
+run 5 min 18 s · wait 42 s
+2026-10-19 09:33"><b class="wait" style="height:8.7%"></b><b class="success" style="height:66.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5041" data-tip="#5041 · success
+run 5 min 1 s · wait 47 s
+2026-10-20 09:26" aria-label="#5041 · success
+run 5 min 1 s · wait 47 s
+2026-10-20 09:26"><b class="wait" style="height:9.7%"></b><b class="success" style="height:62.8%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5047" data-tip="#5047 · success
+run 5 min 4 s · wait 52 s
+2026-10-21 09:12" aria-label="#5047 · success
+run 5 min 4 s · wait 52 s
+2026-10-21 09:12"><b class="wait" style="height:10.9%"></b><b class="success" style="height:63.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5053" data-tip="#5053 · success
+run 5 min 11 s · wait 2 min 30 s
+2026-10-22 09:18" aria-label="#5053 · success
+run 5 min 11 s · wait 2 min 30 s
+2026-10-22 09:18"><b class="wait" style="height:31.2%"></b><b class="success" style="height:64.9%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5059" data-tip="#5059 · failed
+run 3 min 20 s · wait 57 s
+2026-10-23 09:41" aria-label="#5059 · failed
+run 3 min 20 s · wait 57 s
+2026-10-23 09:41"><b class="wait" style="height:11.8%"></b><b class="failed" style="height:41.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5065" data-tip="#5065 · success
+run 4 min 52 s · wait 50 s
+2026-10-24 09:27" aria-label="#5065 · success
+run 4 min 52 s · wait 50 s
+2026-10-24 09:27"><b class="wait" style="height:10.5%"></b><b class="success" style="height:60.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5076" data-tip="#5076 · success
+run 4 min 56 s · wait 49 s
+2026-10-26 09:24" aria-label="#5076 · success
+run 4 min 56 s · wait 49 s
+2026-10-26 09:24"><b class="wait" style="height:10.3%"></b><b class="success" style="height:61.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5082" data-tip="#5082 · failed
+run 3 min 26 s · wait 2 min 30 s
+2026-10-27 09:37" aria-label="#5082 · failed
+run 3 min 26 s · wait 2 min 30 s
+2026-10-27 09:37"><b class="wait" style="height:31.2%"></b><b class="failed" style="height:43.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5083" data-tip="#5083 · success
+run 5 min 25 s · wait 1 min 9 s
+2026-10-27 09:41" aria-label="#5083 · success
+run 5 min 25 s · wait 1 min 9 s
+2026-10-27 09:41"><b class="wait" style="height:14.4%"></b><b class="success" style="height:67.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5089" data-tip="#5089 · success
+run 4 min 58 s · wait 1 min 3 s
+2026-10-28 09:51" aria-label="#5089 · success
+run 4 min 58 s · wait 1 min 3 s
+2026-10-28 09:51"><b class="wait" style="height:13.1%"></b><b class="success" style="height:62.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5095" data-tip="#5095 · success
+run 5 min 8 s · wait 1 min 9 s
+2026-10-29 09:33" aria-label="#5095 · success
+run 5 min 8 s · wait 1 min 9 s
+2026-10-29 09:33"><b class="wait" style="height:14.3%"></b><b class="success" style="height:64.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5101" data-tip="#5101 · success
+run 5 min 26 s · wait 40 s
+2026-10-30 09:16" aria-label="#5101 · success
+run 5 min 26 s · wait 40 s
+2026-10-30 09:16"><b class="wait" style="height:8.3%"></b><b class="success" style="height:68.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5107" data-tip="#5107 · failed
+run 3 min 49 s · wait 1 min 4 s
+2026-10-31 09:26" aria-label="#5107 · failed
+run 3 min 49 s · wait 1 min 4 s
+2026-10-31 09:26"><b class="wait" style="height:13.3%"></b><b class="failed" style="height:47.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5113" data-tip="#5113 · success
+run 5 min 14 s · wait 2 min 30 s
+2026-11-01 09:29" aria-label="#5113 · success
+run 5 min 14 s · wait 2 min 30 s
+2026-11-01 09:29"><b class="wait" style="height:31.2%"></b><b class="success" style="height:65.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5119" data-tip="#5119 · success
+run 5 min 11 s · wait 59 s
+2026-11-02 09:32" aria-label="#5119 · success
+run 5 min 11 s · wait 59 s
+2026-11-02 09:32"><b class="wait" style="height:12.4%"></b><b class="success" style="height:64.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5125" data-tip="#5125 · success
+run 4 min 52 s · wait 1 min 5 s
+2026-11-03 09:15" aria-label="#5125 · success
+run 4 min 52 s · wait 1 min 5 s
+2026-11-03 09:15"><b class="wait" style="height:13.5%"></b><b class="success" style="height:60.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5131" data-tip="#5131 · success
+run 4 min 57 s · wait 53 s
+2026-11-04 09:35" aria-label="#5131 · success
+run 4 min 57 s · wait 53 s
+2026-11-04 09:35"><b class="wait" style="height:11.1%"></b><b class="success" style="height:61.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5137" data-tip="#5137 · failed
+run 3 min 3 s · wait 1 min 6 s
+2026-11-05 09:48" aria-label="#5137 · failed
+run 3 min 3 s · wait 1 min 6 s
+2026-11-05 09:48"><b class="wait" style="height:13.9%"></b><b class="failed" style="height:38.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5138" data-tip="#5138 · success
+run 4 min 52 s · wait 46 s
+2026-11-05 09:52" aria-label="#5138 · success
+run 4 min 52 s · wait 46 s
+2026-11-05 09:52"><b class="wait" style="height:9.5%"></b><b class="success" style="height:60.8%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5144" data-tip="#5144 · success
+run 5 min 11 s · wait 2 min 30 s
+2026-11-06 09:08" aria-label="#5144 · success
+run 5 min 11 s · wait 2 min 30 s
+2026-11-06 09:08"><b class="wait" style="height:31.2%"></b><b class="success" style="height:64.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5150" data-tip="#5150 · success
+run 5 min 17 s · wait 49 s
+2026-11-07 09:18" aria-label="#5150 · success
+run 5 min 17 s · wait 49 s
+2026-11-07 09:18"><b class="wait" style="height:10.3%"></b><b class="success" style="height:66.0%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5156" data-tip="#5156 · success
+run 5 min 28 s · wait 47 s
+2026-11-08 09:51" aria-label="#5156 · success
+run 5 min 28 s · wait 47 s
+2026-11-08 09:51"><b class="wait" style="height:9.7%"></b><b class="success" style="height:68.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5162" data-tip="#5162 · failed
+run 3 min 17 s · wait 51 s
+2026-11-09 09:12" aria-label="#5162 · failed
+run 3 min 17 s · wait 51 s
+2026-11-09 09:12"><b class="wait" style="height:10.6%"></b><b class="failed" style="height:41.0%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5163" data-tip="#5163 · success
+run 5 min 18 s · wait 54 s
+2026-11-09 09:16" aria-label="#5163 · success
+run 5 min 18 s · wait 54 s
+2026-11-09 09:16"><b class="wait" style="height:11.2%"></b><b class="success" style="height:66.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5169" data-tip="#5169 · success
+run 5 min 1 s · wait 1 min 3 s
+2026-11-10 09:09" aria-label="#5169 · success
+run 5 min 1 s · wait 1 min 3 s
+2026-11-10 09:09"><b class="wait" style="height:13.2%"></b><b class="success" style="height:62.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5175" data-tip="#5175 · success
+run 5 min 22 s · wait 2 min 30 s
+2026-11-11 09:20" aria-label="#5175 · success
+run 5 min 22 s · wait 2 min 30 s
+2026-11-11 09:20"><b class="wait" style="height:31.2%"></b><b class="success" style="height:67.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5181" data-tip="#5181 · success
+run 5 min 12 s · wait 50 s
+2026-11-12 09:07" aria-label="#5181 · success
+run 5 min 12 s · wait 50 s
+2026-11-12 09:07"><b class="wait" style="height:10.5%"></b><b class="success" style="height:65.0%"></b></a></div></div><h3>Where the time went in run <a href="https://gitlab.example.com/example/shop/-/jobs/5181">#5181</a></h3><div class="steps"><div class="row"><span class="name" title="Script">Script</span><span class="track"><i class="success" style="left:0;width:100.0%"></i></span><span class="num">4 min 39 s</span></div><div class="row sub"><span class="name" title="$ npx playwright test">$ npx playwright test</span><span class="track"><i class="success" style="left:0;width:65.6%"></i></span><span class="num">3 min 3 s</span></div><div class="row sub"><span class="name" title="$ npm ci">$ npm ci</span><span class="track"><i class="success" style="left:0;width:18.0%"></i></span><span class="num">50 s</span></div><div class="row sub"><span class="name" title="$ npx playwright install --with-deps chromium">$ npx playwright install --with-deps chromium</span><span class="track"><i class="success" style="left:0;width:16.3%"></i></span><span class="num">45 s</span></div><div class="row"><span class="name" title="Get sources (git)">Get sources (git)</span><span class="track"><i class="success" style="left:0;width:3.2%"></i></span><span class="num">9 s</span></div><div class="row"><span class="name" title="Restore cache">Restore cache</span><span class="track"><i class="success" style="left:0;width:2.5%"></i></span><span class="num">7 s</span></div><div class="row"><span class="name" title="Prepare executor">Prepare executor</span><span class="track"><i class="success" style="left:0;width:2.2%"></i></span><span class="num">6 s</span></div><div class="row"><span class="name" title="Save cache">Save cache</span><span class="track"><i class="success" style="left:0;width:1.8%"></i></span><span class="num">5 s</span></div><div class="row"><span class="name" title="Upload artifacts">Upload artifacts</span><span class="track"><i class="success" style="left:0;width:1.1%"></i></span><span class="num">3 s</span></div><div class="row"><span class="name" title="Prepare environment">Prepare environment</span><span class="track"><i class="success" style="left:0;width:0.7%"></i></span><span class="num">2 s</span></div><div class="row"><span class="name" title="Cleanup">Cleanup</span><span class="track"><i class="success" style="left:0;width:0.4%"></i></span><span class="num">1 s</span></div></div></div></details><details class="job" id="job-2"><summary><span class="name">phpunit <small>test</small></span><span class="num">4 min 14 s</span><span class="num s">9 s</span><span class="num"><span class="up">+1 min 45 s (+42%)</span></span><span class="num s">—</span><span class="num s">30</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>8 min</span><span>4 min</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:52.9%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5003" data-tip="#5003 · success
+run 4 min 11 s · wait 6 s
+2026-10-14 09:21" aria-label="#5003 · success
+run 4 min 11 s · wait 6 s
+2026-10-14 09:21"><b class="wait" style="height:1.2%"></b><b class="success" style="height:52.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5009" data-tip="#5009 · success
+run 4 min 11 s · wait 12 s
+2026-10-15 09:04" aria-label="#5009 · success
+run 4 min 11 s · wait 12 s
+2026-10-15 09:04"><b class="wait" style="height:2.4%"></b><b class="success" style="height:52.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5015" data-tip="#5015 · success
+run 4 min 1 s · wait 9 s
+2026-10-16 09:08" aria-label="#5015 · success
+run 4 min 1 s · wait 9 s
+2026-10-16 09:08"><b class="wait" style="height:1.9%"></b><b class="success" style="height:50.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5021" data-tip="#5021 · success
+run 4 min 14 s · wait 11 s
+2026-10-17 09:50" aria-label="#5021 · success
+run 4 min 14 s · wait 11 s
+2026-10-17 09:50"><b class="wait" style="height:2.2%"></b><b class="success" style="height:53.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5027" data-tip="#5027 · success
+run 4 min 20 s · wait 7 s
+2026-10-18 09:19" aria-label="#5027 · success
+run 4 min 20 s · wait 7 s
+2026-10-18 09:19"><b class="wait" style="height:1.5%"></b><b class="success" style="height:54.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5034" data-tip="#5034 · success
+run 4 min 13 s · wait 8 s
+2026-10-19 09:32" aria-label="#5034 · success
+run 4 min 13 s · wait 8 s
+2026-10-19 09:32"><b class="wait" style="height:1.7%"></b><b class="success" style="height:52.8%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5040" data-tip="#5040 · success
+run 4 min 9 s · wait 9 s
+2026-10-20 09:25" aria-label="#5040 · success
+run 4 min 9 s · wait 9 s
+2026-10-20 09:25"><b class="wait" style="height:1.9%"></b><b class="success" style="height:51.8%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5046" data-tip="#5046 · success
+run 4 min 3 s · wait 11 s
+2026-10-21 09:11" aria-label="#5046 · success
+run 4 min 3 s · wait 11 s
+2026-10-21 09:11"><b class="wait" style="height:2.3%"></b><b class="success" style="height:50.7%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5052" data-tip="#5052 · success
+run 4 min · wait 7 s
+2026-10-22 09:15" aria-label="#5052 · success
+run 4 min · wait 7 s
+2026-10-22 09:15"><b class="wait" style="height:1.5%"></b><b class="success" style="height:50.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5058" data-tip="#5058 · success
+run 4 min 14 s · wait 12 s
+2026-10-23 09:40" aria-label="#5058 · success
+run 4 min 14 s · wait 12 s
+2026-10-23 09:40"><b class="wait" style="height:2.4%"></b><b class="success" style="height:52.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5064" data-tip="#5064 · success
+run 4 min · wait 6 s
+2026-10-24 09:26" aria-label="#5064 · success
+run 4 min · wait 6 s
+2026-10-24 09:26"><b class="wait" style="height:1.3%"></b><b class="success" style="height:50.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5070" data-tip="#5070 · canceled
+run 1 min 40 s · wait 7 s
+2026-10-25 09:02" aria-label="#5070 · canceled
+run 1 min 40 s · wait 7 s
+2026-10-25 09:02"><b class="wait" style="height:1.5%"></b><b class="other" style="height:20.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5075" data-tip="#5075 · success
+run 4 min 8 s · wait 12 s
+2026-10-26 09:23" aria-label="#5075 · success
+run 4 min 8 s · wait 12 s
+2026-10-26 09:23"><b class="wait" style="height:2.5%"></b><b class="success" style="height:51.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5081" data-tip="#5081 · success
+run 3 min 57 s · wait 9 s
+2026-10-27 09:34" aria-label="#5081 · success
+run 3 min 57 s · wait 9 s
+2026-10-27 09:34"><b class="wait" style="height:1.8%"></b><b class="success" style="height:49.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5088" data-tip="#5088 · success
+run 4 min 16 s · wait 9 s
+2026-10-28 09:50" aria-label="#5088 · success
+run 4 min 16 s · wait 9 s
+2026-10-28 09:50"><b class="wait" style="height:1.9%"></b><b class="success" style="height:53.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5094" data-tip="#5094 · success
+run 4 min 14 s · wait 7 s
+2026-10-29 09:32" aria-label="#5094 · success
+run 4 min 14 s · wait 7 s
+2026-10-29 09:32"><b class="wait" style="height:1.4%"></b><b class="success" style="height:52.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5100" data-tip="#5100 · success
+run 4 min 12 s · wait 12 s
+2026-10-30 09:15" aria-label="#5100 · success
+run 4 min 12 s · wait 12 s
+2026-10-30 09:15"><b class="wait" style="height:2.5%"></b><b class="success" style="height:52.5%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5106" data-tip="#5106 · success
+run 4 min 5 s · wait 11 s
+2026-10-31 09:25" aria-label="#5106 · success
+run 4 min 5 s · wait 11 s
+2026-10-31 09:25"><b class="wait" style="height:2.2%"></b><b class="success" style="height:51.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5112" data-tip="#5112 · success
+run 3 min 57 s · wait 12 s
+2026-11-01 09:26" aria-label="#5112 · success
+run 3 min 57 s · wait 12 s
+2026-11-01 09:26"><b class="wait" style="height:2.5%"></b><b class="success" style="height:49.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5118" data-tip="#5118 · success
+run 4 min 21 s · wait 5 s
+2026-11-02 09:31" aria-label="#5118 · success
+run 4 min 21 s · wait 5 s
+2026-11-02 09:31"><b class="wait" style="height:1.1%"></b><b class="success" style="height:54.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5124" data-tip="#5124 · success
+run 6 min · wait 7 s
+2026-11-03 09:14" aria-label="#5124 · success
+run 6 min · wait 7 s
+2026-11-03 09:14"><b class="wait" style="height:1.5%"></b><b class="success" style="height:74.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5130" data-tip="#5130 · success
+run 5 min 46 s · wait 9 s
+2026-11-04 09:34" aria-label="#5130 · success
+run 5 min 46 s · wait 9 s
+2026-11-04 09:34"><b class="wait" style="height:1.8%"></b><b class="success" style="height:72.0%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5136" data-tip="#5136 · success
+run 6 min 6 s · wait 8 s
+2026-11-05 09:47" aria-label="#5136 · success
+run 6 min 6 s · wait 8 s
+2026-11-05 09:47"><b class="wait" style="height:1.7%"></b><b class="success" style="height:76.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5143" data-tip="#5143 · success
+run 5 min 57 s · wait 10 s
+2026-11-06 09:05" aria-label="#5143 · success
+run 5 min 57 s · wait 10 s
+2026-11-06 09:05"><b class="wait" style="height:2.1%"></b><b class="success" style="height:74.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5149" data-tip="#5149 · success
+run 5 min 56 s · wait 8 s
+2026-11-07 09:17" aria-label="#5149 · success
+run 5 min 56 s · wait 8 s
+2026-11-07 09:17"><b class="wait" style="height:1.6%"></b><b class="success" style="height:74.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5155" data-tip="#5155 · success
+run 6 min 11 s · wait 11 s
+2026-11-08 09:50" aria-label="#5155 · success
+run 6 min 11 s · wait 11 s
+2026-11-08 09:50"><b class="wait" style="height:2.3%"></b><b class="success" style="height:77.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5161" data-tip="#5161 · success
+run 5 min 47 s · wait 7 s
+2026-11-09 09:11" aria-label="#5161 · success
+run 5 min 47 s · wait 7 s
+2026-11-09 09:11"><b class="wait" style="height:1.6%"></b><b class="success" style="height:72.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5168" data-tip="#5168 · success
+run 5 min 46 s · wait 7 s
+2026-11-10 09:08" aria-label="#5168 · success
+run 5 min 46 s · wait 7 s
+2026-11-10 09:08"><b class="wait" style="height:1.4%"></b><b class="success" style="height:72.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5174" data-tip="#5174 · success
+run 5 min 53 s · wait 7 s
+2026-11-11 09:17" aria-label="#5174 · success
+run 5 min 53 s · wait 7 s
+2026-11-11 09:17"><b class="wait" style="height:1.5%"></b><b class="success" style="height:73.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5180" data-tip="#5180 · success
+run 5 min 57 s · wait 11 s
+2026-11-12 09:06" aria-label="#5180 · success
+run 5 min 57 s · wait 11 s
+2026-11-12 09:06"><b class="wait" style="height:2.3%"></b><b class="success" style="height:74.4%"></b></a></div></div><h3>Where the time went in run <a href="https://gitlab.example.com/example/shop/-/jobs/5180">#5180</a></h3><div class="steps"><div class="row"><span class="name" title="Script">Script</span><span class="track"><i class="success" style="left:0;width:100.0%"></i></span><span class="num">5 min 24 s</span></div><div class="row sub"><span class="name" title="$ php vendor/bin/phpunit --testsuite integration">$ php vendor/bin/phpunit --testsuite integration</span><span class="track"><i class="success" style="left:0;width:57.7%"></i></span><span class="num">3 min 7 s</span></div><div class="row sub"><span class="name" title="$ php vendor/bin/phpunit --testsuite unit">$ php vendor/bin/phpunit --testsuite unit</span><span class="track"><i class="success" style="left:0;width:18.9%"></i></span><span class="num">1 min 1 s</span></div><div class="row sub"><span class="name" title="$ composer install --no-interaction --prefer-dist">$ composer install --no-interaction --prefer-dist</span><span class="track"><i class="success" style="left:0;width:12.1%"></i></span><span class="num">39 s</span></div><div class="row sub"><span class="name" title="$ php bin/console doctrine:migrations:migrate --no-interaction --env=test">$ php bin/console doctrine:migrations:migrate --no-interaction --env=test</span><span class="track"><i class="success" style="left:0;width:11.2%"></i></span><span class="num">36 s</span></div><div class="row"><span class="name" title="Get sources (git)">Get sources (git)</span><span class="track"><i class="success" style="left:0;width:2.8%"></i></span><span class="num">9 s</span></div><div class="row"><span class="name" title="Restore cache">Restore cache</span><span class="track"><i class="success" style="left:0;width:2.2%"></i></span><span class="num">7 s</span></div><div class="row"><span class="name" title="Prepare executor">Prepare executor</span><span class="track"><i class="success" style="left:0;width:1.9%"></i></span><span class="num">6 s</span></div><div class="row"><span class="name" title="Save cache">Save cache</span><span class="track"><i class="success" style="left:0;width:1.5%"></i></span><span class="num">5 s</span></div><div class="row"><span class="name" title="Upload artifacts">Upload artifacts</span><span class="track"><i class="success" style="left:0;width:0.9%"></i></span><span class="num">3 s</span></div><div class="row"><span class="name" title="Prepare environment">Prepare environment</span><span class="track"><i class="success" style="left:0;width:0.6%"></i></span><span class="num">2 s</span></div><div class="row"><span class="name" title="Cleanup">Cleanup</span><span class="track"><i class="success" style="left:0;width:0.3%"></i></span><span class="num">1 s</span></div></div></div></details><details class="job" id="job-3"><summary><span class="name">composer-install <small>build</small></span><span class="num">1 min 38 s</span><span class="num s">7 s</span><span class="num"><span class="quiet">+3 s (+3%)</span></span><span class="num s">—</span><span class="num s">30</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>2 min</span><span>1 min</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:81.3%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5001" data-tip="#5001 · success
+run 1 min 36 s · wait 9 s
+2026-10-14 09:20" aria-label="#5001 · success
+run 1 min 36 s · wait 9 s
+2026-10-14 09:20"><b class="wait" style="height:7.3%"></b><b class="success" style="height:79.6%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5007" data-tip="#5007 · success
+run 1 min 32 s · wait 8 s
+2026-10-15 09:03" aria-label="#5007 · success
+run 1 min 32 s · wait 8 s
+2026-10-15 09:03"><b class="wait" style="height:6.8%"></b><b class="success" style="height:76.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5013" data-tip="#5013 · success
+run 1 min 38 s · wait 7 s
+2026-10-16 09:07" aria-label="#5013 · success
+run 1 min 38 s · wait 7 s
+2026-10-16 09:07"><b class="wait" style="height:5.7%"></b><b class="success" style="height:81.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5019" data-tip="#5019 · success
+run 1 min 38 s · wait 6 s
+2026-10-17 09:49" aria-label="#5019 · success
+run 1 min 38 s · wait 6 s
+2026-10-17 09:49"><b class="wait" style="height:4.6%"></b><b class="success" style="height:81.8%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5025" data-tip="#5025 · success
+run 1 min 31 s · wait 7 s
+2026-10-18 09:18" aria-label="#5025 · success
+run 1 min 31 s · wait 7 s
+2026-10-18 09:18"><b class="wait" style="height:5.9%"></b><b class="success" style="height:75.9%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5032" data-tip="#5032 · success
+run 1 min 36 s · wait 7 s
+2026-10-19 09:31" aria-label="#5032 · success
+run 1 min 36 s · wait 7 s
+2026-10-19 09:31"><b class="wait" style="height:5.7%"></b><b class="success" style="height:80.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5038" data-tip="#5038 · success
+run 1 min 35 s · wait 8 s
+2026-10-20 09:24" aria-label="#5038 · success
+run 1 min 35 s · wait 8 s
+2026-10-20 09:24"><b class="wait" style="height:7.0%"></b><b class="success" style="height:79.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5044" data-tip="#5044 · success
+run 1 min 38 s · wait 6 s
+2026-10-21 09:10" aria-label="#5044 · success
+run 1 min 38 s · wait 6 s
+2026-10-21 09:10"><b class="wait" style="height:5.2%"></b><b class="success" style="height:81.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5050" data-tip="#5050 · success
+run 1 min 30 s · wait 7 s
+2026-10-22 09:14" aria-label="#5050 · success
+run 1 min 30 s · wait 7 s
+2026-10-22 09:14"><b class="wait" style="height:6.1%"></b><b class="success" style="height:75.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5056" data-tip="#5056 · success
+run 1 min 40 s · wait 7 s
+2026-10-23 09:39" aria-label="#5056 · success
+run 1 min 40 s · wait 7 s
+2026-10-23 09:39"><b class="wait" style="height:6.1%"></b><b class="success" style="height:83.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5062" data-tip="#5062 · success
+run 1 min 39 s · wait 5 s
+2026-10-24 09:25" aria-label="#5062 · success
+run 1 min 39 s · wait 5 s
+2026-10-24 09:25"><b class="wait" style="height:3.8%"></b><b class="success" style="height:82.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5068" data-tip="#5068 · success
+run 1 min 33 s · wait 4 s
+2026-10-25 09:01" aria-label="#5068 · success
+run 1 min 33 s · wait 4 s
+2026-10-25 09:01"><b class="wait" style="height:3.6%"></b><b class="success" style="height:77.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5073" data-tip="#5073 · success
+run 1 min 37 s · wait 7 s
+2026-10-26 09:22" aria-label="#5073 · success
+run 1 min 37 s · wait 7 s
+2026-10-26 09:22"><b class="wait" style="height:5.8%"></b><b class="success" style="height:80.5%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5079" data-tip="#5079 · success
+run 1 min 43 s · wait 4 s
+2026-10-27 09:33" aria-label="#5079 · success
+run 1 min 43 s · wait 4 s
+2026-10-27 09:33"><b class="wait" style="height:3.4%"></b><b class="success" style="height:86.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5086" data-tip="#5086 · success
+run 1 min 38 s · wait 5 s
+2026-10-28 09:49" aria-label="#5086 · success
+run 1 min 38 s · wait 5 s
+2026-10-28 09:49"><b class="wait" style="height:4.3%"></b><b class="success" style="height:81.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5092" data-tip="#5092 · success
+run 1 min 30 s · wait 6 s
+2026-10-29 09:31" aria-label="#5092 · success
+run 1 min 30 s · wait 6 s
+2026-10-29 09:31"><b class="wait" style="height:4.8%"></b><b class="success" style="height:75.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5098" data-tip="#5098 · success
+run 1 min 37 s · wait 5 s
+2026-10-30 09:14" aria-label="#5098 · success
+run 1 min 37 s · wait 5 s
+2026-10-30 09:14"><b class="wait" style="height:3.8%"></b><b class="success" style="height:80.5%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5104" data-tip="#5104 · success
+run 1 min 41 s · wait 8 s
+2026-10-31 09:24" aria-label="#5104 · success
+run 1 min 41 s · wait 8 s
+2026-10-31 09:24"><b class="wait" style="height:6.6%"></b><b class="success" style="height:83.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5110" data-tip="#5110 · success
+run 1 min 40 s · wait 6 s
+2026-11-01 09:25" aria-label="#5110 · success
+run 1 min 40 s · wait 6 s
+2026-11-01 09:25"><b class="wait" style="height:5.3%"></b><b class="success" style="height:83.7%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5116" data-tip="#5116 · success
+run 1 min 35 s · wait 7 s
+2026-11-02 09:30" aria-label="#5116 · success
+run 1 min 35 s · wait 7 s
+2026-11-02 09:30"><b class="wait" style="height:6.1%"></b><b class="success" style="height:79.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5122" data-tip="#5122 · success
+run 1 min 33 s · wait 4 s
+2026-11-03 09:13" aria-label="#5122 · success
+run 1 min 33 s · wait 4 s
+2026-11-03 09:13"><b class="wait" style="height:3.4%"></b><b class="success" style="height:77.5%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5128" data-tip="#5128 · success
+run 1 min 43 s · wait 6 s
+2026-11-04 09:33" aria-label="#5128 · success
+run 1 min 43 s · wait 6 s
+2026-11-04 09:33"><b class="wait" style="height:5.1%"></b><b class="success" style="height:85.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5134" data-tip="#5134 · success
+run 1 min 31 s · wait 5 s
+2026-11-05 09:46" aria-label="#5134 · success
+run 1 min 31 s · wait 5 s
+2026-11-05 09:46"><b class="wait" style="height:3.8%"></b><b class="success" style="height:75.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5141" data-tip="#5141 · success
+run 1 min 39 s · wait 6 s
+2026-11-06 09:04" aria-label="#5141 · success
+run 1 min 39 s · wait 6 s
+2026-11-06 09:04"><b class="wait" style="height:5.2%"></b><b class="success" style="height:82.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5147" data-tip="#5147 · success
+run 1 min 42 s · wait 9 s
+2026-11-07 09:16" aria-label="#5147 · success
+run 1 min 42 s · wait 9 s
+2026-11-07 09:16"><b class="wait" style="height:7.2%"></b><b class="success" style="height:85.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5153" data-tip="#5153 · success
+run 1 min 40 s · wait 5 s
+2026-11-08 09:49" aria-label="#5153 · success
+run 1 min 40 s · wait 5 s
+2026-11-08 09:49"><b class="wait" style="height:4.0%"></b><b class="success" style="height:83.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5159" data-tip="#5159 · success
+run 1 min 44 s · wait 8 s
+2026-11-09 09:10" aria-label="#5159 · success
+run 1 min 44 s · wait 8 s
+2026-11-09 09:10"><b class="wait" style="height:6.3%"></b><b class="success" style="height:86.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5166" data-tip="#5166 · success
+run 1 min 41 s · wait 9 s
+2026-11-10 09:07" aria-label="#5166 · success
+run 1 min 41 s · wait 9 s
+2026-11-10 09:07"><b class="wait" style="height:7.4%"></b><b class="success" style="height:84.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5172" data-tip="#5172 · success
+run 1 min 38 s · wait 6 s
+2026-11-11 09:16" aria-label="#5172 · success
+run 1 min 38 s · wait 6 s
+2026-11-11 09:16"><b class="wait" style="height:5.0%"></b><b class="success" style="height:81.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5178" data-tip="#5178 · success
+run 1 min 31 s · wait 8 s
+2026-11-12 09:05" aria-label="#5178 · success
+run 1 min 31 s · wait 8 s
+2026-11-12 09:05"><b class="wait" style="height:6.7%"></b><b class="success" style="height:76.0%"></b></a></div></div><h3>Where the time went in run <a href="https://gitlab.example.com/example/shop/-/jobs/5178">#5178</a></h3><div class="steps"><div class="row"><span class="name" title="Script">Script</span><span class="track"><i class="success" style="left:0;width:100.0%"></i></span><span class="num">58 s</span></div><div class="row sub"><span class="name" title="$ composer install --no-interaction --prefer-dist">$ composer install --no-interaction --prefer-dist</span><span class="track"><i class="success" style="left:0;width:93.1%"></i></span><span class="num">54 s</span></div><div class="row sub"><span class="name" title="$ composer dump-autoload --optimize">$ composer dump-autoload --optimize</span><span class="track"><i class="success" style="left:0;width:6.9%"></i></span><span class="num">4 s</span></div><div class="row"><span class="name" title="Get sources (git)">Get sources (git)</span><span class="track"><i class="success" style="left:0;width:15.5%"></i></span><span class="num">9 s</span></div><div class="row"><span class="name" title="Restore cache">Restore cache</span><span class="track"><i class="success" style="left:0;width:12.1%"></i></span><span class="num">7 s</span></div><div class="row"><span class="name" title="Prepare executor">Prepare executor</span><span class="track"><i class="success" style="left:0;width:10.3%"></i></span><span class="num">6 s</span></div><div class="row"><span class="name" title="Save cache">Save cache</span><span class="track"><i class="success" style="left:0;width:8.6%"></i></span><span class="num">5 s</span></div><div class="row"><span class="name" title="Upload artifacts">Upload artifacts</span><span class="track"><i class="success" style="left:0;width:5.2%"></i></span><span class="num">3 s</span></div><div class="row"><span class="name" title="Prepare environment">Prepare environment</span><span class="track"><i class="success" style="left:0;width:3.4%"></i></span><span class="num">2 s</span></div><div class="row"><span class="name" title="Cleanup">Cleanup</span><span class="track"><i class="success" style="left:0;width:1.7%"></i></span><span class="num">1 s</span></div></div></div></details><details class="job" id="job-4"><summary><span class="name">phpstan <small>test</small></span><span class="num">1 min 9 s</span><span class="num s">8 s</span><span class="num"><span class="quiet">+2 s (+3%)</span></span><span class="num s">—</span><span class="num s">30</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>2 min</span><span>1 min</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:57.5%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5002" data-tip="#5002 · success
+run 1 min 15 s · wait 5 s
+2026-10-14 09:21" aria-label="#5002 · success
+run 1 min 15 s · wait 5 s
+2026-10-14 09:21"><b class="wait" style="height:4.4%"></b><b class="success" style="height:62.6%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5008" data-tip="#5008 · success
+run 1 min 12 s · wait 6 s
+2026-10-15 09:04" aria-label="#5008 · success
+run 1 min 12 s · wait 6 s
+2026-10-15 09:04"><b class="wait" style="height:5.1%"></b><b class="success" style="height:60.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5014" data-tip="#5014 · success
+run 1 min 4 s · wait 8 s
+2026-10-16 09:08" aria-label="#5014 · success
+run 1 min 4 s · wait 8 s
+2026-10-16 09:08"><b class="wait" style="height:7.0%"></b><b class="success" style="height:53.0%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5020" data-tip="#5020 · success
+run 1 min 7 s · wait 7 s
+2026-10-17 09:50" aria-label="#5020 · success
+run 1 min 7 s · wait 7 s
+2026-10-17 09:50"><b class="wait" style="height:6.1%"></b><b class="success" style="height:55.7%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5026" data-tip="#5026 · success
+run 1 min 5 s · wait 8 s
+2026-10-18 09:19" aria-label="#5026 · success
+run 1 min 5 s · wait 8 s
+2026-10-18 09:19"><b class="wait" style="height:6.3%"></b><b class="success" style="height:53.9%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5033" data-tip="#5033 · success
+run 1 min 17 s · wait 9 s
+2026-10-19 09:32" aria-label="#5033 · success
+run 1 min 17 s · wait 9 s
+2026-10-19 09:32"><b class="wait" style="height:7.7%"></b><b class="success" style="height:64.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5039" data-tip="#5039 · success
+run 1 min 8 s · wait 10 s
+2026-10-20 09:25" aria-label="#5039 · success
+run 1 min 8 s · wait 10 s
+2026-10-20 09:25"><b class="wait" style="height:8.1%"></b><b class="success" style="height:56.4%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5045" data-tip="#5045 · success
+run 1 min 15 s · wait 9 s
+2026-10-21 09:11" aria-label="#5045 · success
+run 1 min 15 s · wait 9 s
+2026-10-21 09:11"><b class="wait" style="height:7.8%"></b><b class="success" style="height:62.6%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5051" data-tip="#5051 · success
+run 1 min 5 s · wait 9 s
+2026-10-22 09:15" aria-label="#5051 · success
+run 1 min 5 s · wait 9 s
+2026-10-22 09:15"><b class="wait" style="height:7.6%"></b><b class="success" style="height:54.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5057" data-tip="#5057 · success
+run 1 min 16 s · wait 7 s
+2026-10-23 09:40" aria-label="#5057 · success
+run 1 min 16 s · wait 7 s
+2026-10-23 09:40"><b class="wait" style="height:6.1%"></b><b class="success" style="height:63.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5063" data-tip="#5063 · success
+run 1 min 3 s · wait 5 s
+2026-10-24 09:26" aria-label="#5063 · success
+run 1 min 3 s · wait 5 s
+2026-10-24 09:26"><b class="wait" style="height:4.4%"></b><b class="success" style="height:52.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5069" data-tip="#5069 · success
+run 1 min 12 s · wait 7 s
+2026-10-25 09:02" aria-label="#5069 · success
+run 1 min 12 s · wait 7 s
+2026-10-25 09:02"><b class="wait" style="height:5.7%"></b><b class="success" style="height:60.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5074" data-tip="#5074 · success
+run 1 min 10 s · wait 6 s
+2026-10-26 09:23" aria-label="#5074 · success
+run 1 min 10 s · wait 6 s
+2026-10-26 09:23"><b class="wait" style="height:4.6%"></b><b class="success" style="height:58.2%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5080" data-tip="#5080 · success
+run 1 min 4 s · wait 8 s
+2026-10-27 09:34" aria-label="#5080 · success
+run 1 min 4 s · wait 8 s
+2026-10-27 09:34"><b class="wait" style="height:6.4%"></b><b class="success" style="height:53.6%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5087" data-tip="#5087 · success
+run 1 min 12 s · wait 8 s
+2026-10-28 09:50" aria-label="#5087 · success
+run 1 min 12 s · wait 8 s
+2026-10-28 09:50"><b class="wait" style="height:6.3%"></b><b class="success" style="height:60.2%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5093" data-tip="#5093 · success
+run 1 min 6 s · wait 5 s
+2026-10-29 09:32" aria-label="#5093 · success
+run 1 min 6 s · wait 5 s
+2026-10-29 09:32"><b class="wait" style="height:4.3%"></b><b class="success" style="height:55.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5099" data-tip="#5099 · success
+run 1 min 10 s · wait 7 s
+2026-10-30 09:15" aria-label="#5099 · success
+run 1 min 10 s · wait 7 s
+2026-10-30 09:15"><b class="wait" style="height:5.6%"></b><b class="success" style="height:58.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5105" data-tip="#5105 · success
+run 1 min 5 s · wait 7 s
+2026-10-31 09:25" aria-label="#5105 · success
+run 1 min 5 s · wait 7 s
+2026-10-31 09:25"><b class="wait" style="height:6.2%"></b><b class="success" style="height:54.0%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5111" data-tip="#5111 · success
+run 1 min 5 s · wait 5 s
+2026-11-01 09:26" aria-label="#5111 · success
+run 1 min 5 s · wait 5 s
+2026-11-01 09:26"><b class="wait" style="height:4.5%"></b><b class="success" style="height:53.8%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5117" data-tip="#5117 · success
+run 1 min 4 s · wait 8 s
+2026-11-02 09:31" aria-label="#5117 · success
+run 1 min 4 s · wait 8 s
+2026-11-02 09:31"><b class="wait" style="height:6.5%"></b><b class="success" style="height:53.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5123" data-tip="#5123 · success
+run 1 min 14 s · wait 8 s
+2026-11-03 09:14" aria-label="#5123 · success
+run 1 min 14 s · wait 8 s
+2026-11-03 09:14"><b class="wait" style="height:6.3%"></b><b class="success" style="height:61.8%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5129" data-tip="#5129 · success
+run 1 min 11 s · wait 8 s
+2026-11-04 09:34" aria-label="#5129 · success
+run 1 min 11 s · wait 8 s
+2026-11-04 09:34"><b class="wait" style="height:6.3%"></b><b class="success" style="height:58.8%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5135" data-tip="#5135 · success
+run 1 min 10 s · wait 8 s
+2026-11-05 09:47" aria-label="#5135 · success
+run 1 min 10 s · wait 8 s
+2026-11-05 09:47"><b class="wait" style="height:7.0%"></b><b class="success" style="height:58.7%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5142" data-tip="#5142 · success
+run 1 min 10 s · wait 8 s
+2026-11-06 09:05" aria-label="#5142 · success
+run 1 min 10 s · wait 8 s
+2026-11-06 09:05"><b class="wait" style="height:6.3%"></b><b class="success" style="height:58.5%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5148" data-tip="#5148 · success
+run 1 min 9 s · wait 6 s
+2026-11-07 09:17" aria-label="#5148 · success
+run 1 min 9 s · wait 6 s
+2026-11-07 09:17"><b class="wait" style="height:5.0%"></b><b class="success" style="height:57.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5154" data-tip="#5154 · success
+run 1 min 4 s · wait 8 s
+2026-11-08 09:50" aria-label="#5154 · success
+run 1 min 4 s · wait 8 s
+2026-11-08 09:50"><b class="wait" style="height:6.9%"></b><b class="success" style="height:53.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5160" data-tip="#5160 · success
+run 1 min 9 s · wait 7 s
+2026-11-09 09:11" aria-label="#5160 · success
+run 1 min 9 s · wait 7 s
+2026-11-09 09:11"><b class="wait" style="height:5.8%"></b><b class="success" style="height:57.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5167" data-tip="#5167 · success
+run 1 min 4 s · wait 10 s
+2026-11-10 09:08" aria-label="#5167 · success
+run 1 min 4 s · wait 10 s
+2026-11-10 09:08"><b class="wait" style="height:8.2%"></b><b class="success" style="height:53.1%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5173" data-tip="#5173 · success
+run 1 min 10 s · wait 8 s
+2026-11-11 09:17" aria-label="#5173 · success
+run 1 min 10 s · wait 8 s
+2026-11-11 09:17"><b class="wait" style="height:6.3%"></b><b class="success" style="height:58.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5179" data-tip="#5179 · success
+run 1 min 3 s · wait 9 s
+2026-11-12 09:06" aria-label="#5179 · success
+run 1 min 3 s · wait 9 s
+2026-11-12 09:06"><b class="wait" style="height:7.7%"></b><b class="success" style="height:52.6%"></b></a></div></div><h3>Where the time went in run <a href="https://gitlab.example.com/example/shop/-/jobs/5179">#5179</a></h3><div class="steps"><div class="row"><span class="name" title="Script">Script</span><span class="track"><i class="success" style="left:0;width:100.0%"></i></span><span class="num">30 s</span></div><div class="row sub"><span class="name" title="$ php vendor/bin/phpstan analyse --memory-limit=1G">$ php vendor/bin/phpstan analyse --memory-limit=1G</span><span class="track"><i class="success" style="left:0;width:98.3%"></i></span><span class="num">30 s</span></div><div class="row"><span class="name" title="Get sources (git)">Get sources (git)</span><span class="track"><i class="success" style="left:0;width:30.0%"></i></span><span class="num">9 s</span></div><div class="row"><span class="name" title="Restore cache">Restore cache</span><span class="track"><i class="success" style="left:0;width:23.3%"></i></span><span class="num">7 s</span></div><div class="row"><span class="name" title="Prepare executor">Prepare executor</span><span class="track"><i class="success" style="left:0;width:20.0%"></i></span><span class="num">6 s</span></div><div class="row"><span class="name" title="Save cache">Save cache</span><span class="track"><i class="success" style="left:0;width:16.7%"></i></span><span class="num">5 s</span></div><div class="row"><span class="name" title="Upload artifacts">Upload artifacts</span><span class="track"><i class="success" style="left:0;width:10.0%"></i></span><span class="num">3 s</span></div><div class="row"><span class="name" title="Prepare environment">Prepare environment</span><span class="track"><i class="success" style="left:0;width:6.7%"></i></span><span class="num">2 s</span></div><div class="row"><span class="name" title="Cleanup">Cleanup</span><span class="track"><i class="success" style="left:0;width:3.3%"></i></span><span class="num">1 s</span></div></div></div></details><details class="job" id="job-5"><summary><span class="name">deploy-staging <small>deploy</small></span><span class="num">40 s</span><span class="num s">6 s</span><span class="num"><span class="quiet">+5 s (+12%)</span></span><span class="num s">—</span><span class="num s">27</span></summary><div class="body"><h3>Runs, oldest to newest</h3><div class="chart"><div class="axis"><span>1 min</span><span>30 s</span><span>0</span></div><div class="plot" style="height:90px"><i style="bottom:50%"></i><i style="bottom:100%"></i><i class="median" style="bottom:67.1%"></i><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5006" data-tip="#5006 · success
+run 41 s · wait 5 s
+2026-10-14 09:34" aria-label="#5006 · success
+run 41 s · wait 5 s
+2026-10-14 09:34"><b class="wait" style="height:8.3%"></b><b class="success" style="height:67.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5012" data-tip="#5012 · success
+run 36 s · wait 5 s
+2026-10-15 09:18" aria-label="#5012 · success
+run 36 s · wait 5 s
+2026-10-15 09:18"><b class="wait" style="height:8.6%"></b><b class="success" style="height:60.7%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5018" data-tip="#5018 · success
+run 40 s · wait 6 s
+2026-10-16 09:21" aria-label="#5018 · success
+run 40 s · wait 6 s
+2026-10-16 09:21"><b class="wait" style="height:10.0%"></b><b class="success" style="height:67.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5024" data-tip="#5024 · success
+run 42 s · wait 8 s
+2026-10-17 10:05" aria-label="#5024 · success
+run 42 s · wait 8 s
+2026-10-17 10:05"><b class="wait" style="height:12.5%"></b><b class="success" style="height:70.5%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5031" data-tip="#5031 · success
+run 39 s · wait 5 s
+2026-10-18 09:37" aria-label="#5031 · success
+run 39 s · wait 5 s
+2026-10-18 09:37"><b class="wait" style="height:8.9%"></b><b class="success" style="height:64.2%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5037" data-tip="#5037 · success
+run 38 s · wait 7 s
+2026-10-19 09:46" aria-label="#5037 · success
+run 38 s · wait 7 s
+2026-10-19 09:46"><b class="wait" style="height:12.1%"></b><b class="success" style="height:63.1%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5043" data-tip="#5043 · success
+run 40 s · wait 8 s
+2026-10-20 09:38" aria-label="#5043 · success
+run 40 s · wait 8 s
+2026-10-20 09:38"><b class="wait" style="height:12.8%"></b><b class="success" style="height:66.6%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5049" data-tip="#5049 · success
+run 37 s · wait 5 s
+2026-10-21 09:24" aria-label="#5049 · success
+run 37 s · wait 5 s
+2026-10-21 09:24"><b class="wait" style="height:7.7%"></b><b class="success" style="height:61.3%"></b></a><a class="bar l" href="https://gitlab.example.com/example/shop/-/jobs/5055" data-tip="#5055 · success
+run 44 s · wait 5 s
+2026-10-22 09:30" aria-label="#5055 · success
+run 44 s · wait 5 s
+2026-10-22 09:30"><b class="wait" style="height:7.5%"></b><b class="success" style="height:72.7%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5067" data-tip="#5067 · success
+run 39 s · wait 4 s
+2026-10-24 09:39" aria-label="#5067 · success
+run 39 s · wait 4 s
+2026-10-24 09:39"><b class="wait" style="height:7.3%"></b><b class="success" style="height:64.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5078" data-tip="#5078 · success
+run 42 s · wait 6 s
+2026-10-26 09:36" aria-label="#5078 · success
+run 42 s · wait 6 s
+2026-10-26 09:36"><b class="wait" style="height:9.9%"></b><b class="success" style="height:69.9%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5085" data-tip="#5085 · success
+run 37 s · wait 5 s
+2026-10-27 09:54" aria-label="#5085 · success
+run 37 s · wait 5 s
+2026-10-27 09:54"><b class="wait" style="height:9.1%"></b><b class="success" style="height:61.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5091" data-tip="#5091 · success
+run 37 s · wait 7 s
+2026-10-28 10:03" aria-label="#5091 · success
+run 37 s · wait 7 s
+2026-10-28 10:03"><b class="wait" style="height:12.0%"></b><b class="success" style="height:61.7%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5097" data-tip="#5097 · success
+run 39 s · wait 8 s
+2026-10-29 09:46" aria-label="#5097 · success
+run 39 s · wait 8 s
+2026-10-29 09:46"><b class="wait" style="height:13.0%"></b><b class="success" style="height:64.4%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5103" data-tip="#5103 · success
+run 36 s · wait 7 s
+2026-10-30 09:28" aria-label="#5103 · success
+run 36 s · wait 7 s
+2026-10-30 09:28"><b class="wait" style="height:12.2%"></b><b class="success" style="height:60.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5115" data-tip="#5115 · success
+run 41 s · wait 6 s
+2026-11-01 09:41" aria-label="#5115 · success
+run 41 s · wait 6 s
+2026-11-01 09:41"><b class="wait" style="height:10.7%"></b><b class="success" style="height:68.3%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5121" data-tip="#5121 · success
+run 43 s · wait 7 s
+2026-11-02 09:44" aria-label="#5121 · success
+run 43 s · wait 7 s
+2026-11-02 09:44"><b class="wait" style="height:12.5%"></b><b class="success" style="height:72.1%"></b></a><a class="bar" href="https://gitlab.example.com/example/shop/-/jobs/5127" data-tip="#5127 · success
+run 43 s · wait 7 s
+2026-11-03 09:27" aria-label="#5127 · success
+run 43 s · wait 7 s
+2026-11-03 09:27"><b class="wait" style="height:11.1%"></b><b class="success" style="height:71.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5133" data-tip="#5133 · success
+run 40 s · wait 5 s
+2026-11-04 09:47" aria-label="#5133 · success
+run 40 s · wait 5 s
+2026-11-04 09:47"><b class="wait" style="height:7.8%"></b><b class="success" style="height:66.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5140" data-tip="#5140 · success
+run 44 s · wait 4 s
+2026-11-05 10:04" aria-label="#5140 · success
+run 44 s · wait 4 s
+2026-11-05 10:04"><b class="wait" style="height:6.9%"></b><b class="success" style="height:73.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5146" data-tip="#5146 · success
+run 44 s · wait 7 s
+2026-11-06 09:20" aria-label="#5146 · success
+run 44 s · wait 7 s
+2026-11-06 09:20"><b class="wait" style="height:11.3%"></b><b class="success" style="height:72.9%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5152" data-tip="#5152 · success
+run 36 s · wait 5 s
+2026-11-07 09:30" aria-label="#5152 · success
+run 36 s · wait 5 s
+2026-11-07 09:30"><b class="wait" style="height:8.7%"></b><b class="success" style="height:60.4%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5158" data-tip="#5158 · success
+run 43 s · wait 8 s
+2026-11-08 10:04" aria-label="#5158 · success
+run 43 s · wait 8 s
+2026-11-08 10:04"><b class="wait" style="height:13.3%"></b><b class="success" style="height:72.2%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5165" data-tip="#5165 · success
+run 45 s · wait 5 s
+2026-11-09 09:29" aria-label="#5165 · success
+run 45 s · wait 5 s
+2026-11-09 09:29"><b class="wait" style="height:8.6%"></b><b class="success" style="height:74.3%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5171" data-tip="#5171 · success
+run 43 s · wait 8 s
+2026-11-10 09:21" aria-label="#5171 · success
+run 43 s · wait 8 s
+2026-11-10 09:21"><b class="wait" style="height:12.7%"></b><b class="success" style="height:72.0%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5177" data-tip="#5177 · success
+run 35 s · wait 5 s
+2026-11-11 09:32" aria-label="#5177 · success
+run 35 s · wait 5 s
+2026-11-11 09:32"><b class="wait" style="height:8.5%"></b><b class="success" style="height:58.6%"></b></a><a class="bar r" href="https://gitlab.example.com/example/shop/-/jobs/5183" data-tip="#5183 · success
+run 40 s · wait 5 s
+2026-11-12 09:19" aria-label="#5183 · success
+run 40 s · wait 5 s
+2026-11-12 09:19"><b class="wait" style="height:7.5%"></b><b class="success" style="height:67.1%"></b></a></div></div><p class="note">The log of this job was not read. Raise --logs to include it.</p></div></details></div><p class="note">Sorted by run time. Open a job to see its runs and the steps from its log.</p>
+<h2>How this is counted</h2><ul class="how"><li>Pipeline run time is the time when at least one job was running. Retries count; runner waits and pauses before manual jobs do not.</li><li>Medians use successful runs only. Failed runs are drawn but do not move the median.</li><li>Change compares the median of the newest successful runs with the earlier ones. It is marked only when it is above 20% and 30 s.</li><li>Steps come from the log of one run, linked next to them. They are an example, not an average.</li></ul></main></body></html>
