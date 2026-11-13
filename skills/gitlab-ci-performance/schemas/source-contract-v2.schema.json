@@ -1,5 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.gitlab-ci-performance.invalid/v3.0/jobs.schema.json",
-  "$ref": "https://schemas.gitlab-ci-performance.invalid/v3.0/common.schema.json#/$defs/snapshot"
-}

@@ -1,255 +1,267 @@
-import copy
-import importlib.util
+"""Tests for skills/gitlab-ci-performance. Standard library only:
+
+    python3 -m unittest tests.test_ci_report -v
+"""
+import io
 import json
-import re
-import subprocess
 import sys
-from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from contextlib import redirect_stdout
+from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("ci_report", ROOT / "skills/gitlab-ci-performance/scripts/ci_report.py")
-ci = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(ci)
+sys.path.insert(0, str(ROOT / 'skills/gitlab-ci-performance/scripts'))
+import ci_report  # noqa: E402
+
+DEMO = ROOT / 'examples/data.json'
+
+LOG = (
+    b'2026-10-14T09:00:00.000000Z 00O \x1b[0Ksection_start:1791968400:get_sources\r\x1b[0K\x1b[36;1mGetting source\x1b[0;m\n'
+    b'2026-10-14T09:00:09.000000Z 00O \x1b[0Ksection_end:1791968409:get_sources\r\x1b[0K'
+    b'\x1b[0Ksection_start:1791968409:step_script\r\x1b[0K\x1b[36;1mExecuting "step_script"\x1b[0;m\n'
+    b'2026-10-14T09:00:09.500000Z 00O \x1b[32;1m$ composer install\x1b[0;m\n'
+    b'2026-10-14T09:00:50.500000Z 00O \x1b[32;1m$ docker buildx build .\x1b[0;m\n'
+    b'2026-10-14T09:00:51.000000Z 00O #1 [internal] load build definition\n'
+    b'2026-10-14T09:00:51.100000Z 00O #1 DONE 0.1s\n'
+    b'2026-10-14T09:00:51.200000Z 00O #2 [1/3] FROM docker.io/library/php:8.3\n'
+    b'2026-10-14T09:00:51.300000Z 00O #2 CACHED\n'
+    b'2026-10-14T09:00:51.400000Z 00O #3 [2/3] RUN composer install --no-dev\n'
+    b'2026-10-14T09:00:52.000000Z 00O #3 0.412 Installing dependencies\n'
+    b'2026-10-14T09:02:03.000000Z 00O #3 DONE 71.9s\n'
+    b'2026-10-14T09:02:04.000000Z 00O \x1b[32;1m$ echo done\x1b[0;m\n'
+    b'2026-10-14T09:02:10.000000Z 00O \x1b[0Ksection_end:1791968530:step_script\r\x1b[0K\n'
+)
 
 
-def sample(durations=(100, 100, 100, 150), queues=(5, 5, 5, 50)):
-    project = {"id": 42, "path": "example/service", "host": "gitlab.example.com",
-               "web_url": "https://gitlab.example.com/example/service", "default_branch": "main"}
-    result = {"schema_version": "1.0.0", "kind": "jobs", "collection_started_at": "2026-10-01T00:00:00Z",
-              "collected_at": "2026-10-04T00:00:00Z", "timezone": "UTC", "project": project,
-              "source": {"transport": "glab", "glab_version": "fixture", "gitlab_version": "fixture",
-                         "anchor_max_job_id": len(durations) or None, "pages": 1, "complete_available_history": True,
-                         "limitations": []}, "jobs": [], "pipelines": []}
-    for i, (duration, queue) in enumerate(zip(durations, queues), 1):
-        result["pipelines"].append({"id": i, "ref": "main", "sha": "abc", "status": "success", "source": "push",
-                                     "created_at": f"2026-10-01T0{i}:00:00Z", "started_at": f"2026-10-01T0{i}:00:01Z",
-                                     "finished_at": f"2026-10-01T0{i}:05:00Z", "duration_seconds": duration,
-                                     "queued_seconds": queue, "web_url": f"https://gitlab.example.com/pipelines/{i}"})
-        result["jobs"].append({"id": i, "pipeline_id": i, "name": "build", "stage": "test", "ref": "main",
-                               "status": "success", "allow_failure": False, "created_at": f"2026-10-01T0{i}:00:00Z",
-                               "started_at": f"2026-10-01T0{i}:01:00Z", "finished_at": f"2026-10-01T0{i}:05:00Z",
-                               "duration_seconds": duration, "queued_seconds": queue, "failure_reason": None,
-                               "runner": None, "web_url": f"https://gitlab.example.com/jobs/{i}"})
-    return result
+def job(number, name, status='success', run=60, wait=5, start='2026-10-14T09:00:00Z', stage='test'):
+    began = ci_report.ts(start)
+    stamp = ci_report.datetime.fromtimestamp
+    utc = ci_report.timezone.utc
+    return {'id': number, 'name': name, 'stage': stage, 'status': status, 'duration': run,
+            'queued_duration': wait, 'web_url': f'https://gitlab.example.com/x/-/jobs/{number}',
+            'started_at': stamp(began, utc).isoformat(), 'finished_at': stamp(began + run, utc).isoformat()}
 
 
-class MetricsTests(unittest.TestCase):
-    def test_percentiles_interpolate_and_nulls_are_not_zero(self):
-        m = ci.metric([10, None, 20, 30, 40])
-        self.assertEqual((m["known"], m["missing"], m["sum_seconds"]), (4, 1, 100))
-        self.assertEqual(m["p50_seconds"], 25)
-        self.assertEqual(m["p95_seconds"], 38.5)
-        self.assertIsNone(ci.metric([None])["sum_seconds"])
-
-    def test_queue_and_execution_regressions_are_separate(self):
-        snapshot = sample(durations=(100, 100, 100, 100))
-        g = ci.build_report(snapshot, windows=(1,))["views"][0]["groups"][0]
-        self.assertEqual(g["drivers"], ["queue"])
-        self.assertEqual(g["execution_change"]["status"], "stable")
-
-    def test_both_thresholds_are_required(self):
-        self.assertEqual(ci.compare(ci.metric([121]), ci.metric([100]*3), ci.POLICY)["status"], "stable")
-        self.assertEqual(ci.compare(ci.metric([1150]), ci.metric([1000]*3), ci.POLICY)["status"], "stable")
-        self.assertEqual(ci.compare(ci.metric([150]), ci.metric([100]*3), ci.POLICY)["status"], "regressed")
-
-    def test_zero_threshold_does_not_flag_unchanged_time(self):
-        policy = dict(ci.POLICY, absolute_growth_seconds=0, relative_growth_percent=0)
-        self.assertEqual(ci.compare(ci.metric([100]), ci.metric([100]*3), policy)["status"], "stable")
-
-    def test_sparse_baseline_and_zero_are_explicit(self):
-        self.assertEqual(ci.compare(ci.metric([500]), ci.metric([100]), ci.POLICY)["status"], "insufficient_data")
-        c = ci.compare(ci.metric([40]), ci.metric([0]*3), ci.POLICY)
-        self.assertEqual(c["status"], "regressed")
-        self.assertIsNone(c["delta_percent"])
-
-    def test_null_measurements_do_not_mean_missing_job(self):
-        snapshot = sample(durations=(100, 100, 100, None))
-        g = ci.build_report(snapshot, windows=(1,))["views"][0]["groups"][0]
-        self.assertEqual(g["execution_change"]["status"], "insufficient_data")
-        self.assertEqual(g["current"]["execution"]["missing"], 1)
-
-    def test_failed_attempts_and_reruns_are_preserved(self):
-        s = sample()
-        retry = copy.deepcopy(s["jobs"][-1]);retry["id"] = 5;retry["status"] = "failed";retry["duration_seconds"] = 999
-        s["jobs"].append(retry)
-        g = ci.build_report(s, windows=(1,))["views"][0]["groups"][0]
-        self.assertEqual(g["current"]["rerun_attempts"], 1)
-        self.assertEqual(g["current"]["status_counts"], {"success": 1, "failed": 1})
-        self.assertEqual(g["current"]["execution"]["p50_seconds"], 150)
-
-    def test_failed_pipeline_is_latest_but_not_timing_cohort(self):
-        s = sample();s["pipelines"][-1]["status"] = "failed"
-        v = ci.build_report(s, windows=(1,))["views"][0]
-        self.assertEqual(v["latest_pipeline"]["id"], 4)
-        self.assertEqual(v["current_period"]["pipeline_ids"], [3])
-
-    def test_ref_and_stage_do_not_mix(self):
-        s = sample();s["pipelines"][-1]["ref"] = "dev";s["jobs"][-1]["ref"] = "dev"
-        report = ci.build_report(s, windows=(1,))
-        for v in report["views"]:
-            self.assertTrue(all(g["ref"] == v["ref"] for g in v["groups"]))
-        s["jobs"][-2]["stage"] = "deploy"
-        self.assertEqual(len(ci.build_report(s, windows=(10,))["views"][1]["groups"]), 2)
-
-    def test_snapshot_overlap_prevents_regression(self):
-        s = sample();v = ci.build_report(s, baseline=s, windows=(1,))["views"][0]
-        self.assertEqual(v["overlap_pipeline_ids"], [4])
-        self.assertEqual(v["regression_count"], 0)
-        self.assertEqual(v["groups"][0]["queue_change"]["status"], "overlap")
-
-    def test_different_project_and_newer_baseline_are_rejected(self):
-        s = sample();b = copy.deepcopy(s);b["project"]["id"] = 99
-        with self.assertRaisesRegex(ValueError, "different host/project"):ci.build_report(s, b)
-        b = copy.deepcopy(s);b["collected_at"] = "2026-10-05T00:00:00Z"
-        with self.assertRaisesRegex(ValueError, "newer"):ci.build_report(s, b)
-
-    def test_disjoint_saved_snapshots_compare(self):
-        s = sample();b = copy.deepcopy(s);b["jobs"] = b["jobs"][:-1];b["pipelines"] = b["pipelines"][:-1]
-        v = ci.build_report(s, baseline=b, windows=(1,))["views"][0]
-        self.assertEqual(v["regression_count"], 1)
-        self.assertEqual(v["overlap_pipeline_ids"], [])
-
-    def test_empty_snapshot_and_unknown_purpose(self):
-        s = sample((), ());report = ci.build_report(s)
-        self.assertEqual(report["views"][0]["situation"], "insufficient_data")
-        self.assertIn("not documented", ci.build_report(sample())["views"][0]["groups"][0]["purpose"]["description"])
+def data_with(pipelines, logs=None):
+    return {'host': 'gitlab.example.com', 'project': 'group/x', 'project_url': 'https://gitlab.example.com/group/x',
+            'ref': 'main', 'source': None, 'collected_at': '2026-11-13T10:00:00Z',
+            'pipelines': [{'id': number, 'status': status, 'source': 'push', 'ref': 'main',
+                           'created_at': '2026-10-14T09:00:00Z',
+                           'web_url': f'https://gitlab.example.com/x/-/pipelines/{number}', 'jobs': jobs}
+                          for number, (status, jobs) in enumerate(pipelines, 1)],
+            'logs': logs or {}}
 
 
-class ContractAndTransportTests(unittest.TestCase):
-    def test_schema_rejects_wrong_version_unknown_fields_negative_and_duplicate(self):
-        for mutate in (lambda s:s.update(schema_version="2"), lambda s:s.update(token="secret"),
-                       lambda s:s["jobs"][0].update(duration_seconds=-1),
-                       lambda s:s["jobs"].append(copy.deepcopy(s["jobs"][0]))):
-            s = sample();mutate(s)
-            with self.assertRaises(ValueError):ci.validate(s, "jobs")
+class LogTest(unittest.TestCase):
+    def test_sections_commands_and_build_steps(self):
+        log = ci_report.parse_log(LOG)
+        self.assertEqual(log['sections'], [{'name': 'get_sources', 'seconds': 9},
+                                           {'name': 'step_script', 'seconds': 121}])
+        self.assertEqual(log['steps'], [
+            {'name': '$ composer install', 'seconds': 41.0},
+            {'name': '[internal] load build definition', 'seconds': 0.1},
+            {'name': '[2/3] RUN composer install --no-dev', 'seconds': 71.9},
+            {'name': '$ echo done', 'seconds': 6.0},   # ends with its section
+        ])
 
-    def test_schema_rejects_nonfinite_timing_and_wrong_relation(self):
-        for val in [float('nan'), float('inf')]:
-            s = sample();s['jobs'][0]['duration_seconds'] = val
-            with self.assertRaises(ValueError):ci.validate(s, 'jobs')
-        s = sample();s['jobs'][0]['pipeline_id'] = 99
-        with self.assertRaises(ValueError):ci.validate(s, 'jobs')
+    def test_command_that_wraps_build_steps_is_left_out(self):
+        names = [step['name'] for step in ci_report.parse_log(LOG)['steps']]
+        self.assertNotIn('$ docker buildx build .', names)
 
-    def test_projection_removes_secrets_and_user_data(self):
-        raw = {"id": 1, "pipeline": {"id": 1}, "name": "job", "stage": "test", "ref": "main",
-               "status": "success", "created_at": "2026-10-01T00:00:00Z", "web_url": "https://example.com/job",
-               "user": {"email": "private"}, "variables": [{"value": "secret"}], "commit": {"message": "private"},
-               "runner": {"id": 2, "description": "runner", "ip_address": "private"}}
-        out = ci.project_job(raw)
-        self.assertNotIn('private', json.dumps(out));self.assertNotIn('secret', json.dumps(out))
+    def test_command_ends_with_its_phase(self):
+        # Seen on gitlab.com: a runner hook prints "$ git remote set-url" inside get_sources,
+        # then the cache restores for minutes. That time is not the command's.
+        log = ci_report.parse_log(
+            b'2026-10-14T09:00:00.0Z 00O section_start:1791968400:get_sources\r\x1b[0K\n'
+            b'2026-10-14T09:00:01.0Z 01O \x1b[32;1m$ git remote set-url origin "$URL"\x1b[0;m\n'
+            b'2026-10-14T09:00:03.0Z 00O section_end:1791968403:get_sources\r\x1b[0K\n'
+            b'2026-10-14T09:00:03.0Z 00O section_start:1791968403:restore_cache\r\x1b[0K\n'
+            b'2026-10-14T09:05:50.0Z 00O section_end:1791968750:restore_cache\r\x1b[0K\n'
+            b'2026-10-14T09:05:50.0Z 00O section_start:1791968750:step_script\r\x1b[0K\n'
+            b'2026-10-14T09:05:51.0Z 01O \x1b[32;1m$ make test\x1b[0;m\n'
+            b'2026-10-14T09:07:00.0Z 00O section_end:1791968820:step_script\r\x1b[0K\n')
+        self.assertEqual(log['steps'], [{'name': '$ git remote set-url origin "$URL"', 'seconds': 2.0},
+                                        {'name': '$ make test', 'seconds': 69.0}])
+        row = {'sample': {'id': 1}}
+        self.assertEqual(ci_report.longest_step(row, {'1': log}), {'name': 'restore_cache', 'seconds': 347})
 
-    def test_pagination_only_same_project_host_https_without_token(self):
-        h = '<https://gitlab.example.com/api/v4/projects/42/jobs?id_before=100>; rel="next"'
-        self.assertIn('id_before=100', ci.next_page(h, 'gitlab.example.com', 42))
-        for change in [h.replace('gitlab.example.com', 'evil.com'), h.replace('/42/', '/99/'),
-                       h.replace('https:', 'http:'), h.replace('id_before=100', 'private_token=x')]:
-            with self.assertRaises(ValueError):ci.next_page(change, 'gitlab.example.com', 42)
+    def test_docker_build_details_from_a_real_log(self):
+        # A job that builds two images in a loop. BuildKit repeats the header and DONE of one
+        # step with a growing total, starts numbering again for the next build, and splits
+        # "exporting to image" into timed parts.
+        log = ci_report.parse_log(b'\n'.join([
+            b'#1 [internal] load build definition from Dockerfile', b'#1 DONE 0.1s',
+            b'#7 [1/8] FROM registry.example.com/php:8.4', b'#7 resolve registry.example.com/php:8.4 done',
+            b'#7 DONE 2.6s',
+            b'#7 [1/8] FROM registry.example.com/php:8.4', b'#7 sha256:7a1e 93B / 93B 0.1s done', b'#7 DONE 5.5s',
+            b'#7 [1/8] FROM registry.example.com/php:8.4', b'#7 DONE 14.2s',
+            b'#16 exporting to image', b'#16 exporting layers', b'#16 exporting layers 271.6s done',
+            b'#16 exporting manifest sha256:e8fa 0.0s done', b'#16 unpacking to registry.example.com/app/php:1',
+            b'#16 unpacking to registry.example.com/app/php:1 248.3s done', b'#16 DONE 520.1s',
+            b'#1 [internal] load build definition from Dockerfile', b'#1 DONE 0.2s',
+            b'#7 [internal] load build context', b'#7 [internal] load build context', b'#7 DONE 282.6s',
+        ]))
+        self.assertEqual(log['steps'], [
+            {'name': 'build 1: [internal] load build definition from Dockerfile', 'seconds': 0.1},
+            {'name': 'build 1: [1/8] FROM registry.example.com/php:8.4', 'seconds': 14.2},
+            {'name': 'build 1: exporting layers', 'seconds': 271.6},
+            {'name': 'build 1: unpacking to registry.example.com/app/php:1', 'seconds': 248.3},
+            {'name': 'build 2: [internal] load build definition from Dockerfile', 'seconds': 0.2},
+            {'name': 'build 2: [internal] load build context', 'seconds': 282.6},
+        ])
 
-    def test_collection_rejects_cycle_before_saving_partial_history(self):
-        p = {"id": 42, "path_with_namespace": "example/service", "web_url": "https://gitlab.example.com/backend", "default_branch": "main"}
-        cycle = '<https://gitlab.example.com/api/v4/projects/42/jobs?per_page=100&pagination=keyset&order_by=id&sort=desc>; rel="next"'
-        with patch.object(ci, 'request', side_effect=[('', p), ('', {'version': 'test'}), (cycle, [])]):
-            with self.assertRaisesRegex(ValueError, "limit/cycle"):
-                ci.collect('gitlab.example.com', 'example/service', 'UTC')
+    def test_without_timestamps_commands_are_not_timed(self):
+        plain = b'\n'.join(line.split(b' 00O ', 1)[1] for line in LOG.split(b'\n') if line) + b'\n'
+        log = ci_report.parse_log(plain)
+        self.assertEqual([part['name'] for part in log['sections']], ['get_sources', 'step_script'])
+        self.assertEqual([step['seconds'] for step in log['steps']], [0.1, 71.9])
 
-    def test_collection_rejects_duplicate_across_pages(self):
-        p = {"id": 42, "path_with_namespace": "example/service", "web_url": "https://gitlab.example.com/backend", "default_branch": "main"}
-        j = {"id": 1, "pipeline": {"id": 1}, "name": "build", "stage": "test", "ref": "main", "status": "success", "created_at": "2026-10-01T00:00:00Z", "web_url": "https://gitlab.example.com/jobs/1"}
-        link = '<https://gitlab.example.com/api/v4/projects/42/jobs?id_before=1>; rel="next"'
-        with patch.object(ci, 'request', side_effect=[('', p), ('', {'version': 'test'}), (link, [j]), ('', [j])]):
-            with self.assertRaisesRegex(ValueError, "duplicate"):
-                ci.collect('gitlab.example.com', 'example/service', 'UTC')
-
-    def test_no_overwrite_and_html_script_boundary_escape(self):
-        s = sample();s['jobs'][0]['name'] = '</script><img src=x onerror=alert(1)>'
-        report = ci.build_report(s)
-        with tempfile.TemporaryDirectory() as d:
-            path = Path(d)/'jobs.json';ci.save(path,s,'jobs')
-            with self.assertRaises(ValueError):ci.save(path,s,'jobs')
-            html = Path(d)/'report.html';ci.render(report,html)
-            self.assertNotIn('</script><img', html.read_text())
-            self.assertIn('\\u003c/script', html.read_text())
-            with self.assertRaises(ValueError):ci.render(report,html)
-
-    def test_collection_cli_uses_utc_unless_timezone_is_explicit(self):
-        import sys
-        args = ['ci_report.py', 'collect', '--host', 'gitlab.example.com', '--project', 'example/service', '--output', 'ignored.json']
-        for extra, expected in [([], 'UTC'), (['--timezone', 'Europe/Berlin'], 'Europe/Berlin')]:
-            with patch.object(sys, 'argv', args + extra), patch.object(ci, 'collect', return_value=sample()) as collect, patch.object(ci, 'save'):
-                ci.main()
-                self.assertEqual(collect.call_args.args[2], expected)
-
-    def test_raw_json_nan_is_rejected(self):
-        with tempfile.TemporaryDirectory() as d:
-            path=Path(d)/'bad.json';path.write_text('{"x": NaN}')
-            with self.assertRaises(ValueError):ci.load(path)
-
-
-class ReportLanguageTests(unittest.TestCase):
-    def test_fallback_origin_does_not_depend_on_catalog_text_or_nullable_provenance(self):
-        s = sample()
-        fallback = {'description': 'Purpose is not documented in the verified catalog.',
-                    'source_url': None, 'verified_at': None}
-        catalog = {'project': s['project']['path'], 'jobs': {'build': fallback}}
-        supplied = ci.build_report(s, catalog=catalog)['views'][0]['groups'][0]
-        missing = ci.build_report(s)['views'][0]['groups'][0]
-        self.assertTrue(supplied.get('purpose_from_catalog'))
-        self.assertIs(missing.get('purpose_from_catalog'), False)
-        self.assertEqual(supplied['purpose'], fallback)
-
-    def test_render_defaults_to_english_and_localizes_russian_without_changing_data(self):
-        s = sample()
-        s['jobs'][0]['name'] = 'job __LANGUAGE__ __TEXT:execution_p50__ __REPORT_I18N__ </script><img src=x> русский'
-        catalog = {'project': s['project']['path'], 'jobs': {
-            'build': {'description': 'Verified original description', 'source_url': None, 'verified_at': None}}}
-        report = ci.build_report(s, catalog=catalog)
-        original = copy.deepcopy(report)
-        with tempfile.TemporaryDirectory() as d:
-            for language, title in [('en', 'How CI is performing'), ('ru', 'Как работает CI')]:
-                path = Path(d) / f'{language}.html'
-                if language == 'en':
-                    ci.render(report, path)
-                else:
-                    ci.render(report, path, language=language)
-                html = path.read_text()
-                self.assertIn(f'<html lang="{language}">', html)
-                self.assertIn(f'<h1>{title}</h1>', html)
-                self.assertNotRegex(html.split('<script id="report-data"')[0], r'__TEXT:[a-z0-9_]+__')
-                embedded = re.search(r'<script id="report-data" type="application/json">(.*?)</script>', html, re.S)
-                self.assertEqual(json.loads(embedded.group(1)), original)
-                self.assertNotIn('</script><img', html)
-        self.assertEqual(report, original)
-
-    def test_render_rejects_unsupported_language_before_creating_output(self):
-        with tempfile.TemporaryDirectory() as d:
-            path = Path(d) / 'nested' / 'report.html'
-            with self.assertRaisesRegex(ValueError, 'language'):
-                ci.render(ci.build_report(sample()), path, language='de')
-            self.assertFalse(path.parent.exists())
-
-    def test_render_cli_language_default_choices_and_help(self):
-        script = str(ci.ROOT / 'scripts' / 'ci_report.py')
-        with tempfile.TemporaryDirectory() as d:
-            report = Path(d) / 'report.json'
-            ci.save(report, ci.build_report(sample()), 'report')
-            for extra, expected in [([], 'en'), (['--language', 'en'], 'en'), (['--language', 'ru'], 'ru')]:
-                path = Path(d) / ('report-' + str(len(list(Path(d).glob('*.html')))) + '.html')
-                result = subprocess.run([sys.executable, script, 'render', '--report', str(report),
-                                         '--output', str(path)] + extra, capture_output=True, text=True)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertIn(f'<html lang="{expected}">', path.read_text())
-            invalid = Path(d) / 'invalid.html'
-            result = subprocess.run([sys.executable, script, 'render', '--report', str(report),
-                                     '--output', str(invalid), '--language', 'de'], capture_output=True, text=True)
-            self.assertEqual(result.returncode, 2)
-            self.assertIn('invalid choice', result.stderr)
-            self.assertFalse(invalid.exists())
-        help_result = subprocess.run([sys.executable, script, 'render', '--help'], capture_output=True, text=True)
-        self.assertIn('--language {en,ru}', help_result.stdout)
-        self.assertIn('default: en', ' '.join(help_result.stdout.split()))
+    def test_garbage_is_not_an_error(self):
+        self.assertEqual(ci_report.parse_log(b'\xff\xfe section_end:5:never_opened\n#x y\n'),
+                         {'sections': [], 'steps': []})
 
 
-if __name__ == '__main__':unittest.main()
+class MathTest(unittest.TestCase):
+    def test_squeeze_counts_overlap_once_and_drops_gaps(self):
+        total, at = ci_report.squeeze([(0, 10), (5, 20), (1000, 1010)])
+        self.assertEqual(total, 30)
+        self.assertEqual([at(0), at(20), at(500), at(1005)], [0, 20, 20, 25])
+
+    def test_change_needs_three_runs_on_each_side(self):
+        self.assertIsNone(ci_report.change([100] * 5))
+        self.assertEqual(ci_report.change([100] * 6)['recent'], 3)
+
+    def test_change_is_notable_only_above_both_thresholds(self):
+        self.assertTrue(ci_report.change([100] * 3 + [150] * 3)['notable'])    # +50 s, +50%
+        self.assertFalse(ci_report.change([100] * 3 + [125] * 3)['notable'])   # +25%, but under 30 s
+        self.assertFalse(ci_report.change([1000] * 3 + [1100] * 3)['notable'])  # +100 s, but under 20%
+        self.assertTrue(ci_report.change([150] * 3 + [100] * 3)['notable'])    # faster counts too
+
+    def test_durations_read_naturally(self):
+        L = ci_report.T['en']
+        self.assertEqual([ci_report.dur(value, L) for value in (None, 0, 0.4, 59.6, 90, 600, 3660)],
+                         ['—', '0 s', '<1 s', '1 min', '1 min 30 s', '10 min', '1 h 1 min'])
+
+    def test_remote_urls(self):
+        for url in ('git@gitlab.example.com:group/sub/x.git', 'https://gitlab.example.com/group/sub/x.git',
+                    'ssh://git@gitlab.example.com:2222/group/sub/x.git',
+                    'https://user:secret@gitlab.example.com/group/sub/x'):
+            self.assertEqual(ci_report.parse_remote(url), ('gitlab.example.com', 'group/sub/x'), url)
+        self.assertEqual(ci_report.parse_remote(''), (None, None))
+
+
+class AnalyzeTest(unittest.TestCase):
+    def test_pipeline_time_is_the_union_of_running_jobs(self):
+        jobs = [job(1, 'a', run=60), job(2, 'b', run=100), job(3, 'c', run=30, start='2026-10-14T12:00:00Z'),
+                dict(job(4, 'manual'), status='manual', started_at=None, finished_at=None, duration=None)]
+        result = ci_report.analyze(data_with([('success', jobs)]))
+        self.assertEqual(result['typical'], 130)   # a and b overlap; the 3-hour pause is not counted
+        self.assertEqual([row['name'] for row in result['jobs']], ['b', 'a', 'c'])   # slowest first, no "manual"
+
+    def test_medians_ignore_failed_runs(self):
+        pipelines = [('success', [job(n, 'unit', run=100)]) for n in range(1, 6)]
+        pipelines.append(('failed', [job(9, 'unit', 'failed', run=5)]))
+        result = ci_report.analyze(data_with(pipelines))
+        self.assertEqual((result['typical'], result['ok'], result['total']), (100, 5, 6))
+        self.assertEqual((result['jobs'][0]['run'], result['jobs'][0]['failed']), (100, 1))
+
+    def test_demo_points_at_the_right_jobs(self):
+        data = json.loads(DEMO.read_text(encoding='utf-8'))
+        first = {what: row['name'] for what, row, _ in ci_report.analyze(data)['first']}
+        self.assertEqual(first, {'slow': 'build-image', 'grew': 'phpunit', 'wait': 'e2e', 'fail': 'e2e'})
+
+    def test_quiet_project_has_one_finding(self):
+        pipelines = [('success', [job(n, 'unit', run=100)]) for n in range(1, 9)]
+        self.assertEqual([what for what, _, _ in ci_report.analyze(data_with(pipelines))['first']], ['slow'])
+
+
+class ReportTest(unittest.TestCase):
+    def render(self, data, lang='en'):
+        return ci_report.render_html(data, ci_report.analyze(data), ci_report.T[lang], lang)
+
+    def test_demo_report_in_both_languages(self):
+        data = json.loads(DEMO.read_text(encoding='utf-8'))
+        for lang, words in (('en', ('Where to look first', 'got slower')), ('ru', ('С чего начать', 'стала дольше'))):
+            page = self.render(data, lang)
+            for word in words + ('build-image', 'RUN composer install'):
+                self.assertIn(word, page)
+            for junk in ('None', 'nan', '{', '<script'):
+                self.assertNotIn(junk, page.split('</style>')[1], f'{junk!r} leaked into the {lang} report')
+
+    def test_names_from_gitlab_are_escaped(self):
+        evil = '<img src=x onerror=alert(1)>'
+        runs = [('success', [job(n, evil, stage=evil)]) for n in range(1, 4)]
+        logs = {'3': {'sections': [{'name': evil, 'seconds': 9}], 'steps': [{'name': '$ ' + evil, 'seconds': 9}]}}
+        data = data_with(runs, logs)
+        data['project'] = data['ref'] = evil
+        page = self.render(data)
+        self.assertNotIn('<img', page)
+        self.assertIn('&lt;img', page)
+
+    def test_no_successful_pipeline_still_renders(self):
+        page = self.render(data_with([('failed', [job(1, 'unit', 'failed')])]))
+        self.assertIn('no typical run time', page)
+
+    def test_cli_rebuilds_report_from_saved_data(self):
+        with tempfile.TemporaryDirectory() as out, redirect_stdout(io.StringIO()) as printed:
+            ci_report.main(['--from', str(DEMO), '--out', out, '--lang', 'ru'])
+            self.assertTrue((Path(out) / 'report.html').stat().st_size > 10_000)
+            self.assertFalse((Path(out) / 'data.json').exists())   # the source file is not copied
+        self.assertIn('С чего начать', printed.getvalue())
+
+
+class CollectTest(unittest.TestCase):
+    def test_reads_pipelines_jobs_and_the_slowest_logs(self):
+        asked = []
+
+        def fake_glab(host, endpoint):
+            asked.append(endpoint)
+            if endpoint == 'projects/group%2Fx':
+                return json.dumps({'default_branch': 'main', 'path_with_namespace': 'group/x',
+                                   'web_url': 'https://gitlab.example.com/group/x'}).encode()
+            if '/pipelines?' in endpoint:
+                return json.dumps([{'id': 7, 'status': 'success', 'source': 'push', 'ref': 'main',
+                                    'created_at': '2026-10-14T09:00:00Z', 'web_url': 'u', 'yaml_errors': None}]).encode()
+            if endpoint.endswith('/trace'):
+                return LOG
+            return json.dumps([dict(job(1, 'slow', run=121), secret='x'), job(2, 'fast', run=5)]).encode()
+
+        with mock.patch.object(ci_report, 'glab', fake_glab):
+            data = ci_report.collect('gitlab.example.com', 'group/x', None, 'push', 30, logs=1)
+        self.assertEqual(asked, [
+            'projects/group%2Fx',
+            'projects/group%2Fx/pipelines?scope=finished&per_page=30&source=push&ref=main',
+            'projects/group%2Fx/pipelines?scope=finished&per_page=30&source=push',   # is CI on other refs?
+            'projects/group%2Fx/pipelines/7/jobs?include_retried=true&per_page=100&page=1',
+            'projects/group%2Fx/jobs/1/trace',
+        ])
+        self.assertEqual(list(data['logs']), ['1'])
+        self.assertNotIn('secret', data['pipelines'][0]['jobs'][0])
+        self.assertNotIn('yaml_errors', data['pipelines'][0])
+        json.dumps(data)   # data.json must be plain JSON
+
+    def test_says_when_ci_runs_on_other_refs(self):
+        # Seen on a project that builds on release tags: the default branch had almost nothing.
+        notes = []
+        one = {'id': 7, 'status': 'success', 'source': 'push', 'ref': 'main',
+               'created_at': '2026-10-14T09:00:00Z', 'web_url': 'u'}
+
+        def fake_glab(host, endpoint):
+            if endpoint == 'projects/group%2Fx':
+                return json.dumps({'default_branch': 'main', 'path_with_namespace': 'group/x', 'web_url': 'u'}).encode()
+            if '/pipelines?' in endpoint:
+                return json.dumps([one] if 'ref=main' in endpoint else [one] * 30).encode()
+            return json.dumps([job(1, 'unit')]).encode()
+
+        with mock.patch.object(ci_report, 'glab', fake_glab):
+            ci_report.collect('gitlab.example.com', 'group/x', None, None, 30, logs=0, note=notes.append)
+            self.assertTrue(any('Only 1 of the last 30' in text and '--any-ref' in text for text in notes), notes)
+            notes.clear()
+            ci_report.collect('gitlab.example.com', 'group/x', '', None, 30, logs=0, note=notes.append)
+            self.assertFalse(any('--any-ref' in text for text in notes))   # already reading every ref
+
+
+if __name__ == '__main__':
+    unittest.main()
